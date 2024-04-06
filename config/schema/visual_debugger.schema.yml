@@ -1,0 +1,8 @@
+# Schema for the configuration files of the Visual Debugger module.
+visual_debugger.settings:
+  type: config_object
+  label: 'Visual Debugger settings'
+  mapping:
+    example:
+      type: string
+      label: 'Example'

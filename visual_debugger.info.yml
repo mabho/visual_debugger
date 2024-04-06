@@ -1,0 +1,5 @@
+name: Visual Debugger
+type: module
+description: Provides a friendlier user experience for Drupal debugging on the frontend by exposing messages that would otherwise be visible upon source code inspection only.
+package: Development
+core_version_requirement: ^9 || ^10

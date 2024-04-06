@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Visual Debugger module.
+ */
+
+/**
+ * Implements hook_page_attachments().
+ */
+function visual_debugger_page_attachments(array &$attachments): void {
+  \Drupal::logger('visual_debugger')->notice('This hook was executed...');
+
+  // Check if theme debug is activated.
+  $twig_config = \Drupal::getContainer()->getParameter('twig.config');
+  $twig_debug = $twig_config['debug'] && (bool)$twig_config['debug'];
+
+  if ($twig_debug) {
+    // Attach the library.
+    \Drupal::logger('visual_debugger')->notice('Reaching this point.');
+    $attachments['#attached']['library'][] = 'visual_debugger/visual_debugger';
+  }
+}

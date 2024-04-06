@@ -1,0 +1,4 @@
+administer visual_debugger configuration:
+  title: 'Administer visual_debugger configuration'
+  description: 'Optional description.'
+  restrict access: true
