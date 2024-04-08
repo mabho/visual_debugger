@@ -50,7 +50,6 @@
       const allNodes = document.querySelectorAll("*");
 
       // Initialize an array to hold comment nodes
-      let commentNodes = [];
       let themeDebugNodes = [];
       let activeElement = null;
 
@@ -65,17 +64,6 @@
 
           // Return if it is not a comment node.
           if (child.nodeType !== Node.COMMENT_NODE) return;
-
-          // console.warn(child);
-
-          // Gets the data node.
-          /*
-          const dataNode = child.nextElementSibling;
-          console.log("data node is ", dataNode);
-          if (dataNode) {
-            activeElement.setDataNode(dataNode);
-          }
-          */
 
           // A THEME instance is found and initiated.
           if (this.regexGetTemplateDebug().test(child.textContent)) {
@@ -128,8 +116,6 @@
           }
         });
       });
-
-      // themeDebugNodes = themeDebugNodes.splice(205, 10);
 
       console.warn(themeDebugNodes.length);
       console.warn(themeDebugNodes);
