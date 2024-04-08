@@ -9,7 +9,6 @@
  * Implements hook_page_attachments().
  */
 function visual_debugger_page_attachments(array &$attachments): void {
-  \Drupal::logger('visual_debugger')->notice('This hook was executed...');
 
   // Check if theme debug is activated.
   $twig_config = \Drupal::getContainer()->getParameter('twig.config');
