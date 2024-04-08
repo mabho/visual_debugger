@@ -1,5 +1,10 @@
 (function (Drupal) {
-  Drupal.behaviors.VisualDebugger = {
+  Drupal.behaviors.visualDebugger = {
+
+    // The class names to be reused.
+    classNames: {
+      classNameInitialized: 'visualDebuggerInitialized',
+    },
 
     // Validate theme DEBUG.
     regexGetTemplateDebug: () => new RegExp("THEME DEBUG"),
@@ -28,17 +33,18 @@
         .sort();
     },
 
-    // Main.
+    // Code initialization.
     attach: function (context, settings) {
+      const { body } = document;
+      const { classNameInitialized } = this.classNames;
+      if (!body.classList.contains(classNameInitialized)) {
+        body.classList.add(classNameInitialized);
+        this.main(context, settings);
+      }
+    },
 
-      console.warn('reached this point');
-
-      const n = 20;
-
-      /**
-       * Prepares several regular expressions to pull
-       * data from comment nodes.
-       */
+    // Main portion of the code.
+    main: function(context, settings) {
 
       // Get all nodes in the document
       const allNodes = document.querySelectorAll("*");
