@@ -1,8 +1,10 @@
 (function (Drupal) {
   Drupal.behaviors.visualDebugger = {
 
-    // The class names to be reused.
+    // The class names being used in this script.
     classNames: {
+
+      // The class name applied when this code is initialized.
       classNameInitialized: 'visualDebuggerInitialized',
     },
 
@@ -12,16 +14,16 @@
     // Validate template hook.
     regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
 
+    // Validate template suggestions list.
+    regexGetTemplateSuggestions: () => new RegExp(
+      "FILE NAME SUGGESTIONS:\s*\n\s*([^']*)\s*\n*\s*"
+    ),
+
     // Validate template file path.
     regexGetTemplateFilePath: () => new RegExp("BEGIN OUTPUT from '([^']*)'"),
 
     // Validate complete theme analysis.
     regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
-
-    // Validate template suggestions list.
-    regexGetTemplateSuggestions: () => new RegExp(
-      "FILE NAME SUGGESTIONS:\s*\n\s*([^']*)\s*\n*\s*"
-    ),
 
     // Gets processed unique property hooks.
     getUniquePropertyHooks: (source) => {
@@ -46,28 +48,38 @@
     // Main portion of the code.
     main: function(context, settings) {
 
-      // Get all nodes in the document
-      const allNodes = document.querySelectorAll("*");
-
       // Initialize an array to hold comment nodes
       let themeDebugNodes = [];
-      let activeElement = null;
+      let activeElement = Drupal.themeElement;
+      activeElement.init();
 
-      // Loop through all nodes using forEach
+      // Get all nodes in the document and loop through...
+      const allNodes = document.querySelectorAll("*");
       allNodes.forEach((node) => {
 
-        // Get all child nodes of the current node
+        // Loop through all child nodes.
         const childNodes = node.childNodes;
-
-        // Loop through all child nodes using forEach
         Array.from(childNodes).forEach((child) => {
 
-          // Return if it is not a comment node.
+          // If this is a DOM element, and it is time to load it into
+          // the `activeElement` object.
+          if (
+            child.nodeType === Node.ELEMENT_NODE &&
+            activeElement.beginOutput === true &&
+            activeElement.dataNode === null
+          ) {
+            activeElement.setDataNode(child);
+            themeDebugNodes.push(Object.assign({}, activeElement));
+            activeElement.reset();
+            return;
+          }
+
+          // Analyze comment nodes only.
           if (child.nodeType !== Node.COMMENT_NODE) return;
 
           // A THEME instance is found and initiated.
           if (this.regexGetTemplateDebug().test(child.textContent)) {
-            activeElement = Drupal.themeElement;
+            activeElement.setActivated();
             return;
           }
 
@@ -78,15 +90,6 @@
           const templateHookMatch = child.textContent.match(this.regexGetTemplateHook());
           if (templateHookMatch) {
             activeElement.setPropertyHook(templateHookMatch[1]);
-            return;
-          }
-
-          // Gets the template file path.
-          const templateFilePathMatch = child.textContent.match(
-            this.regexGetTemplateFilePath()
-          );
-          if (templateFilePathMatch) {
-            activeElement.setFilePath(templateFilePathMatch[1]);
             return;
           }
 
@@ -107,12 +110,14 @@
             return;
           }
 
-          // Identifies a closing output.
-          const templateEndOutputMatch = child.textContent.match(
-            this.regexGetTemplateEndOutput()
+          // Gets the template file path and confirms output is beginning.
+          const templateFilePathMatch = child.textContent.match(
+            this.regexGetTemplateFilePath()
           );
-          if (templateEndOutputMatch) {
-            themeDebugNodes.push(Object.assign({}, activeElement));
+          if (templateFilePathMatch) {
+            activeElement.setBeginOutput();
+            activeElement.setFilePath(templateFilePathMatch[1]);
+            return;
           }
         });
       });
