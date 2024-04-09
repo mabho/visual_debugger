@@ -1,0 +1,19 @@
+{
+  "name": "visual_debugger",
+  "version": "1.0.0",
+  "description": "CSS and Javacript support files for the Visual Debugger Drupal Module.",
+  "main": "index.js",
+  "scripts": {
+    "compile:scss": "sass css/source:css/dist",
+    "watch:scss": "nodemon --watch css/source --exec npm run compile:scss",
+    "minify:js": "gulp minify",
+    "watch:js": "gulp watch",
+    "watch": "npm run watch:js & npm run watch:scss"
+  },
+  "devDependencies": {
+    "gulp": "^5.0.0",
+    "gulp-terser": "^2.1.0",
+    "nodemon": "^3.1.0",
+    "sass": "^1.32.12"
+  }
+}
