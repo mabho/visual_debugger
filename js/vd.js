@@ -3,30 +3,35 @@
 
     // The class names being used in this script.
     classNames: {
-
-      // The class name applied when this code is initialized.
-      classNameInitialized: 'visualDebuggerInitialized',
+      classNameInitialized: 'visual-debugger--initialized',
+      classNameBaseLayer: 'visual-debugger--base-layer',
+      classNameInstanceLayer: 'visual-debugger--instance-layer',
     },
 
-    // Validate theme DEBUG.
-    regexGetTemplateDebug: () => new RegExp("THEME DEBUG"),
+    // Regular expressions.
+    regExs: {
 
-    // Validate template hook.
-    regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
+      // Validate theme DEBUG.
+      regexGetTemplateDebug: () => new RegExp("THEME DEBUG"),
 
-    // Validate template suggestions list.
-    regexGetTemplateSuggestions: () => new RegExp(
-      "FILE NAME SUGGESTIONS:\s*\n\s*([^']*)\s*\n*\s*"
-    ),
+      // Validate template hook.
+      regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
 
-    // Validate template file path.
-    regexGetTemplateFilePath: () => new RegExp("BEGIN OUTPUT from '([^']*)'"),
+      // Validate template suggestions list.
+      regexGetTemplateSuggestions: () => new RegExp(
+        "FILE NAME SUGGESTIONS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
 
-    // Validate complete theme analysis.
-    regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
+      // Validate template file path.
+      regexGetTemplateFilePath: () => new RegExp("BEGIN OUTPUT from '([^']*)'"),
+
+      // Validate complete theme analysis.
+      regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
+
+    },
 
     // Gets processed unique property hooks.
-    getUniquePropertyHooks: (source) => {
+    getUniquePropertyHooks(source) {
       return source
         .map(node => node.propertyHook)
         .filter((value, index, self) => {
@@ -35,20 +40,48 @@
         .sort();
     },
 
+    getBaseLayer() {
+      const baseLayer = document.createElement('div');
+      const { classNameBaseLayer } = this.classNames;
+      baseLayer.classList.add(classNameBaseLayer);
+      return baseLayer;
+    },
+
+    getInstanceLayer(instanceLayerRef) {
+      const instanceLayer = document.createElement('div');
+      const { classNameInstanceLayer } = this.classNames;
+      const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
+      const { width, height, left, top } = instanceLayerRefRect;
+      instanceLayer.classList.add(classNameInstanceLayer);
+      return instanceLayer;
+    },
+
     // Code initialization.
     attach: function (context, settings) {
       const { body } = document;
       const { classNameInitialized } = this.classNames;
       if (!body.classList.contains(classNameInitialized)) {
         body.classList.add(classNameInitialized);
-        this.main(context, settings);
+        this.main(context, settings, body);
       }
     },
 
     // Main portion of the code.
-    main: function(context, settings) {
+    main: function(context, settings, body) {
 
-      // Initialize an array to hold comment nodes
+      // Regular expressions.
+      const {
+        regexGetTemplateDebug,
+        regexGetTemplateHook,
+        regexGetTemplateSuggestions,
+        regexGetTemplateFilePath,
+      } = this.regExs;
+
+      // Initialize the base element.
+      const baseLayer = this.getBaseLayer();
+      body.appendChild(baseLayer);
+
+      // Initialize an array to hold comment nodes.
       let themeDebugNodes = [];
       let activeElement = Drupal.themeElement;
       activeElement.init();
@@ -69,6 +102,8 @@
             activeElement.dataNode === null
           ) {
             activeElement.setDataNode(child);
+            const instanceLayer = this.getInstanceLayer(child);
+            baseLayer.appendChild(instanceLayer);
             themeDebugNodes.push(Object.assign({}, activeElement));
             activeElement.reset();
             return;
@@ -78,7 +113,7 @@
           if (child.nodeType !== Node.COMMENT_NODE) return;
 
           // A THEME instance is found and initiated.
-          if (this.regexGetTemplateDebug().test(child.textContent)) {
+          if (regexGetTemplateDebug().test(child.textContent)) {
             activeElement.setActivated();
             return;
           }
@@ -87,7 +122,7 @@
           if (activeElement === null) return;
 
           // Gets the template hook.
-          const templateHookMatch = child.textContent.match(this.regexGetTemplateHook());
+          const templateHookMatch = child.textContent.match(regexGetTemplateHook());
           if (templateHookMatch) {
             activeElement.setPropertyHook(templateHookMatch[1]);
             return;
@@ -95,7 +130,7 @@
 
           // Gets the template suggestions.
           const templateSuggestions = child.textContent.match(
-            this.regexGetTemplateSuggestions()
+            regexGetTemplateSuggestions()
           );
           if (templateSuggestions) {
             const splitSuggestions = templateSuggestions[1].trim().split(/\n\s*/);
@@ -112,7 +147,7 @@
 
           // Gets the template file path and confirms output is beginning.
           const templateFilePathMatch = child.textContent.match(
-            this.regexGetTemplateFilePath()
+            regexGetTemplateFilePath()
           );
           if (templateFilePathMatch) {
             activeElement.setBeginOutput();
