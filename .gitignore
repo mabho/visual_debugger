@@ -1,0 +1,6 @@
+# npm support files are stored here and don't belong in the project.
+node_modules
+
+# Do not include the dist files in the project.
+css/dist
+js/dist
