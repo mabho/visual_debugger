@@ -1,10 +1,10 @@
 # Custom module library for general purposes.
 visual_debugger:
   js:
-    js/vd.js: {}
+    js/dist/vd.js: {}
   css:
     component:
-      css/vd.css: {}
+      css/dist/vd.css: {}
   dependencies:
     - core/drupalSettings
     - visual_debugger/themeElement
@@ -17,4 +17,4 @@ themeElement:
     url: https://github.com/fntneves/jquery-labelauty/blob/v1.1.0/LICENSE
     gpl-compatible: true
   js:
-    js/themeElement.js: {}
+    js/dist/themeElement.js: {}
