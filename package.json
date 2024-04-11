@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "CSS and Javacript support files for the Visual Debugger Drupal Module.",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mabho/visual_debugger.git"
+  },
   "scripts": {
     "compile:scss": "sass css/source:css/dist",
     "watch:scss": "nodemon --watch css/source/*.scss --watch css/source/**/*.scss --exec npm run compile:scss",
