@@ -65,13 +65,13 @@
       const { classNameInstanceLayer } = this.classNames;
       const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
       const { width, height } = instanceLayerRefRect;
-      const top = instanceLayerRefRect.top + window.scrollY;
-      const left = instanceLayerRefRect.left + window.scrollX;
+      const top = Math.round(instanceLayerRefRect.top + window.scrollY);
+      const left = Math.round(instanceLayerRefRect.left + window.scrollX);
 
       instanceLayer.style.top = `${top}px`;
       instanceLayer.style.left = `${left}px`;
-      instanceLayer.style.width = `${width}px`;
-      instanceLayer.style.height = `${height}px`;
+      instanceLayer.style.width = `${Math.round(width)}px`;
+      instanceLayer.style.height = `${Math.round(height)}px`;
       instanceLayer.style.zIndex = this.getCalculateDomDepth(instanceLayerRef);
       instanceLayer.classList.add(classNameInstanceLayer);
       return instanceLayer;
