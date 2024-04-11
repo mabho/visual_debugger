@@ -1,6 +1,10 @@
 (function (Drupal) {
   Drupal.behaviors.visualDebugger = {
 
+    constants: {
+      baseZIndex: 0,
+    },
+
     // The class names being used in this script.
     classNames: {
       classNameInitialized: 'visual-debugger--initialized',
@@ -47,11 +51,28 @@
       return baseLayer;
     },
 
+    getCalculateDomDepth(element) {
+      let depth = 0;
+      while (element.parentNode) {
+        depth++;
+        element = element.parentNode;
+      }
+      return depth;
+    },
+
     getInstanceLayer(instanceLayerRef) {
       const instanceLayer = document.createElement('div');
       const { classNameInstanceLayer } = this.classNames;
       const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
-      const { width, height, left, top } = instanceLayerRefRect;
+      const { width, height } = instanceLayerRefRect;
+      const top = instanceLayerRefRect.top + window.scrollY;
+      const left = instanceLayerRefRect.left + window.scrollX;
+
+      instanceLayer.style.top = `${top}px`;
+      instanceLayer.style.left = `${left}px`;
+      instanceLayer.style.width = `${width}px`;
+      instanceLayer.style.height = `${height}px`;
+      instanceLayer.style.zIndex = this.getCalculateDomDepth(instanceLayerRef);
       instanceLayer.classList.add(classNameInstanceLayer);
       return instanceLayer;
     },
