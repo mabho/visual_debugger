@@ -1,0 +1,27 @@
+@import "base/variables";
+
+.visual-debugger {
+
+  // Base layer.
+  &--base-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    // display: none;
+  }
+
+  // Instance layer.
+  &--instance-layer {
+    background-color: rgba($color--instance-background, $transparency--instance-background);
+    border: solid 1px $color--instance-border;
+    position: absolute;
+    // pointer-events: none;
+    transition: .25s all;
+
+    &:hover {
+      background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.59);
+    }
+  }
+}
