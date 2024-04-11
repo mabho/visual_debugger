@@ -1,7 +1,7 @@
 # Custom module library for general purposes.
 visual_debugger:
   js:
-    js/dist/vd.js: {}
+    js/dist/vd.min.js: { minified: true }
   css:
     component:
       css/dist/vd.css: {}
@@ -17,4 +17,4 @@ themeElement:
     url: https://github.com/fntneves/jquery-labelauty/blob/v1.1.0/LICENSE
     gpl-compatible: true
   js:
-    js/dist/themeElement.js: {}
+    js/dist/themeElement.min.js: { minified: true }
