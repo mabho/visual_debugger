@@ -6,8 +6,14 @@
 // Colors.
 $color--instance-background: yellow;
 $color--instance-background--hover: blue;
-$color--instance-border: black;
+$color--instance-shadow: gray;
+$color--instance-border: gray;
 
 // Transparency.
 $transparency--instance-background: .025;
-$transparency--instance-background--hover: .25;
+$transparency--instance-background--hover: .2;
+$transparency--instance-shadow: .5;
+
+// Shadow.
+$shadow--instance-blur: 15px;
+$shadow--full: 0 0 $shadow--instance-blur 0 rgba($color--instance-shadow, $transparency--instance-shadow), 0 0 $shadow--instance-blur 0 rgba($color--instance-shadow, $transparency--instance-shadow);
