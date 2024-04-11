@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "compile:scss": "sass css/source:css/dist",
-    "watch:scss": "nodemon --watch css/source/**/*.scss --exec npm run compile:scss",
+    "watch:scss": "nodemon --watch css/source/*.scss --watch css/source/**/*.scss --exec npm run compile:scss",
     "minify:js": "gulp minify",
     "watch:js": "gulp watch",
     "watch": "npm run watch:js & npm run watch:scss"
