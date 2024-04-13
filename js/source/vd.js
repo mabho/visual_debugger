@@ -7,9 +7,12 @@
 
     // The class names being used in this script.
     classNames: {
+      classNameVisualDebugger: 'visual-debugger',
       classNameInitialized: 'visual-debugger--initialized',
       classNameBaseLayer: 'visual-debugger--base-layer',
       classNameInstanceLayer: 'visual-debugger--instance-layer',
+      classNameObjectType: (objectType) =>
+        `object-type--${objectType}`,
     },
 
     // Regular expressions.
@@ -31,7 +34,6 @@
 
       // Validate complete theme analysis.
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
-
     },
 
     // Gets processed unique property hooks.
@@ -44,14 +46,8 @@
         .sort();
     },
 
-    getBaseLayer() {
-      const baseLayer = document.createElement('div');
-      const { classNameBaseLayer } = this.classNames;
-      baseLayer.classList.add(classNameBaseLayer);
-      return baseLayer;
-    },
-
-    getCalculateDomDepth(element) {
+    // Gets the DOM depth of the referenced element.
+    getCalculatedDomDepth(element) {
       let depth = 0;
       while (element.parentNode) {
         depth++;
@@ -60,21 +56,37 @@
       return depth;
     },
 
-    getInstanceLayer(instanceLayerRef) {
-      const instanceLayer = document.createElement('div');
-      const { classNameInstanceLayer } = this.classNames;
+    // Base Layer.
+    getBaseLayer() {
+      const thisLayer = document.createElement('div');
+      const {
+        classNameVisualDebugger,
+        classNameBaseLayer
+      } = this.classNames;
+      thisLayer.classList.add(classNameVisualDebugger);
+      thisLayer.classList.add(classNameBaseLayer);
+      return thisLayer;
+    },
+
+    // Instance Layer.
+    getInstanceLayer(thisThemeElement, instanceLayerRef) {
+      const {
+        classNameInstanceLayer,
+        classNameObjectType
+      } = this.classNames;
       const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
       const { width, height } = instanceLayerRefRect;
       const top = Math.round(instanceLayerRefRect.top + window.scrollY);
       const left = Math.round(instanceLayerRefRect.left + window.scrollX);
-
-      instanceLayer.style.top = `${top}px`;
-      instanceLayer.style.left = `${left}px`;
-      instanceLayer.style.width = `${Math.round(width)}px`;
-      instanceLayer.style.height = `${Math.round(height)}px`;
-      instanceLayer.style.zIndex = this.getCalculateDomDepth(instanceLayerRef);
-      instanceLayer.classList.add(classNameInstanceLayer);
-      return instanceLayer;
+      const thisLayer = document.createElement('div');
+      thisLayer.style.top = `${top}px`;
+      thisLayer.style.left = `${left}px`;
+      thisLayer.style.width = `${Math.round(width)}px`;
+      thisLayer.style.height = `${Math.round(height)}px`;
+      thisLayer.style.zIndex = this.getCalculatedDomDepth(instanceLayerRef);
+      thisLayer.classList.add(classNameInstanceLayer);
+      thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+      return thisLayer;
     },
 
     // Code initialization.
@@ -104,6 +116,8 @@
 
       // Initialize an array to hold comment nodes.
       let themeDebugNodes = [];
+
+      // Initialize the object that holds theme elements.
       let activeElement = Drupal.themeElement;
       activeElement.init();
 
@@ -123,7 +137,7 @@
             activeElement.dataNode === null
           ) {
             activeElement.setDataNode(child);
-            const instanceLayer = this.getInstanceLayer(child);
+            const instanceLayer = this.getInstanceLayer(activeElement, child);
             baseLayer.appendChild(instanceLayer);
             themeDebugNodes.push(Object.assign({}, activeElement));
             activeElement.reset();
@@ -173,18 +187,23 @@
           if (templateFilePathMatch) {
             activeElement.setBeginOutput();
             activeElement.setFilePath(templateFilePathMatch[1]);
-            return;
           }
         });
       });
 
-      console.warn(themeDebugNodes.length);
       console.warn(themeDebugNodes);
 
       // Remove duplicates
       let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
 
       console.log(uniquePropertyHooks); // Logs the array of unique propertyHook values
+
+      // Configures a controller window.
+      const controllerElement = Drupal.controllerElement;
+      controllerElement.init(baseLayer, themeDebugNodes);
+      body.appendChild(controllerElement.generateControllerLayer());
+
+      console.log(controllerElement);
 
     },
     detach: function (context, settings, trigger) {

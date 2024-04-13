@@ -32,6 +32,10 @@ Drupal.themeElement = {
     this.activated = true;
   },
 
+  getPropertyHook() {
+    return this.propertyHook;
+  },
+
   setPropertyHook(input) {
     this.propertyHook = input;
   },
