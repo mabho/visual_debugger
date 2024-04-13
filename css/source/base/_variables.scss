@@ -1,19 +1,53 @@
+/**
+  * Global.
+  */
+
+// Conf
+$z-index--base: 10000;
+
+// Colors
+$color--shadow: gray;
+$color--object-type--page: #ffc;
+$color--object-type--region: yellow;
+$color--object-type--block: orange;
+$color--object-type--field: green;
+
+// Transparency
+$transparency--shadow: .5;
+
+// Shadow.
+$shadow--blur: 15px;
+$shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow);
 
 /**
-  * Instance layer
- **/
+  * Instance layer.
+  */
+
+// Conf
+$z-index--instance: $z-index--base + 1;
+
+// Colors.
+$color--instance-background: yellow;
+$color--instance-background--hover: blue;
+$color--instance-border: gray;
+
+// Transparency.
+$transparency--instance-background: .05;
+$transparency--instance-background--hover: .2;
+
+/**
+  * Controller layer.
+  */
+
+// Conf
+$controller--gutter: 30px;
+$controller--max-width: 30%;
+$controller--min-height: 100px;
+$controller--width: 400px;
+$z-index--controller: $z-index--base + 1000;
 
 // Colors.
 $color--instance-background: yellow;
 $color--instance-background--hover: blue;
 $color--instance-shadow: gray;
 $color--instance-border: gray;
-
-// Transparency.
-$transparency--instance-background: .025;
-$transparency--instance-background--hover: .2;
-$transparency--instance-shadow: .5;
-
-// Shadow.
-$shadow--instance-blur: 15px;
-$shadow--full: 0 0 $shadow--instance-blur 0 rgba($color--instance-shadow, $transparency--instance-shadow), 0 0 $shadow--instance-blur 0 rgba($color--instance-shadow, $transparency--instance-shadow);
