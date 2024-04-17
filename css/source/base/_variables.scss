@@ -13,15 +13,15 @@ $color--object-type--block: orange;
 $color--object-type--field: green;
 
 // Transparency
-$transparency--shadow: .5;
+$transparency--shadow: .2;
 
 // Shadow.
 $shadow--blur: 15px;
 $shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow);
 
 /**
-  * Instance layer.
-  */
+ * Instance layer.
+ */
 
 // Conf
 $z-index--instance: $z-index--base + 1;
@@ -36,15 +36,18 @@ $transparency--instance-background: .05;
 $transparency--instance-background--hover: .2;
 
 /**
-  * Controller layer.
-  */
+ * Controller layer.
+ */
 
 // Conf
+$controller--border-radius: 10px;
 $controller--gutter: 30px;
 $controller--max-width: 30%;
 $controller--min-height: 100px;
 $controller--width: 400px;
 $z-index--controller: $z-index--base + 1000;
+$controller--font-size--title: 1.25rem;
+$controller--font-size: .875rem;
 
 // Colors.
 $color--instance-background: yellow;

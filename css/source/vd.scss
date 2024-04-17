@@ -5,6 +5,9 @@
   // Controller.
   &--controller-layer {
     background-color: white;
+    border-radius: $controller--border-radius;
+    box-shadow: $shadow--full;
+    font-size: $controller--font-size;
     max-width: $controller--max-width;
     min-height: $controller--min-height;
     padding: $controller--gutter;
@@ -13,6 +16,20 @@
     top: $controller--gutter;
     width: $controller--width;
     z-index: $z-index--controller;
+
+    h3 {
+      font-size: $controller--font-size--title;
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
+    label {
+      cursor: pointer;
+    }
   }
 
   // Base layer.
