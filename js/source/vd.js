@@ -36,6 +36,9 @@
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
     },
 
+    // Strores the controller layer.
+    controllerElement: null,
+
     // Gets processed unique property hooks.
     getUniquePropertyHooks(source) {
       return source
@@ -74,6 +77,7 @@
         classNameInstanceLayer,
         classNameObjectType
       } = this.classNames;
+      const controllerElementInstance = this.controllerElement;
       const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
       const { width, height } = instanceLayerRefRect;
       const top = Math.round(instanceLayerRefRect.top + window.scrollY);
@@ -86,6 +90,12 @@
       thisLayer.style.zIndex = this.getCalculatedDomDepth(instanceLayerRef);
       thisLayer.classList.add(classNameInstanceLayer);
       thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+      thisLayer.addEventListener(
+        'mouseenter',
+        () => {
+          controllerElementInstance.setActiveThemeElement(instanceLayerRef);
+        }
+      );
       return thisLayer;
     },
 
@@ -109,6 +119,10 @@
         regexGetTemplateSuggestions,
         regexGetTemplateFilePath,
       } = this.regExs;
+
+      // Initialize the controller element.
+      const controllerElementInstance = Drupal.controllerElement;
+      this.controllerElement = controllerElementInstance;
 
       // Initialize the base element.
       const baseLayer = this.getBaseLayer();
@@ -198,13 +212,10 @@
 
       console.log(uniquePropertyHooks); // Logs the array of unique propertyHook values
 
-      // Configures a controller window.
-      const controllerElement = Drupal.controllerElement;
-      controllerElement.init(baseLayer, themeDebugNodes);
-      body.appendChild(controllerElement.generateControllerLayer());
-
-      console.log(controllerElement);
-
+      // Load data into the controller element.
+      console.warn(controllerElementInstance);
+      controllerElementInstance.init(baseLayer, themeDebugNodes);
+      body.appendChild(controllerElementInstance.generateControllerLayer());
     },
     detach: function (context, settings, trigger) {
       // Code to be run on page unload and

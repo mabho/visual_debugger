@@ -6,15 +6,17 @@ Drupal.controllerElement = {
 
   // The object properties.
   activated: false,
+  activeThemeElement: null,
+  baseLayer: null,
+  themeDebugNodes: null,
 
+  // Class names for the controller layer.
   classNames: {
     classNameBaseLayer: 'visual-debugger--controller-layer',
     classNameBaseLayerDeactivated: 'deactivated',
+    classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
+    classNameSelectedElementTargetLayer: 'visual-debugger--selected-element-target-layer',
   },
-
-  baseLayer: null,
-
-  themeDebugNodes: null,
 
   // Executed upon initialization.
   init(baseLayer, themeDebugNodes) {
@@ -22,6 +24,7 @@ Drupal.controllerElement = {
     this.themeDebugNodes = themeDebugNodes;
   },
 
+  // Toggle the debugger activation.
   setDebuggerActivated(activated = true) {
     this.baseLayer.classList.toggle(
       this.classNames.classNameBaseLayerDeactivated,
@@ -30,6 +33,12 @@ Drupal.controllerElement = {
   },
 
   generateControllerLayer() {
+    const {
+      classNameBaseLayer,
+      classNameSelectedElementLayer,
+      classNameSelectedElementTargetLayer
+    } = this.classNames
+
     const self = this; // Save the context of `this`
 
     // Create a checkbox input element for debugger activation
@@ -64,11 +73,21 @@ Drupal.controllerElement = {
     const formElement = document.createElement('form');
     formElement.appendChild(wrapperDiv);
 
-    // Append the form to the baseLayer
+    // Create a selected element layer
+    const selectedElementLayer = document.createElement('div');
+    selectedElementLayer.classList.add(classNameSelectedElementLayer);
+    const selectedElementLayerTitle = document.createElement('h3');
+    selectedElementLayerTitle.textContent = Drupal.t('Selected Element');
+    selectedElementLayer.appendChild(selectedElementLayerTitle);
+    selectedElementLayer.appendChild(document.createElement('hr'));
+    const selectedElementTargetLayer = document.createElement('div');
+    selectedElementTargetLayer.classList.add(classNameSelectedElementTargetLayer);
+
+    // Append the form to the baseLayer.
     const controllerLayer = document.createElement('div');
-    const { classNameBaseLayer } = this.classNames;
     controllerLayer.classList.add(classNameBaseLayer);
     controllerLayer.appendChild(formElement);
+    controllerLayer.appendChild(selectedElementLayer);
 
     return controllerLayer;
   },
@@ -79,6 +98,7 @@ Drupal.controllerElement = {
   },
 
   setActiveThemeElement(instanceLayerRef) {
-
+    this.activeThemeElement = instanceLayerRef;
+    console.warn('Active theme element:', this.activeThemeElement);
   }
 }
