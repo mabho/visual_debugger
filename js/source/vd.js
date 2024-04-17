@@ -72,7 +72,7 @@
     },
 
     // Instance Layer.
-    getInstanceLayer(thisThemeElement, instanceLayerRef) {
+    generateInstanceLayer(thisThemeElement, instanceLayerRef) {
       const {
         classNameInstanceLayer,
         classNameObjectType
@@ -90,10 +90,11 @@
       thisLayer.style.zIndex = this.getCalculatedDomDepth(instanceLayerRef);
       thisLayer.classList.add(classNameInstanceLayer);
       thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+      const thisThemeElementPropertyHook = thisThemeElement;
       thisLayer.addEventListener(
         'mouseenter',
         () => {
-          controllerElementInstance.setActiveThemeElement(instanceLayerRef);
+          controllerElementInstance.setActiveThemeElement(thisThemeElementPropertyHook);
         }
       );
       return thisLayer;
@@ -151,9 +152,10 @@
             activeElement.dataNode === null
           ) {
             activeElement.setDataNode(child);
-            const instanceLayer = this.getInstanceLayer(activeElement, child);
+            const instanceActiveElement = Object.assign({}, activeElement);
+            themeDebugNodes.push(instanceActiveElement);
+            const instanceLayer = this.generateInstanceLayer(instanceActiveElement, child);
             baseLayer.appendChild(instanceLayer);
-            themeDebugNodes.push(Object.assign({}, activeElement));
             activeElement.reset();
             return;
           }
