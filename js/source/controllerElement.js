@@ -7,8 +7,15 @@ Drupal.controllerElement = {
   // The object properties.
   activated: false,
   activeThemeElement: null,
+  controllerLayer: null,
   baseLayer: null,
   themeDebugNodes: null,
+
+  // Element IDs.
+  ids: {
+    idSelectedElementLayer: 'visual-debugger--selected-element-layer',
+    idSelectedElementSuggestionsLayer: 'visual-debugger--selected-element-suggestions-layer',
+  },
 
   // Class names for the controller layer.
   classNames: {
@@ -18,6 +25,17 @@ Drupal.controllerElement = {
     classNameSelectedElementTargetLayer: 'visual-debugger--selected-element-target-layer',
   },
 
+  // Getter/Setter for the controller layer.
+  getControllerLayer() {
+    console.warn('getControllerLayer', this.controllerLayer);
+    return this.controllerLayer;
+  },
+
+  setControllerLayer(controllerLayer) {
+    console.warn('controllerLayer', controllerLayer);
+    this.controllerLayer = controllerLayer;
+  },
+
   // Executed upon initialization.
   init(baseLayer, themeDebugNodes) {
     this.baseLayer = baseLayer;
@@ -25,7 +43,7 @@ Drupal.controllerElement = {
   },
 
   // Toggle the debugger activation.
-  setDebuggerActivated(activated = true) {
+  toggleDebuggerActivated(activated = true) {
     this.baseLayer.classList.toggle(
       this.classNames.classNameBaseLayerDeactivated,
       !activated
@@ -39,6 +57,11 @@ Drupal.controllerElement = {
       classNameSelectedElementTargetLayer
     } = this.classNames
 
+    const {
+      idSelectedElementLayer,
+      idSelectedElementSuggestionsLayer
+    } = this.ids;
+
     const self = this; // Save the context of `this`
 
     // Create a checkbox input element for debugger activation
@@ -47,16 +70,7 @@ Drupal.controllerElement = {
     debuggerActivationCheckbox.id = 'debuggerActivationCheckbox';
     debuggerActivationCheckbox.checked = true;
     debuggerActivationCheckbox.addEventListener('change', function() {
-      self.setDebuggerActivated(this.checked)
-      // Checked.
-      if(this.checked) {
-        console.log('Checkbox is checked');
-      }
-
-      // Unchecked.
-      else {
-        console.log('Checkbox is unchecked');
-      }
+      self.toggleDebuggerActivated(this.checked)
     });
 
     // Create a label element for the debugger activation checkbox
@@ -80,15 +94,17 @@ Drupal.controllerElement = {
     selectedElementLayerTitle.textContent = Drupal.t('Selected Element');
     selectedElementLayer.appendChild(selectedElementLayerTitle);
     selectedElementLayer.appendChild(document.createElement('hr'));
-    const selectedElementTargetLayer = document.createElement('div');
-    selectedElementTargetLayer.classList.add(classNameSelectedElementTargetLayer);
+    const selectedElementSuggestionsLayer = document.createElement('div');
+    selectedElementSuggestionsLayer.setAttribute('id', idSelectedElementSuggestionsLayer);
+    selectedElementSuggestionsLayer.classList.add(classNameSelectedElementTargetLayer);
 
-    // Append the form to the baseLayer.
+    // Append everything to the controller layer.
     const controllerLayer = document.createElement('div');
     controllerLayer.classList.add(classNameBaseLayer);
     controllerLayer.appendChild(formElement);
     controllerLayer.appendChild(selectedElementLayer);
-
+    controllerLayer.appendChild(selectedElementSuggestionsLayer);
+    this.setControllerLayer(controllerLayer);
     return controllerLayer;
   },
 
@@ -97,8 +113,23 @@ Drupal.controllerElement = {
     this.activated = true;
   },
 
+  getSelectedElementSuggestionsLayer: () =>
+    this.getControllerLayer().querySelector(
+      `#${this.ids.idSelectedElementSuggestionsLayer}`
+    ),
+
+  setSelectedElementSuggestions(content) {
+    const suggestions = this.getSelectedElementSuggestionsLayer();
+    this.getSelectedElementSuggestionsLayer().innerHTML = (content !== null) ? content.map((item) => { return item.suggestion }).join('<br>') : null;
+  },
+
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
-    console.warn('Active theme element:', this.activeThemeElement);
+    this.setSelectedElementSuggestions(this.activeThemeElement.suggestions);
+    this.displayActiveElement();
+  },
+
+  displayActiveElement() {
+    return this.activeThemeElement;
   }
 }
