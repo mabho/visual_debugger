@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\visual_debugger\VisualDebuggerConstants;
+
 /**
  * @file
  * Primary module hooks for Visual Debugger module.
@@ -14,9 +16,47 @@ function visual_debugger_page_attachments(array &$attachments): void {
   $twig_config = \Drupal::getContainer()->getParameter('twig.config');
   $twig_debug = $twig_config['debug'] && (bool)$twig_config['debug'];
 
-  if ($twig_debug) {
+
+  // If Drupal debugging is deactivated, return early.
+  if (!$twig_debug) return;
+
+  $cache_invalidator = \Drupal::service('cache_tags.invalidator');
+  $frontend_tag = VisualDebuggerConstants::FRONTEND_TAG;
+  $admin_tag = VisualDebuggerConstants::ADMIN_TAG;
+
+  // Add cache tags to the attachments.
+  if (!isset($attachments['#cache']['tags'])) {
+    $attachments['#cache']['tags'] = [];
+  }
+
+  $attachments['#cache']['tags'] = array_merge(
+    $attachments['#cache']['tags'],
+    [
+      $frontend_tag,
+      $admin_tag,
+    ]
+  );
+
+  // Check for admin theme being used on the current page.
+  $theme_manager = \Drupal::service('theme.manager');
+  $active_theme = $theme_manager->getActiveTheme();
+  $admin_theme = \Drupal::config('system.theme')->get('admin');
+  $is_admin_theme = $active_theme->getName() == $admin_theme;
+
+  // Get module configuration.
+  $config = \Drupal::config('visual_debugger.settings');
+  $use_on_frontend = $config->get(VisualDebuggerConstants::IS_FRONTEND_KEY);
+  $use_on_admin = $config->get(VisualDebuggerConstants::IS_ADMIN_KEY);
+
+  // Checking one of these possibilities:
+  // - This is an Admin page, and debugger is set to be activated on admin theme.
+  // - This is a frontend theme (not admin), and debugger is set to be activated on frontend theme.
+  if (
+      ($is_admin_theme && $use_on_admin)
+      ||
+      (!$is_admin_theme && $use_on_frontend)
+  ) {
     // Attach the library.
-    \Drupal::logger('visual_debugger')->notice('Reaching this point.');
     $attachments['#attached']['library'][] = 'visual_debugger/visual_debugger';
   }
 }
