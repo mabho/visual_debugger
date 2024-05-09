@@ -5,15 +5,16 @@
   // Controller.
   &--controller-layer {
     background-color: white;
-    border-radius: $controller--border-radius;
+    border-radius: 0;
+    bottom: 0;
     box-shadow: $shadow--full;
     font-size: $controller--font-size;
     max-width: $controller--max-width;
     min-height: $controller--min-height;
     padding: $controller--gutter;
     position: fixed;
-    right: $controller--gutter;
-    top: $controller--gutter;
+    right: 0;
+    top: 0;
     width: $controller--width;
     z-index: $z-index--controller;
 
