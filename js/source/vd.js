@@ -73,23 +73,24 @@
 
     // Instance Layer.
     generateInstanceLayer(thisThemeElement, instanceLayerRef) {
+
+      // This instance layer.
+      const thisLayer = document.createElement('div');
+
+      // Controller element instance.
+      const controllerElementInstance = this.controllerElement;
+
+      // Set instance classes.
       const {
         classNameInstanceLayer,
         classNameObjectType
       } = this.classNames;
-      const controllerElementInstance = this.controllerElement;
-      const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
-      const { width, height } = instanceLayerRefRect;
-      const top = Math.round(instanceLayerRefRect.top + window.scrollY);
-      const left = Math.round(instanceLayerRefRect.left + window.scrollX);
-      const thisLayer = document.createElement('div');
-      thisLayer.style.top = `${top}px`;
-      thisLayer.style.left = `${left}px`;
-      thisLayer.style.width = `${Math.round(width)}px`;
-      thisLayer.style.height = `${Math.round(height)}px`;
-      thisLayer.style.zIndex = this.getCalculatedDomDepth(instanceLayerRef);
       thisLayer.classList.add(classNameInstanceLayer);
       thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+
+      // Set the size and position of the instance layer.
+      this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
+
       const thisThemeElementPropertyHook = thisThemeElement;
       thisLayer.addEventListener(
         'mouseenter',
@@ -97,7 +98,30 @@
           controllerElementInstance.setActiveThemeElement(thisThemeElementPropertyHook);
         }
       );
+
+      // Establish a resize observer.
+      const resizeObserver = new ResizeObserver(() => {
+        this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
+      });
+      resizeObserver.observe(instanceLayerRef);
+
       return thisLayer;
+    },
+
+    // Instance Layer Size and Position calculations.
+    setInstanceLayerSizeAndPosition(instanceLayerTarget, instanceLayerRef) {
+      const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
+      const top = Math.round(instanceLayerRefRect.top + window.scrollY);
+      const left = Math.round(instanceLayerRefRect.left + window.scrollX);      
+      let { width, height } = instanceLayerRefRect;
+      height = Math.round(height);
+      width = Math.round(width);
+
+      // Set the size and position of the instance layer.
+      instanceLayerTarget.style.width = `${Math.round(width)}px`;
+      instanceLayerTarget.style.height = `${Math.round(height)}px`;
+      instanceLayerTarget.style.top = `${top}px`;
+      instanceLayerTarget.style.left = `${left}px`;
     },
 
     // Code initialization.
@@ -153,8 +177,8 @@
           ) {
             activeElement.setDataNode(child);
             const instanceActiveElement = Object.assign({}, activeElement);
-            themeDebugNodes.push(instanceActiveElement);
             const instanceLayer = this.generateInstanceLayer(instanceActiveElement, child);
+            themeDebugNodes.push(instanceActiveElement);
             baseLayer.appendChild(instanceLayer);
             activeElement.reset();
             return;
