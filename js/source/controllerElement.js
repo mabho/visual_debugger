@@ -13,8 +13,8 @@ Drupal.controllerElement = {
 
   // Element IDs.
   ids: {
-    idSelectedElementLayer: 'visual-debugger--selected-element-layer',
-    idSelectedElementSuggestionsLayer: 'visual-debugger--selected-element-suggestions-layer',
+    idControllerElement: 'visual-debugger--controller',
+    idControllerElementSuggestions: 'visual-debugger--controller--suggestions',
   },
 
   // Class names for the controller layer.
@@ -27,12 +27,10 @@ Drupal.controllerElement = {
 
   // Getter/Setter for the controller layer.
   getControllerLayer() {
-    console.warn('getControllerLayer', this.controllerLayer);
     return this.controllerLayer;
   },
 
   setControllerLayer(controllerLayer) {
-    console.warn('controllerLayer', controllerLayer);
     this.controllerLayer = controllerLayer;
   },
 
@@ -75,7 +73,7 @@ Drupal.controllerElement = {
 
     const {
       idSelectedElementLayer,
-      idSelectedElementSuggestionsLayer
+      idControllerElementSuggestions
     } = this.ids;
 
     const self = this; // Save the context of `this`
@@ -92,7 +90,7 @@ Drupal.controllerElement = {
     // Create a label element for the debugger activation checkbox
     const debuggerActivationLabel = document.createElement('label');
     debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
-    debuggerActivationLabel.textContent = 'Activate debugger';
+    debuggerActivationLabel.textContent = Drupal.t('Activate debugger');
 
     // Create a wrapper div
     const wrapperDiv = document.createElement('div');
@@ -111,7 +109,7 @@ Drupal.controllerElement = {
     selectedElementLayer.appendChild(selectedElementLayerTitle);
     selectedElementLayer.appendChild(document.createElement('hr'));
     const selectedElementSuggestionsLayer = document.createElement('div');
-    selectedElementSuggestionsLayer.setAttribute('id', idSelectedElementSuggestionsLayer);
+    selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
     selectedElementSuggestionsLayer.classList.add(classNameSelectedElementTargetLayer);
 
     // Append everything to the controller layer.
@@ -121,6 +119,8 @@ Drupal.controllerElement = {
     controllerLayer.appendChild(selectedElementLayer);
     controllerLayer.appendChild(selectedElementSuggestionsLayer);
     this.setControllerLayer(controllerLayer);
+
+    // Return
     return controllerLayer;
   },
 
@@ -129,14 +129,18 @@ Drupal.controllerElement = {
     this.activated = true;
   },
 
-  getSelectedElementSuggestionsLayer: () =>
-    this.getControllerLayer().querySelector(
-      `#${this.ids.idSelectedElementSuggestionsLayer}`
-    ),
+  getSelectedElementSuggestionsLayer() {
+    return this.getControllerLayer().querySelector(
+      `#${this.ids.idControllerElementSuggestions}`
+    )
+  },
 
   setSelectedElementSuggestions(content) {
     const suggestions = this.getSelectedElementSuggestionsLayer();
-    this.getSelectedElementSuggestionsLayer().innerHTML = (content !== null) ? content.map((item) => { return item.suggestion }).join('<br>') : null;
+    this.getSelectedElementSuggestionsLayer().innerHTML =
+      (content !== null)
+        ? content.map((item) => { return item.suggestion }).join('<br>')
+        : null;
   },
 
   setActiveThemeElement(instanceLayerRef) {
