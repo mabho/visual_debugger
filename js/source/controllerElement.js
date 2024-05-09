@@ -40,6 +40,22 @@ Drupal.controllerElement = {
   init(baseLayer, themeDebugNodes) {
     this.baseLayer = baseLayer;
     this.themeDebugNodes = themeDebugNodes;
+
+    // Adjust the position of the controller window.
+    const { body } = document;
+    const observer = new MutationObserver((mutations) => {
+      const controllerLayer = this.getControllerLayer();
+      if (controllerLayer == null)
+        return;
+
+      const newPositionTop = mutations[0].target.style.paddingTop || 0;
+      this.controllerLayer.style.top = newPositionTop;
+    });
+
+    observer.observe(body, {
+      attributes: true,
+      attributeFilter: ["style"]
+    });
   },
 
   // Toggle the debugger activation.
