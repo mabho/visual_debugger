@@ -1,5 +1,9 @@
 @import "base/variables";
 
+%instance-selected {
+  opacity: 1;
+}
+
 .visual-debugger {
 
   // Controller.
@@ -55,9 +59,47 @@
     position: absolute;
     transition: .25s all;
 
+    input[type='checkbox'] {
+      margin: $controller--gutter * .5;
+      pointer-events: none;
+      transition: .25s all;
+    }
+
     &:hover {
       background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
       box-shadow: $shadow--full;
+
+      input[type='checkbox'] {
+        @extend %instance-selected;
+      }
+    }
+
+    &--checked {
+      input[type='checkbox'] {
+        @extend %instance-selected;
+      }
+    }
+
+    &--unchecked {
+      input[type='checkbox'] {
+        opacity: 0;
+      }
+    }
+  }
+
+  &--selected-element-layer {
+    &--suggestions {
+      pre {
+        border: solid 1px $color--instance-border;
+        padding-left: $controller--gutter * .5;
+        padding-right: $controller--gutter * .5;
+        transition: .25s all;
+
+        &:hover {
+          background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
+          box-shadow: $shadow--full;
+        }
+      }
     }
   }
 
