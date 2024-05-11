@@ -11,9 +11,53 @@
       classNameInitialized: 'visual-debugger--initialized',
       classNameBaseLayer: 'visual-debugger--base-layer',
       classNameInstanceLayer: 'visual-debugger--instance-layer',
+      classNameInstanceLayerUnchecked: 'visual-debugger--instance-layer--unchecked',
+      classNameInstanceLayerChecked: 'visual-debugger--instance-layer--checked',
       classNameObjectType: (objectType) =>
         `object-type--${objectType}`,
     },
+
+    // layerAttributes.
+    layerAttributes: {
+      layerIdAttributeName: 'data-vd-id',
+      layerTargetIdAttributeName: 'data-vd-target-id',
+    },
+
+    // Resize Observer.
+    triggerResizeObserver(themeDebugNodes) {
+      const { layerIdAttributeName, layerTargetIdAttributeName } = this.layerAttributes;
+      const resizeObserver = new ResizeObserver((element) => {
+        const affectedLayer = element[0].target;
+        const instanceLayerId = affectedLayer.getAttribute(layerIdAttributeName);
+        const instanceLayerRef = this.body.querySelector(`[${layerTargetIdAttributeName}="${instanceLayerId}"]`);
+        this.setInstanceLayerSizeAndPosition(instanceLayerRef, affectedLayer);
+      });
+
+      // Loop through all theme debug nodes.
+      themeDebugNodes.forEach((instance) => {
+        const { instanceRefElement } = instance;
+        resizeObserver.observe(instanceRefElement);
+      });
+    },
+
+    // Mutation Observer.
+    triggerMutationObserver: function(themeDebugNodes) {
+      const mutationObserver = new MutationObserver(() => {
+        themeDebugNodes.forEach((instance) => {
+          this.setInstanceLayerSizeAndPosition(
+            instance.instanceActiveElement,
+            instance.instanceRefElement
+          );
+        });
+      });
+
+      mutationObserver.observe(this.body, {
+        attributes: true,
+        attributeFilter: ['style'],
+      });
+    },
+
+    body: document.body,
 
     // Regular expressions.
     regExs: {
@@ -72,7 +116,7 @@
     },
 
     // Instance Layer.
-    generateInstanceLayer(thisThemeElement, instanceLayerRef) {
+    generateInstanceLayer(thisThemeElement, instanceLayerRef, instanceLayerId) {
 
       // This instance layer.
       const thisLayer = document.createElement('div');
@@ -80,22 +124,67 @@
       // Controller element instance.
       const controllerElementInstance = this.controllerElement;
 
+      // Layer attributes.
+      const { layerTargetIdAttributeName } = this.layerAttributes;
+
       // Set instance classes.
       const {
         classNameInstanceLayer,
+        classNameInstanceLayerChecked,
+        classNameInstanceLayerUnchecked,
         classNameObjectType
       } = this.classNames;
       thisLayer.classList.add(classNameInstanceLayer);
+      thisLayer.classList.add(classNameInstanceLayerUnchecked);
       thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+      thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
 
       // Set the size and position of the instance layer.
       this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
 
+      // Set a checkbox selector for the instance layer.
       const thisThemeElementPropertyHook = thisThemeElement;
+      const checkboxSelector = document.createElement('input');
+      checkboxSelector.setAttribute('type', 'checkbox');
+
+      // Set a 'change' event listener.
+      checkboxSelector.addEventListener('change', () => {
+
+      });
+      thisLayer.appendChild(checkboxSelector);
+
+      // Set a mouseenter event listener.
       thisLayer.addEventListener(
         'mouseenter',
         () => {
+          checkboxSelector.focus({ preventScroll: true });
           controllerElementInstance.setActiveThemeElement(thisThemeElementPropertyHook);
+        }
+      );
+
+      // Set a mouseleave event listener.
+      thisLayer.addEventListener(
+        'mouseleave',
+        () => {
+          checkboxSelector.blur();
+          controllerElementInstance.resetActiveThemeElement(thisThemeElementPropertyHook);
+        }
+      );
+
+      // Set a 'click' event listener.
+      thisLayer.addEventListener(
+        'click',
+        () => {
+          checkboxSelector.focus();
+          checkboxSelector.checked = !checkboxSelector.checked; 
+          thisLayer.classList.toggle(classNameInstanceLayerChecked);
+          thisLayer.classList.toggle(classNameInstanceLayerUnchecked);
+
+          if (checkboxSelector.checked === true) {
+            controllerElementInstance.setDefaultThemeElement(thisThemeElement);
+          } else {
+            controllerElementInstance.resetActiveThemeElement(thisThemeElement);
+          }
         }
       );
 
@@ -126,7 +215,7 @@
 
     // Code initialization.
     attach: function (context, settings) {
-      const { body } = document;
+      const { body } = this;
       const { classNameInitialized } = this.classNames;
       if (!body.classList.contains(classNameInitialized)) {
         body.classList.add(classNameInitialized);
@@ -144,6 +233,8 @@
         regexGetTemplateSuggestions,
         regexGetTemplateFilePath,
       } = this.regExs;
+
+      const { layerIdAttributeName } = this.layerAttributes;
 
       // Initialize the controller element.
       const controllerElementInstance = Drupal.controllerElement;
@@ -166,7 +257,7 @@
 
         // Loop through all child nodes.
         const childNodes = node.childNodes;
-        Array.from(childNodes).forEach((child) => {
+        Array.from(childNodes).forEach((child, index) => {
 
           // If this is a DOM element, and it is time to load it into
           // the `activeElement` object.
@@ -177,8 +268,15 @@
           ) {
             activeElement.setDataNode(child);
             const instanceActiveElement = Object.assign({}, activeElement);
-            const instanceLayer = this.generateInstanceLayer(instanceActiveElement, child);
-            themeDebugNodes.push(instanceActiveElement);
+            const instanceLayerId = `element-${index}`;
+            const instanceLayer = this.generateInstanceLayer(instanceActiveElement, child, instanceLayerId);
+            child.setAttribute(layerIdAttributeName, instanceLayerId);
+            themeDebugNodes.push(
+              {
+                'instanceActiveElement': instanceLayer,
+                'instanceRefElement': child,
+              }
+            );
             baseLayer.appendChild(instanceLayer);
             activeElement.reset();
             return;
@@ -233,7 +331,12 @@
 
       console.warn(themeDebugNodes);
 
-      // Remove duplicates
+      
+      // Activate observers.
+      this.triggerMutationObserver(themeDebugNodes);
+      // this.triggerResizeObserver(themeDebugNodes);
+
+      // Remove duplicates.
       let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
 
       console.log(uniquePropertyHooks); // Logs the array of unique propertyHook values
