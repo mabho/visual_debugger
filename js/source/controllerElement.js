@@ -7,6 +7,7 @@ Drupal.controllerElement = {
   // The object properties.
   activated: false,
   activeThemeElement: null,
+  defaultThemeElement: null,
   controllerLayer: null,
   baseLayer: null,
   themeDebugNodes: null,
@@ -14,6 +15,7 @@ Drupal.controllerElement = {
   // Element IDs.
   ids: {
     idControllerElement: 'visual-debugger--controller',
+    idControllerElementInfo: 'visual-debugger--controller--info',
     idControllerElementSuggestions: 'visual-debugger--controller--suggestions',
   },
 
@@ -22,7 +24,8 @@ Drupal.controllerElement = {
     classNameBaseLayer: 'visual-debugger--controller-layer',
     classNameBaseLayerDeactivated: 'deactivated',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
-    classNameSelectedElementTargetLayer: 'visual-debugger--selected-element-target-layer',
+    classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
+    classNameSelectedElementSuggestions: 'visual-debugger--selected-element-layer--suggestions',
   },
 
   // Getter/Setter for the controller layer.
@@ -64,11 +67,22 @@ Drupal.controllerElement = {
     );
   },
 
+  // Prepare the theme suggestions.
+  prepareThemeSuggestions(content) {
+    const suggestionWrapper = document.createElement('div');
+    const clipboardContent = document.createElement('pre');
+    clipboardContent.textContent = content;
+    suggestionWrapper.appendChild(clipboardContent);
+    return suggestionWrapper;
+  },
+
+  // Generate the controller layer; this is the main component structure.
   generateControllerLayer() {
     const {
       classNameBaseLayer,
       classNameSelectedElementLayer,
-      classNameSelectedElementTargetLayer
+      classNameSelectedElementInfo,
+      classNameSelectedElementSuggestions
     } = this.classNames
 
     const {
@@ -101,22 +115,36 @@ Drupal.controllerElement = {
     const formElement = document.createElement('form');
     formElement.appendChild(wrapperDiv);
 
-    // Create a selected element layer
+    // Selected element layer.
     const selectedElementLayer = document.createElement('div');
-    selectedElementLayer.classList.add(classNameSelectedElementLayer);
     const selectedElementLayerTitle = document.createElement('h3');
+    selectedElementLayer.classList.add(classNameSelectedElementLayer);
     selectedElementLayerTitle.textContent = Drupal.t('Selected Element');
     selectedElementLayer.appendChild(selectedElementLayerTitle);
     selectedElementLayer.appendChild(document.createElement('hr'));
-    const selectedElementSuggestionsLayer = document.createElement('div');
-    selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
-    selectedElementSuggestionsLayer.classList.add(classNameSelectedElementTargetLayer);
 
+    // Selected element basic info.
+    const selectedElementBasicInfo = document.createElement('div');
+    const selectedElementBasicInfoTitle = document.createElement('h4');
+    selectedElementBasicInfo.setAttribute('id', idControllerElementSuggestions);
+    selectedElementBasicInfo.classList.add(classNameSelectedElementInfo);
+    selectedElementBasicInfoTitle.textContent = Drupal.t('Basic Information');
+
+    // Theme suggestions layer.
+    const selectedElementSuggestionsLayer = document.createElement('div');
+    const selectedElementSuggestionsLayerTitle = document.createElement('h4');
+    selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
+    selectedElementSuggestionsLayer.classList.add(classNameSelectedElementSuggestions);
+    selectedElementSuggestionsLayerTitle.textContent = Drupal.t('Theme suggestions');
+    
     // Append everything to the controller layer.
     const controllerLayer = document.createElement('div');
     controllerLayer.classList.add(classNameBaseLayer);
     controllerLayer.appendChild(formElement);
     controllerLayer.appendChild(selectedElementLayer);
+    controllerLayer.appendChild(selectedElementBasicInfoTitle);
+    controllerLayer.appendChild(selectedElementBasicInfo);
+    controllerLayer.appendChild(selectedElementSuggestionsLayerTitle);
     controllerLayer.appendChild(selectedElementSuggestionsLayer);
     this.setControllerLayer(controllerLayer);
 
@@ -129,24 +157,96 @@ Drupal.controllerElement = {
     this.activated = true;
   },
 
+  getSelectedElementInfoLayer() {
+    return this.getControllerLayer().querySelector(
+      `#${this.ids.idControllerElementInfo}`
+    );
+  },
+
   getSelectedElementSuggestionsLayer() {
     return this.getControllerLayer().querySelector(
       `#${this.ids.idControllerElementSuggestions}`
-    )
+    );
   },
 
-  setSelectedElementSuggestions(content) {
-    const suggestions = this.getSelectedElementSuggestionsLayer();
-    this.getSelectedElementSuggestionsLayer().innerHTML =
-      (content !== null)
-        ? content.map((item) => { return item.suggestion }).join('<br>')
-        : null;
+  // Establishes the element that is currently selected.
+  // Active is priority; default comes right after; null if none.
+  getSelectedThemeElement() {
+    return this.activeThemeElement || 
+      this.defaultThemeElement || 
+      null;
   },
 
+  // Basic information on the selected element.
+  setSelectedElementInfo() {
+    const selectedThemeElement =
+      this.activeThemeElement || 
+      this.defaultThemeElement || 
+      null;
+
+    const selectedElementInfoLayer = this.getSelectedElementInfoLayer();
+    selectedElementInfoLayer.innerHTML = '';
+    /*
+
+
+    // Clear legacy information showing in the suggestions layer.
+
+    // If suggestions are available, display them.
+    if (
+      selectedThemeElement !== null &&
+      selectedThemeElement.hasOwnProperty('suggestions') &&
+      selectedThemeElement.suggestions !== null
+    ) {
+
+    }
+    */
+  },
+
+  setSelectedElementSuggestions() {
+    const selectedThemeElement = this.getSelectedThemeElement();
+    const selectedElementSuggestionsLayer = this.getSelectedElementSuggestionsLayer();
+
+    // Clear legacy information showing in the suggestions layer.
+    selectedElementSuggestionsLayer.innerHTML = '';
+
+    // If suggestions are available, display them.
+    if (
+        selectedThemeElement !== null &&
+        selectedThemeElement.hasOwnProperty('suggestions') &&
+        selectedThemeElement.suggestions !== null
+    ) {
+      const clipboardContent = selectedThemeElement.suggestions;
+      clipboardContent.forEach((item) => {
+        const themeSuggestion = this.prepareThemeSuggestions(item.suggestion);
+        selectedElementSuggestionsLayer.appendChild(themeSuggestion);
+      });
+    }
+  },
+
+  // Active theme element.
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
-    this.setSelectedElementSuggestions(this.activeThemeElement.suggestions);
-    this.displayActiveElement();
+    this.setSelectedElementInfo();
+    this.setSelectedElementSuggestions();
+  },
+
+  resetActiveThemeElement(instanceLayerRef) {
+    this.activeThemeElement = null;
+    // this.setSelectedElementInfo();
+    this.setSelectedElementSuggestions();
+  },
+  
+  // Default theme element.
+  setDefaultThemeElement(instanceLayerRef) {
+    this.defaultThemeElement = instanceLayerRef;
+    // this.setSelectedElementInfo();
+    this.setSelectedElementSuggestions();
+  },
+  
+  resetDefaultThemeElement() {
+    this.defaultThemeElement = null;
+    // this.setSelectedElementInfo();
+    this.setSelectedElementSuggestions();
   },
 
   displayActiveElement() {
