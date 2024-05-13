@@ -5,13 +5,48 @@
 // Conf
 $z-index--base: 10000;
 
-// Colors
-$color--shadow: gray;
-$color--object-type--page: #ffc;
-$color--object-type--region: yellow;
-$color--object-type--block: orange;
-$color--object-type--field: green;
-$color--pre: black;
+// Base colors.
+$color--white: #fff;
+$color--dark-blue: #000033;
+$color--dark-green: #003300;
+$color--dark-red: #330000;
+$color--dark-cyan: #003333;
+$color--dark-magenta: #330033;
+$color--dark-yellow: #333300;
+$color--dark-gray: #333333;
+$color--mid-blue: #000066;
+$color--mid-green: #006600;
+$color--mid-red: #660000;
+$color--mid-cyan: #006666;
+$color--mid-magenta: #660066;
+$color--mid-yellow: #666600;
+$color--mid-gray: #666666;
+$color--dark-teal: #006666;
+$color--dark-purple: #660066;
+$color--dark-olive: #666600;
+$color--dark-brown: #663300;
+$color--mid-teal: #009999;
+$color--mid-purple: #990099;
+$color--mid-olive: #999900;
+$color--mid-brown: #996600;
+$color--dark-navy: #000099;
+$color--dark-maroon: #990000;
+$color--dark-forest: #009900;
+$color--mid-navy: #0000CC;
+$color--mid-maroon: #CC0000;
+$color--mid-forest: #00CC00;
+$color--dark-charcoal: #333333;
+$color--mid-charcoal: #666666;
+$color--gray: gray;
+
+// Color utilities.
+$color--shadow: $color--gray;
+$color--object-type--page: $color--gray;
+$color--object-type--region: $color--mid-teal;
+$color--object-type--block: $color--mid-olive;
+$color--object-type--field: $color--dark-forest;
+$color--icon--selected-true: $color--mid-green;
+$color--icon--selected-false: $color--mid-maroon;
 
 // Transparency
 $transparency--shadow: .2;
