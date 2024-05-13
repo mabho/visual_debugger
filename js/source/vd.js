@@ -45,7 +45,7 @@
       const mutationObserver = new MutationObserver(() => {
         themeDebugNodes.forEach((instance) => {
           this.setInstanceLayerSizeAndPosition(
-            instance.instanceActiveElement,
+            instance.instanceLayer,
             instance.instanceRefElement
           );
         });
@@ -86,7 +86,7 @@
     // Gets processed unique property hooks.
     getUniquePropertyHooks(source) {
       return source
-        .map(node => node.propertyHook)
+        .map(node => node.instanceActiveElement.propertyHook)
         .filter((value, index, self) => {
           return self.indexOf(value) === index;
         })
@@ -273,7 +273,8 @@
             child.setAttribute(layerIdAttributeName, instanceLayerId);
             themeDebugNodes.push(
               {
-                'instanceActiveElement': instanceLayer,
+                'instanceActiveElement': instanceActiveElement,
+                'instanceLayer': instanceLayer,
                 'instanceRefElement': child,
               }
             );
