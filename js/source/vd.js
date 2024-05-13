@@ -26,6 +26,12 @@
       layerTargetIdAttributeName: 'data-vd-target-id',
     },
 
+    // This array holds relevant info about the debug layers, once filled:
+    // 1. instanceActiveElement: The actual data for each layer.
+    // 3. instanceLayer: The debug layer generated dynamically.
+    // 2. instanceRefElement: The original referenced layer.
+    themeDebugNodes: null,
+
     // Resize Observer.
     triggerResizeObserver(themeDebugNodes) {
       const { layerIdAttributeName, layerTargetIdAttributeName } = this.layerAttributes;
@@ -116,6 +122,13 @@
       return thisLayer;
     },
 
+    // Filters all checked nodes.
+    getCheckedNodes() {
+      return this.themeDebugNodes.filter((node) => {
+        return node.instanceLayer.classList.contains(this.classNames.classNameInstanceLayerChecked);
+      });
+    },
+
     // Instance Layer.
     generateInstanceLayer(thisThemeElement, instanceLayerRef, instanceLayerId) {
 
@@ -176,15 +189,26 @@
       thisLayer.addEventListener(
         'click',
         () => {
-          checkboxSelector.focus();
+
+          // Uncheck siblings if checked...
+          const activatedCheckboxes = this.getCheckedNodes();
+          activatedCheckboxes.forEach((node) => {
+            if (node.instanceLayer !== thisLayer)
+              node.instanceLayer.click();
+          });
+
+          // Toggle the checkbox and classes.
           checkboxSelector.checked = !checkboxSelector.checked; 
           thisLayer.classList.toggle(classNameInstanceLayerChecked);
           thisLayer.classList.toggle(classNameInstanceLayerUnchecked);
 
+          // Update the default theme element.
           if (checkboxSelector.checked === true) {
+            checkboxSelector.focus();
             controllerElementInstance.setDefaultThemeElement(thisThemeElement);
           } else {
-            controllerElementInstance.resetActiveThemeElement(thisThemeElement);
+            checkboxSelector.blur();
+            controllerElementInstance.resetDefaultThemeElement(thisThemeElement);
           }
         }
       );
@@ -333,6 +357,7 @@
 
       console.warn(themeDebugNodes);
 
+      this.themeDebugNodes = themeDebugNodes;
       
       // Activate observers.
       this.triggerMutationObserver(themeDebugNodes);
