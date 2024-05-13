@@ -20,6 +20,11 @@ $transparency--shadow: .2;
 $shadow--blur: 15px;
 $shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow);
 
+// Font
+$icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
+$icon-font-size: 1.15rem;
+$icon-font-size--large: 1.75rem;
+
 /**
  * Instance layer.
  */
