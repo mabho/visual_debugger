@@ -12,6 +12,12 @@ Drupal.controllerElement = {
   defaultThemeElement: null,
   controllerLayer: null,
   baseLayer: null,
+
+  // This array holds a fundamental structure being passed into the
+  // controller component. Its initial value is null:
+  // 1. instanceActiveElement: The actual data for each layer.
+  // 3. instanceLayer: The debug layer generated dynamically.
+  // 2. instanceRefElement: The original referenced layer.
   themeDebugNodes: null,
 
   // Element IDs.
@@ -50,7 +56,6 @@ Drupal.controllerElement = {
   getControllerLayer() {
     return this.controllerLayer;
   },
-
   setControllerLayer(controllerLayer) {
     this.controllerLayer = controllerLayer;
   },
