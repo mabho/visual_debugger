@@ -8,7 +8,7 @@
     "url": "git+https://github.com/mabho/visual_debugger.git"
   },
   "scripts": {
-    "compile:scss": "sass css/source:css/dist",
+    "compile:scss": "sass css/source:css",
     "watch:scss": "nodemon --watch css/source/*.scss --watch css/source/**/*.scss --exec npm run compile:scss",
     "minify:js": "gulp minify",
     "watch:js": "gulp watch",

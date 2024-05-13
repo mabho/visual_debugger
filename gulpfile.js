@@ -6,7 +6,7 @@ gulp.task('minify', function () {
   return gulp.src('js/source/**/*.js')
     .pipe(terser())
     .pipe(rename({ extname: '.min.js' }))
-    .pipe(gulp.dest('js/dist'));
+    .pipe(gulp.dest('js'));
 });
 
 gulp.task('watch', function () {
