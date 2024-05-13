@@ -4,6 +4,8 @@
  */
 Drupal.controllerElement = {
 
+  body: document.body,
+
   // The object properties.
   activated: false,
   activeThemeElement: null,
@@ -14,18 +16,34 @@ Drupal.controllerElement = {
 
   // Element IDs.
   ids: {
-    idControllerElement: 'visual-debugger--controller',
-    idControllerElementInfo: 'visual-debugger--controller--info',
-    idControllerElementSuggestions: 'visual-debugger--controller--suggestions',
+    idControllerElement: 'visual-debugger--controller-layer',
+    idControllerElementInfo: 'visual-debugger--controller-layer--info',
+    idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
   },
 
   // Class names for the controller layer.
   classNames: {
+    classNameVisualDebugger: 'visual-debugger',
     classNameBaseLayer: 'visual-debugger--controller-layer',
     classNameBaseLayerDeactivated: 'deactivated',
+    classNameForm: 'visual-debugger--controller-layer--activation-form',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
     classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
+    classNameSelectedElementInfoTextContent: 'tag',
     classNameSelectedElementSuggestions: 'visual-debugger--selected-element-layer--suggestions',
+    classNameSelectedElementSuggestionsSuggestion: 'suggestion',
+    classNameIconSelectedTrue: 'icon-selected-true',
+    classNameIconSelectedFalse: 'icon-selected-false',
+    classNameIconCopyToClipboard: 'icon-copy',
+  },
+
+  // Drupal translatable strings for the controller layer.
+  strings: {
+    stringCopyToClipboard: Drupal.t('Copy to clipboard'),
+    stringActivateDebugger: Drupal.t('Activate debugger'),
+    stringSelectedElement: Drupal.t('Selected Element'),
+    stringBasicInfo: Drupal.t('Object Type'),
+    stringThemeSuggestions: Drupal.t('Theme Suggestions'),
   },
 
   // Getter/Setter for the controller layer.
@@ -68,27 +86,80 @@ Drupal.controllerElement = {
   },
 
   // Prepare the theme suggestions.
-  prepareThemeSuggestions(content) {
+  prepareThemeSuggestions(item) {
+    const {
+      body,
+    } = this;
+
+    const {
+      classNameSelectedElementSuggestionsSuggestion,
+      classNameIconSelectedTrue,
+      classNameIconSelectedFalse,
+      classNameIconCopyToClipboard,
+    } = this.classNames;
+
+    const {
+      stringCopyToClipboard,
+    } = this.strings;
     const suggestionWrapper = document.createElement('div');
+    const clipboardActivated = document.createElement('div');
     const clipboardContent = document.createElement('pre');
-    clipboardContent.textContent = content;
+    const cliboardButton = document.createElement('button');
+
+    suggestionWrapper.classList.add(
+      classNameSelectedElementSuggestionsSuggestion);
+    clipboardActivated.classList.add(
+      item.activated
+        ? classNameIconSelectedTrue
+        : classNameIconSelectedFalse
+    );
+    clipboardContent.textContent = item.suggestion;
+
+    // Setup the button that copies theme suggestion to the clipboard.
+    cliboardButton.classList.add(classNameIconCopyToClipboard);
+    cliboardButton.setAttribute('aria-label', stringCopyToClipboard);
+    cliboardButton.addEventListener('click', function() {
+      const textToCopy = clipboardContent.textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        body.removeChild(textarea);
+      }
+    });
+
+    suggestionWrapper.appendChild(clipboardActivated);
     suggestionWrapper.appendChild(clipboardContent);
+    suggestionWrapper.appendChild(cliboardButton);
     return suggestionWrapper;
   },
 
   // Generate the controller layer; this is the main component structure.
   generateControllerLayer() {
     const {
+      classNameVisualDebugger,
       classNameBaseLayer,
+      classNameForm,
       classNameSelectedElementLayer,
       classNameSelectedElementInfo,
-      classNameSelectedElementSuggestions
+      classNameSelectedElementSuggestions,
     } = this.classNames
 
     const {
-      idSelectedElementLayer,
+      idControllerElementInfo,
       idControllerElementSuggestions
     } = this.ids;
+
+    const {
+      stringActivateDebugger,
+      stringSelectedElement,
+      stringBasicInfo,
+      stringThemeSuggestions,
+    } = this.strings;
 
     const self = this; // Save the context of `this`
 
@@ -104,7 +175,7 @@ Drupal.controllerElement = {
     // Create a label element for the debugger activation checkbox
     const debuggerActivationLabel = document.createElement('label');
     debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
-    debuggerActivationLabel.textContent = Drupal.t('Activate debugger');
+    debuggerActivationLabel.textContent = stringActivateDebugger;
 
     // Create a wrapper div
     const wrapperDiv = document.createElement('div');
@@ -113,32 +184,34 @@ Drupal.controllerElement = {
 
     // Append the wrapper div to the form.
     const formElement = document.createElement('form');
+    formElement.classList.add(classNameForm);
     formElement.appendChild(wrapperDiv);
 
     // Selected element layer.
     const selectedElementLayer = document.createElement('div');
     const selectedElementLayerTitle = document.createElement('h3');
     selectedElementLayer.classList.add(classNameSelectedElementLayer);
-    selectedElementLayerTitle.textContent = Drupal.t('Selected Element');
+    selectedElementLayerTitle.textContent = stringSelectedElement;
     selectedElementLayer.appendChild(selectedElementLayerTitle);
     selectedElementLayer.appendChild(document.createElement('hr'));
 
     // Selected element basic info.
     const selectedElementBasicInfo = document.createElement('div');
     const selectedElementBasicInfoTitle = document.createElement('h4');
-    selectedElementBasicInfo.setAttribute('id', idControllerElementSuggestions);
+    selectedElementBasicInfo.setAttribute('id', idControllerElementInfo);
     selectedElementBasicInfo.classList.add(classNameSelectedElementInfo);
-    selectedElementBasicInfoTitle.textContent = Drupal.t('Basic Information');
+    selectedElementBasicInfoTitle.textContent = stringBasicInfo;
 
     // Theme suggestions layer.
     const selectedElementSuggestionsLayer = document.createElement('div');
     const selectedElementSuggestionsLayerTitle = document.createElement('h4');
     selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
     selectedElementSuggestionsLayer.classList.add(classNameSelectedElementSuggestions);
-    selectedElementSuggestionsLayerTitle.textContent = Drupal.t('Theme suggestions');
-    
+    selectedElementSuggestionsLayerTitle.textContent = stringThemeSuggestions;
+
     // Append everything to the controller layer.
     const controllerLayer = document.createElement('div');
+    controllerLayer.classList.add(classNameVisualDebugger);
     controllerLayer.classList.add(classNameBaseLayer);
     controllerLayer.appendChild(formElement);
     controllerLayer.appendChild(selectedElementLayer);
@@ -179,27 +252,28 @@ Drupal.controllerElement = {
 
   // Basic information on the selected element.
   setSelectedElementInfo() {
-    const selectedThemeElement =
-      this.activeThemeElement || 
-      this.defaultThemeElement || 
-      null;
-
-    const selectedElementInfoLayer = this.getSelectedElementInfoLayer();
-    selectedElementInfoLayer.innerHTML = '';
-    /*
-
+    const selectedThemeElement = this.getSelectedThemeElement();
+    const {
+      classNameSelectedElementInfo,
+      classNameSelectedElementInfoTextContent,
+    } = this.classNames;
 
     // Clear legacy information showing in the suggestions layer.
+    const selectedElementInfoLayer = this.getSelectedElementInfoLayer();
+    selectedElementInfoLayer.innerHTML = '';
 
     // If suggestions are available, display them.
     if (
       selectedThemeElement !== null &&
-      selectedThemeElement.hasOwnProperty('suggestions') &&
-      selectedThemeElement.suggestions !== null
+      selectedThemeElement.hasOwnProperty('propertyHook') &&
+      selectedThemeElement.propertyHook !== null
     ) {
-
+      const elementTypeWrapper = document.createElement('div');
+      elementTypeWrapper.classList.add(
+        classNameSelectedElementInfoTextContent);
+      elementTypeWrapper.textContent = selectedThemeElement.propertyHook;
+      selectedElementInfoLayer.appendChild(elementTypeWrapper)
     }
-    */
   },
 
   setSelectedElementSuggestions() {
@@ -217,7 +291,7 @@ Drupal.controllerElement = {
     ) {
       const clipboardContent = selectedThemeElement.suggestions;
       clipboardContent.forEach((item) => {
-        const themeSuggestion = this.prepareThemeSuggestions(item.suggestion);
+        const themeSuggestion = this.prepareThemeSuggestions(item);
         selectedElementSuggestionsLayer.appendChild(themeSuggestion);
       });
     }
@@ -232,20 +306,20 @@ Drupal.controllerElement = {
 
   resetActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = null;
-    // this.setSelectedElementInfo();
+    this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
   },
   
   // Default theme element.
   setDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = instanceLayerRef;
-    // this.setSelectedElementInfo();
+    this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
   },
   
   resetDefaultThemeElement() {
     this.defaultThemeElement = null;
-    // this.setSelectedElementInfo();
+    this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
   },
 
