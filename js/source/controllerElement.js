@@ -297,30 +297,31 @@ Drupal.controllerElement = {
     }
   },
 
-  // Active theme element.
-  setActiveThemeElement(instanceLayerRef) {
-    this.activeThemeElement = instanceLayerRef;
+  updateSelectedElement() {
     this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
   },
 
+  // Active theme element.
+  setActiveThemeElement(instanceLayerRef) {
+    this.activeThemeElement = instanceLayerRef;
+    this.updateSelectedElement();
+  },
+
   resetActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = null;
-    this.setSelectedElementInfo();
-    this.setSelectedElementSuggestions();
+    this.updateSelectedElement();
   },
   
   // Default theme element.
   setDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = instanceLayerRef;
-    this.setSelectedElementInfo();
-    this.setSelectedElementSuggestions();
+    this.updateSelectedElement();
   },
   
   resetDefaultThemeElement() {
     this.defaultThemeElement = null;
-    this.setSelectedElementInfo();
-    this.setSelectedElementSuggestions();
+    this.updateSelectedElement();
   },
 
   displayActiveElement() {
