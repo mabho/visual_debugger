@@ -1,4 +1,5 @@
 @import "base/variables";
+@import "../../fonts/visual-debugger-icons/style.scss";
 
 %instance-selected {
   opacity: 1;
@@ -22,6 +23,11 @@
     width: $controller--width;
     z-index: $z-index--controller;
 
+    h1, h2, h3, h4 {
+      margin-bottom: $controller--gutter * .5 !important;
+      margin-top: $controller--gutter * .5 !important;
+    }
+
     h3 {
       font-size: $controller--font-size--title;
     }
@@ -34,6 +40,27 @@
 
     label {
       cursor: pointer;
+    }
+
+    pre {
+      border: solid 1px $color--instance-border;
+      margin: 0;
+      overflow: hidden;
+      padding-left: $controller--gutter * .5;
+      padding-right: $controller--gutter * .5;
+      transition: .25s all;
+
+      &:hover {
+        background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
+        box-shadow: $shadow--full;
+      }
+    }
+
+    &--activation-form {
+      background-color: $color--white;
+      margin-left: $controller--gutter * -1;
+      margin-top: $controller--gutter * -1;
+      padding: $controller--gutter * .5
     }
   }
 
@@ -88,16 +115,36 @@
   }
 
   &--selected-element-layer {
-    &--suggestions {
-      pre {
-        border: solid 1px $color--instance-border;
-        padding-left: $controller--gutter * .5;
-        padding-right: $controller--gutter * .5;
-        transition: .25s all;
 
-        &:hover {
-          background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
-          box-shadow: $shadow--full;
+    // Info.
+    &--info {
+      .tag {
+        background-color: $color--object-type--region;
+        color: $color--white;
+        display: inline-block;
+        padding: $controller--gutter * .25;
+      }
+    }
+
+    // Suggestions.
+    &--suggestions {
+      .suggestion {
+        align-items: center;
+        column-gap: $controller--gutter * .25;
+        display: flex;
+        flex-direction: row;
+        margin-bottom: $controller--gutter * .25;
+        margin-top: $controller--gutter * .25;
+
+        button {
+          background-color: transparent;
+          border: 0;
+          cursor: pointer;
+          transition: .25s all;
+
+          &:hover {
+            transform: scale(1.25);
+          }
         }
       }
     }
@@ -111,5 +158,20 @@
     &--block {
       background-color: rgba(green, $transparency--instance-background);
     }
+  }
+
+  // Icon font.
+  [class^="icon-"], [class*=" icon-"] {
+    font-size: $icon-font-size;
+  }
+
+  .icon-selected-true {
+    color: $color--icon--selected-true;
+    font-size: $icon-font-size--large;
+  }
+
+  .icon-selected-false {
+    color: $color--icon--selected-false;
+    font-size: $icon-font-size--large;
   }
 }
