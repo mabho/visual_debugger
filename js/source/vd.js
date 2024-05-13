@@ -1,6 +1,9 @@
 (function (Drupal) {
   Drupal.behaviors.visualDebugger = {
 
+    body: document.body,
+
+    // App constants.
     constants: {
       baseZIndex: 0,
     },
@@ -56,8 +59,6 @@
         attributeFilter: ['style'],
       });
     },
-
-    body: document.body,
 
     // Regular expressions.
     regExs: {
