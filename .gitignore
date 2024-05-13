@@ -2,8 +2,8 @@
 node_modules
 
 # Do not include the dist files in the project.
-css/dist
-js/dist
+css
+js
 
 # System files
 .DS_Store
