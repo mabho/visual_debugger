@@ -5,6 +5,29 @@
 // Conf
 $z-index--base: 10000;
 
+$color--gray-10: #f2f2f2; // Very light gray
+$color--gray-20: #e6e6e6;
+$color--gray-30: #ccc;
+$color--gray-40: #b3b3b3;
+$color--gray-50: #999999;
+$color--gray-60: #808080;
+$color--gray-70: #666;
+$color--gray-80: #4d4d4d;
+$color--gray-90: #333;
+$color--gray-100: #1a1a1a; // Very dark gray
+
+// Light colors.
+$color--light-blue: #99ccff;
+$color--light-green: #99ffcc;
+$color--light-red: #ff9999;
+$color--light-cyan: #99ffff;
+$color--light-magenta: #ff99ff;
+$color--light-yellow: #ffff99;
+$color--light-gray: #cccccc;
+$color--light-teal: #99ffff;
+$color--light-purple: #cc99ff;
+$color--light-olive: #ccff99;
+
 // Base colors.
 $color--white: #fff;
 $color--dark-blue: #000033;
@@ -59,6 +82,15 @@ $shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 
 $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
 $icon-font-size: 1.15rem;
 $icon-font-size--large: 1.75rem;
+
+/**
+  * Click-drag button.
+  */
+$click-drag-button--background-color: $color--gray-30;
+$click-drag-button--background-color--active: $color--gray-10;
+$click-drag-button--border: solid 1px $color--mid-teal;
+$click-drag-button--border-radius: 50%;
+$click-drag-button--size: 3rem;
 
 /**
  * Instance layer.

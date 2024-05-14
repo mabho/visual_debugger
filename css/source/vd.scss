@@ -159,6 +159,32 @@
     }
   }
 
+  // Click-drag button.
+  .click-drag-button {
+    background-color: $click-drag-button--background-color;
+    border: $click-drag-button--border;
+    border-radius: 50%;
+    cursor: grab;
+    height: $click-drag-button--size;
+    left: $click-drag-button--size * - .5;
+    position: absolute;
+    top: 50%;
+    transform-origin: center center;
+    transform: translateY(-50%);
+    transition: all .25s;
+    width: $click-drag-button--size;
+    z-index: $z-index--instance;
+
+    &:hover {
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    &:active {
+      background-color: $click-drag-button--background-color--active;
+      cursor: grabbing;
+    }
+  }
+
   // Icon font.
   [class^="icon-"], [class*=" icon-"] {
     font-size: $icon-font-size;
@@ -171,6 +197,10 @@
 
   .icon-selected-false {
     color: $color--icon--selected-false;
+    font-size: $icon-font-size--large;
+  }
+
+  .icon-slide-resize {
     font-size: $icon-font-size--large;
   }
 }
