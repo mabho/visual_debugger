@@ -20,6 +20,10 @@ Drupal.controllerElement = {
   // 2. instanceRefElement: The original referenced layer.
   themeDebugNodes: null,
 
+  constants: {
+    initialControllerWidth: '400px',
+  },
+
   // Element IDs.
   ids: {
     idControllerElement: 'visual-debugger--controller-layer',
@@ -41,6 +45,8 @@ Drupal.controllerElement = {
     classNameIconSelectedTrue: 'icon-selected-true',
     classNameIconSelectedFalse: 'icon-selected-false',
     classNameIconCopyToClipboard: 'icon-copy',
+    classNameIconSlideResize: 'icon-slide-resize',
+    classNameClickDragButton: 'click-drag-button',
   },
 
   // Drupal translatable strings for the controller layer.
@@ -50,6 +56,12 @@ Drupal.controllerElement = {
     stringSelectedElement: Drupal.t('Selected Element'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
+    stringClickDragButton: Drupal.t('Click and drag to resize'),
+  },
+
+  system: {
+    localStorageDebuggerActivatedKey: 'debuggerActivated',
+    localStorageControllerWidthKey: 'controllerWidth',
   },
 
   // Getter/Setter for the controller layer.
@@ -82,12 +94,15 @@ Drupal.controllerElement = {
     });
   },
 
-  // Toggle the debugger activation.
+  // Toggle the debugger activation and update localStorage.
   toggleDebuggerActivated(activated = true) {
     this.baseLayer.classList.toggle(
       this.classNames.classNameBaseLayerDeactivated,
       !activated
     );
+
+    localStorage.setItem(
+      this.system.localStorageDebuggerActivatedKey, activated);
   },
 
   // Prepare the theme suggestions.
@@ -166,23 +181,32 @@ Drupal.controllerElement = {
       stringThemeSuggestions,
     } = this.strings;
 
+    const { initialControllerWidth } = this.constants;
+    const { localStorageControllerWidthKey } = this.system;
     const self = this; // Save the context of `this`
 
     // Create a checkbox input element for debugger activation
     const debuggerActivationCheckbox = document.createElement('input');
     debuggerActivationCheckbox.type = 'checkbox';
     debuggerActivationCheckbox.id = 'debuggerActivationCheckbox';
-    debuggerActivationCheckbox.checked = true;
+
+    // Decides on initial controller state based on localStorage setting.
+    debuggerActivationCheckbox.checked = (
+      localStorage.getItem(self.system.localStorageDebuggerActivatedKey)|| 'true'
+    ) === 'true';
+    self.toggleDebuggerActivated(debuggerActivationCheckbox.checked);
+
+    // Add an event listener to the debugger activation checkbox.
     debuggerActivationCheckbox.addEventListener('change', function() {
       self.toggleDebuggerActivated(this.checked)
     });
 
-    // Create a label element for the debugger activation checkbox
+    // Create a label element for the debugger activation checkbox.
     const debuggerActivationLabel = document.createElement('label');
     debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
     debuggerActivationLabel.textContent = stringActivateDebugger;
 
-    // Create a wrapper div
+    // Create a wrapper div.
     const wrapperDiv = document.createElement('div');
     wrapperDiv.appendChild(debuggerActivationCheckbox);
     wrapperDiv.appendChild(debuggerActivationLabel);
@@ -218,6 +242,8 @@ Drupal.controllerElement = {
     const controllerLayer = document.createElement('div');
     controllerLayer.classList.add(classNameVisualDebugger);
     controllerLayer.classList.add(classNameBaseLayer);
+    controllerLayer.style.width =
+      localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
     controllerLayer.appendChild(formElement);
     controllerLayer.appendChild(selectedElementLayer);
     controllerLayer.appendChild(selectedElementBasicInfoTitle);
@@ -228,6 +254,59 @@ Drupal.controllerElement = {
 
     // Return
     return controllerLayer;
+  },
+
+  // Create a slider button.
+  generateSliderButton() {
+    const {
+      classNameClickDragButton,
+      classNameIconSlideResize,
+    } = this.classNames; 
+    const { stringClickDragButton } = this.strings;
+    const { localStorageControllerWidthKey } = this.system;
+    const controllerLayer = this.getControllerLayer();
+    const controllerLayerBoundingRectClient = controllerLayer.getBoundingClientRect();
+
+    // const controllerLayerBoundingRectClient = controllerLayer.getBoundingClientRect();
+    const sliderButton = document.createElement('button');
+    sliderButton.classList.add(classNameClickDragButton);
+    sliderButton.classList.add(classNameIconSlideResize);
+    sliderButton.setAttribute("aria-label", stringClickDragButton);
+
+    // Flag to indicate whether the mouse button is pressed
+    let isMouseDown = false;
+
+    // Add the mousedown event listener to the button
+    sliderButton.addEventListener('mousedown', function(event) {
+      isMouseDown = true;
+    });
+
+    // Add the mousemove event listener to the document.
+    document.addEventListener('mousemove', function(event) {
+      if (!isMouseDown) return;
+
+      // Calculate the new width based on the current mouse position
+      const newWidth =
+        controllerLayerBoundingRectClient.width
+          + controllerLayerBoundingRectClient.left
+          - event.clientX;
+
+      // Update the width of the controller element
+      controllerLayer.style.width = `${newWidth}px`;
+    });
+
+    // Add the mouseup event listener to the document
+    document.addEventListener('mouseup', function(event) {
+      isMouseDown = false;
+      localStorage.setItem(
+        localStorageControllerWidthKey,
+        controllerLayer.style.width
+      );
+    });
+
+    controllerLayer.appendChild(sliderButton);
+
+    // return sliderButton;
   },
 
   // Setter methods.
@@ -323,7 +402,7 @@ Drupal.controllerElement = {
     this.defaultThemeElement = instanceLayerRef;
     this.updateSelectedElement();
   },
-  
+
   resetDefaultThemeElement() {
     this.defaultThemeElement = null;
     this.updateSelectedElement();
