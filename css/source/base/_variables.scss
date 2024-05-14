@@ -82,9 +82,8 @@ $transparency--instance-background--hover: .2;
 
 // Conf
 $controller--gutter: 30px;
-$controller--max-width: 30%;
-$controller--min-height: 100px;
-$controller--width: 400px;
+$controller--max-width: 50%;
+$controller--min-width: to-rem(150px);
 $z-index--controller: $z-index--base + 1000;
 $controller--font-size--title: 1.25rem;
 $controller--font-size: .875rem;

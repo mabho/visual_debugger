@@ -15,12 +15,11 @@
     box-shadow: $shadow--full;
     font-size: $controller--font-size;
     max-width: $controller--max-width;
-    min-height: $controller--min-height;
+    min-width: $controller--min-width;
     padding: $controller--gutter;
     position: fixed;
     right: 0;
     top: 0;
-    width: $controller--width;
     z-index: $z-index--controller;
 
     h1, h2, h3, h4 {
