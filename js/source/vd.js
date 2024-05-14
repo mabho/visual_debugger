@@ -149,8 +149,8 @@
         classNameObjectType
       } = this.classNames;
       thisLayer.classList.add(classNameInstanceLayer);
-      thisLayer.classList.add(classNameInstanceLayerUnchecked);
       thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
+      thisLayer.classList.add(classNameInstanceLayerUnchecked);
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
 
       // Set the size and position of the instance layer.
