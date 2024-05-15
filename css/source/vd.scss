@@ -71,7 +71,7 @@
     z-index: 10000;
     // display: none;
 
-    &.deactivated {
+    body.visual-debugger--deactivated & {
       display: none;
       pointer-events: none;
     }

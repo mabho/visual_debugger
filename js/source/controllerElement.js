@@ -35,7 +35,7 @@ Drupal.controllerElement = {
   classNames: {
     classNameVisualDebugger: 'visual-debugger',
     classNameBaseLayer: 'visual-debugger--controller-layer',
-    classNameBaseLayerDeactivated: 'deactivated',
+    classNameBaseLayerDeactivated: 'visual-debugger--deactivated',
     classNameForm: 'visual-debugger--controller-layer--activation-form',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
     classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
@@ -96,10 +96,13 @@ Drupal.controllerElement = {
 
   // Toggle the debugger activation and update localStorage.
   toggleDebuggerActivated(activated = true) {
-    this.baseLayer.classList.toggle(
-      this.classNames.classNameBaseLayerDeactivated,
-      !activated
-    );
+    const { classNameBaseLayerDeactivated } = this.classNames;
+    if (this.body !== null) {
+      this.body.classList.toggle(
+        classNameBaseLayerDeactivated,
+        !activated
+      )
+    }
 
     localStorage.setItem(
       this.system.localStorageDebuggerActivatedKey, activated);
@@ -107,9 +110,7 @@ Drupal.controllerElement = {
 
   // Prepare the theme suggestions.
   prepareThemeSuggestions(item) {
-    const {
-      body,
-    } = this;
+    const { body } = this;
 
     const {
       classNameSelectedElementSuggestionsSuggestion,
