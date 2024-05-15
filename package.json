@@ -9,12 +9,13 @@
   },
   "scripts": {
     "compile:scss": "sass css/source:css",
-    "watch:scss": "nodemon --watch css/source/*.scss --watch css/source/**/*.scss --exec npm run compile:scss",
+    "watch:scss": "chokidar 'css/source/*.scss' 'css/source/**/*.scss' -c 'npm run compile:scss'",
     "minify:js": "gulp minify",
     "watch:js": "gulp watch",
     "watch": "npm run watch:js & npm run watch:scss"
   },
   "devDependencies": {
+    "chokidar-cli": "^3.0.0",
     "gulp": "^5.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-terser": "^2.1.0",
