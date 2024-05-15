@@ -1,4 +1,5 @@
 @import "base/variables";
+@import "base/types";
 @import "../../fonts/visual-debugger-icons/style.scss";
 
 %instance-selected {
@@ -56,7 +57,7 @@
     }
 
     &--activation-form {
-      background-color: $color--white;
+      background-color: var(#{$prefix}color--white);
       margin-left: $controller--gutter * -1;
       margin-top: $controller--gutter * -1;
       padding: $controller--gutter * .5
@@ -118,7 +119,7 @@
     // Info.
     &--info {
       .tag {
-        background-color: $color--object-type--region;
+        background-color: var(--#{$prefix}color--object-type);
         color: $color--white;
         display: inline-block;
         padding: $controller--gutter * .25;

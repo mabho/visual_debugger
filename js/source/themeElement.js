@@ -6,6 +6,7 @@ Drupal.themeElement = {
   // The object properties.
   activated: false,
   propertyHook: null,
+  objectType: null,
   suggestions: null,
   filePath: null,
   dataNode: null,
@@ -20,6 +21,7 @@ Drupal.themeElement = {
     this.initialState = {
       activated: this.activated,
       propertyHook: this.propertyHook,
+      objectType: this.objectType,
       suggestions: this.suggestions,
       filePath: this.filePath,
       dataNode: this.dataNode,
@@ -38,6 +40,14 @@ Drupal.themeElement = {
 
   setPropertyHook(input) {
     this.propertyHook = input;
+  },
+
+  getObjectType() {
+    return this.objectType;
+  },
+
+  setObjectType(input) {
+    this.objectType = input.split('__')[0];
   },
 
   setFilePath(input) {

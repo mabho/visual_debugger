@@ -1,0 +1,32 @@
+.visual-debugger {
+  .tag {
+    &--object-type {
+  
+      @each $type, $color in $object-type-colors {
+        &--#{$type} {
+          --#{$prefix}color--object-type: #{$color};
+        }
+      }
+  
+      // Page
+      &--page {
+        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--page);
+      }
+  
+      // Region
+      &--region {
+        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--region);
+      }
+  
+      // Block
+      &--block {
+        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--block);
+      }
+  
+      // Field
+      &--field {
+        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--field);
+      }
+    }
+  }
+}
