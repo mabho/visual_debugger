@@ -135,9 +135,7 @@ $z-index--base: 10000;
   --#{$prefix}color--gray: gray;
 
   // Color utilities.
-  --#{$prefix}color--shadow: var(--#{$prefix}color--gray);
   --#{$prefix}color--object-type: var(--#{$prefix}color--gray);
-
   --#{$prefix}color--object-type--page: var(--#{$prefix}color--gray);
   --#{$prefix}color--object-type--region: var(--#{$prefix}color--mid-teal);
   --#{$prefix}color--object-type--block: var(--#{$prefix}color--mid-olive);
@@ -160,6 +158,7 @@ $z-index--base: 10000;
   --#{$prefix}color--object-type--views_view: var(--#{$prefix}color--dark-olive); // changed color
   --#{$prefix}color--object-type--views_view_unformatted: var(--#{$prefix}color--dark-forest); // changed color
 
+  --#{$prefix}color--shadow: var(--#{$prefix}color--gray);
   --#{$prefix}color--icon--selected-true: var(--#{$prefix}color--mid-green);
   --#{$prefix}color--icon--selected-false: var(--#{$prefix}color--mid-maroon);
 }

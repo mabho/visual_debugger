@@ -1,5 +1,6 @@
 @import "base/variables";
 @import "base/types";
+@import "base/icons";
 @import "../../fonts/visual-debugger-icons/style.scss";
 
 %instance-selected {
@@ -184,24 +185,5 @@
       background-color: $click-drag-button--background-color--active;
       cursor: grabbing;
     }
-  }
-
-  // Icon font.
-  [class^="icon-"], [class*=" icon-"] {
-    font-size: $icon-font-size;
-  }
-
-  .icon-selected-true {
-    color: $color--icon--selected-true;
-    font-size: $icon-font-size--large;
-  }
-
-  .icon-selected-false {
-    color: $color--icon--selected-false;
-    font-size: $icon-font-size--large;
-  }
-
-  .icon-slide-resize {
-    font-size: $icon-font-size--large;
   }
 }
