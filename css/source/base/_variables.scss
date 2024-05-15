@@ -137,21 +137,54 @@ $z-index--base: 10000;
   // Color utilities.
   --#{$prefix}color--shadow: var(--#{$prefix}color--gray);
   --#{$prefix}color--object-type: var(--#{$prefix}color--gray);
+
   --#{$prefix}color--object-type--page: var(--#{$prefix}color--gray);
   --#{$prefix}color--object-type--region: var(--#{$prefix}color--mid-teal);
   --#{$prefix}color--object-type--block: var(--#{$prefix}color--mid-olive);
   --#{$prefix}color--object-type--field: var(--#{$prefix}color--dark-forest);
+  --#{$prefix}color--object-type--menu: var(--#{$prefix}color--mid-brown);
+  --#{$prefix}color--object-type--container: var(--#{$prefix}color--dark-blue);
+  --#{$prefix}color--object-type--feed_icon: var(--#{$prefix}color--dark-teal);
+  --#{$prefix}color--object-type--form: var(--#{$prefix}color--dark-olive);
+  --#{$prefix}color--object-type--form_element: var(--#{$prefix}color--dark-forest);
+  --#{$prefix}color--object-type--form_element_label: var(--#{$prefix}color--dark-brown); // changed color
+  --#{$prefix}color--object-type--image: var(--#{$prefix}color--dark-gray);
+  --#{$prefix}color--object-type--image_formatter: var(--#{$prefix}color--dark-teal);
+  --#{$prefix}color--object-type--input: var(--#{$prefix}color--dark-olive);
   --#{$prefix}color--object-type--menu: var(--#{$prefix}color--dark-brown);
+  --#{$prefix}color--object-type--node: var(--#{$prefix}color--dark-purple); // changed color
+  --#{$prefix}color--object-type--off_canvas_page_wrapper: var(--#{$prefix}color--mid-forest);
+  --#{$prefix}color--object-type--page_title: var(--#{$prefix}color--dark-maroon);
+  --#{$prefix}color--object-type--toolbar: var(--#{$prefix}color--dark-blue); // changed color
+  --#{$prefix}color--object-type--username: var(--#{$prefix}color--dark-teal); // changed color
+  --#{$prefix}color--object-type--views_view: var(--#{$prefix}color--dark-olive); // changed color
+  --#{$prefix}color--object-type--views_view_unformatted: var(--#{$prefix}color--dark-forest); // changed color
+
   --#{$prefix}color--icon--selected-true: var(--#{$prefix}color--mid-green);
   --#{$prefix}color--icon--selected-false: var(--#{$prefix}color--mid-maroon);
 }
 
 $object-type-colors: (
-  'page': var(--#{$prefix}color--object-type--page),
-  'region': var(--#{$prefix}color--object-type--region),
   'block': var(--#{$prefix}color--object-type--block),
+  'container': var(--#{$prefix}color--object-type--container),
+  'feed_icon': var(--#{$prefix}color--object-type--feed_icon),
   'field': var(--#{$prefix}color--object-type--field),
-  'menu': var(--#{$prefix}color--object-type--menu), 
+  'form': var(--#{$prefix}color--object-type--form),
+  'form_element': var(--#{$prefix}color--object-type--form_element),
+  'form_element_label': var(--#{$prefix}color--object-type--form_element_label),
+  'image': var(--#{$prefix}color--object-type--image),
+  'image_formatter': var(--#{$prefix}color--object-type--image_formatter),
+  'input': var(--#{$prefix}color--object-type--input),
+  'menu': var(--#{$prefix}color--object-type--menu),
+  'node': var(--#{$prefix}color--object-type--node),
+  'off_canvas_page_wrapper': var(--#{$prefix}color--object-type--off_canvas_page_wrapper),
+  'page': var(--#{$prefix}color--object-type--page),
+  'page_title': var(--#{$prefix}color--object-type--page_title),
+  'region': var(--#{$prefix}color--object-type--region),
+  'toolbar': var(--#{$prefix}color--object-type--toolbar),
+  'username': var(--#{$prefix}color--object-type--username),
+  'views_view': var(--#{$prefix}color--object-type--views_view),
+  'views_view_unformatted': var(--#{$prefix}color--object-type--views_view_unformatted),
 );
 
 // Transparency
