@@ -324,6 +324,7 @@
           const templateHookMatch = child.textContent.match(regexGetTemplateHook());
           if (templateHookMatch) {
             activeElement.setPropertyHook(templateHookMatch[1]);
+            activeElement.setObjectType(templateHookMatch[1]);
             return;
           }
 

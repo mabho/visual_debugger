@@ -40,6 +40,8 @@ Drupal.controllerElement = {
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
     classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
     classNameSelectedElementInfoTextContent: 'tag',
+    classNameSelectedElementInfoObjectType: 'tag--object-type',
+    classNameSelectedElementInfoPropertyHook: 'tag--prop-hook',
     classNameSelectedElementSuggestions: 'visual-debugger--selected-element-layer--suggestions',
     classNameSelectedElementSuggestionsSuggestion: 'suggestion',
     classNameIconSelectedTrue: 'icon-selected-true',
@@ -305,8 +307,6 @@ Drupal.controllerElement = {
     });
 
     controllerLayer.appendChild(sliderButton);
-
-    // return sliderButton;
   },
 
   // Setter methods.
@@ -340,13 +340,31 @@ Drupal.controllerElement = {
     const {
       classNameSelectedElementInfo,
       classNameSelectedElementInfoTextContent,
+      classNameSelectedElementInfoObjectType,
+      classNameSelectedElementInfoPropertyHook,
     } = this.classNames;
 
     // Clear legacy information showing in the suggestions layer.
     const selectedElementInfoLayer = this.getSelectedElementInfoLayer();
     selectedElementInfoLayer.innerHTML = '';
 
-    // If suggestions are available, display them.
+    // If an object type is available, display it.
+    if (
+      selectedThemeElement !== null &&
+      selectedThemeElement.hasOwnProperty('objectType') &&
+      selectedThemeElement.objectType !== null
+    ) {
+      const objectTypeWrapper = document.createElement('div');
+      objectTypeWrapper.classList.add(
+        classNameSelectedElementInfoTextContent,
+        classNameSelectedElementInfoObjectType,
+        `${classNameSelectedElementInfoObjectType}--${selectedThemeElement.objectType}`,
+      );
+      objectTypeWrapper.textContent = selectedThemeElement.objectType;
+      selectedElementInfoLayer.appendChild(objectTypeWrapper);
+    }
+
+    // If a property hook is available, display it.
     if (
       selectedThemeElement !== null &&
       selectedThemeElement.hasOwnProperty('propertyHook') &&
