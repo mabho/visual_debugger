@@ -74,6 +74,11 @@ $color--icon--selected-false: $color--mid-maroon;
 $z-index--base: 10000;
 
 .visual-debugger {
+  // Conf
+  $z-index--base: 10000;
+  --#{$prefix}z-index--base: 10000;
+  --#{$prefix}transition-speed: .25s;
+
   // Colors.
 
   // Gray colors.

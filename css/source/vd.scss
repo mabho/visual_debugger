@@ -50,7 +50,7 @@
       overflow: hidden;
       padding-left: $controller--gutter * .5;
       padding-right: $controller--gutter * .5;
-      transition: .25s all;
+      transition: background-color .25s;
 
       &:hover {
         background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
@@ -63,7 +63,7 @@
       margin-left: $controller--gutter * -1;
       margin-top: $controller--gutter * -1;
       padding: $controller--gutter * .5;
-      transition: .25s all;
+      transition: background-color var(--#{$prefix}transition-speed), transform var(--#{$prefix}transition-speed);
 
       body.visual-debugger--deactivated & {
         background-color: var(--#{$prefix}color--white);
@@ -92,7 +92,13 @@
     background-blend-mode: difference;
     border: solid 1px $color--instance-border;
     position: absolute;
-    transition: .25s all;
+    transition:
+      background-color var(--#{$prefix}transition-speed),
+      margin var(--#{$prefix}transition-speed),
+      width var(--#{$prefix}transition-speed),
+      height var(--#{$prefix}transition-speed),
+      top var(--#{$prefix}transition-speed),
+      left var(--#{$prefix}transition-speed);
 
     input[type='checkbox'] {
       margin: $controller--gutter * .5;
@@ -148,10 +154,10 @@
           background-color: transparent;
           border: 0;
           cursor: pointer;
-          transition: .25s all;
+          transition: transform var(--#{$prefix}transition-speed);
 
           &:hover {
-            transform: scale(1.25);
+            transform: scale(1.175);
           }
         }
       }
@@ -188,7 +194,7 @@
       background-color: var(--#{$prefix}click-drag-button--background-color);
       cursor: grab;
       opacity: 1;
-      transition: all .25s;
+      transition: transform var(--#{$prefix}transition-speed);
 
       &:hover {
         transform: translateY(-50%) scale(1.15);
