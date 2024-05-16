@@ -22,6 +22,8 @@ Drupal.controllerElement = {
 
   constants: {
     initialControllerWidth: '400px',
+    controllerDeactivatedGap: 30,
+    controllerDeactivatedInputMargin: '200px',
   },
 
   // Element IDs.
@@ -35,6 +37,7 @@ Drupal.controllerElement = {
   classNames: {
     classNameVisualDebugger: 'visual-debugger',
     classNameBaseLayer: 'visual-debugger--controller-layer',
+    classNameBaseLayerActivated: 'visual-debugger--activated',
     classNameBaseLayerDeactivated: 'visual-debugger--deactivated',
     classNameForm: 'visual-debugger--controller-layer--activation-form',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
@@ -49,6 +52,11 @@ Drupal.controllerElement = {
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameClickDragButton: 'click-drag-button',
+  },
+
+  // layerAttributes.
+  layerAttributes: {
+    controllerActivatedAttributeName: 'data-controller-activated',
   },
 
   // Drupal translatable strings for the controller layer.
@@ -98,16 +106,34 @@ Drupal.controllerElement = {
 
   // Toggle the debugger activation and update localStorage.
   toggleDebuggerActivated(activated = true) {
-    const { classNameBaseLayerDeactivated } = this.classNames;
-    if (this.body !== null) {
-      this.body.classList.toggle(
-        classNameBaseLayerDeactivated,
-        !activated
-      )
-    }
+    const {
+      classNameBaseLayerActivated,
+      classNameBaseLayerDeactivated
+    } = this.classNames;
+    const { controllerActivatedAttributeName } = this.layerAttributes;
 
+    // Update the *activated* status class name.
+    this.body.classList.toggle(
+      classNameBaseLayerActivated,
+      activated
+    );
+    classNameBaseLayerActivated
+
+    // Update the *deactivated* status class name.
+    this.body.classList.toggle(
+      classNameBaseLayerDeactivated,
+      !activated
+    );
+
+    // Write the activation status to localStorage.
     localStorage.setItem(
       this.system.localStorageDebuggerActivatedKey, activated);
+
+    // Activate/deactivate the controller layer.
+    if (this.controllerLayer !== null) {
+      this.controllerLayer.setAttribute(controllerActivatedAttributeName, activated);
+      this.checkControllerActivation();
+    }
   },
 
   // Prepare the theme suggestions.
@@ -172,6 +198,8 @@ Drupal.controllerElement = {
       classNameSelectedElementSuggestions,
     } = this.classNames
 
+    const { controllerActivatedAttributeName } = this.layerAttributes;
+
     const {
       idControllerElementInfo,
       idControllerElementSuggestions
@@ -184,6 +212,7 @@ Drupal.controllerElement = {
       stringThemeSuggestions,
     } = this.strings;
 
+    const controllerLayer = document.createElement('div');
     const { initialControllerWidth } = this.constants;
     const { localStorageControllerWidthKey } = this.system;
     const self = this; // Save the context of `this`
@@ -193,11 +222,16 @@ Drupal.controllerElement = {
     debuggerActivationCheckbox.type = 'checkbox';
     debuggerActivationCheckbox.id = 'debuggerActivationCheckbox';
 
-    // Decides on initial controller state based on localStorage setting.
-    debuggerActivationCheckbox.checked = (
-      localStorage.getItem(self.system.localStorageDebuggerActivatedKey)|| 'true'
+    // Applies the initial controller state based on localStorage setting.
+    const controllerActivated = (
+      localStorage.getItem(self.system.localStorageDebuggerActivatedKey) || 'true'
     ) === 'true';
-    self.toggleDebuggerActivated(debuggerActivationCheckbox.checked);
+    debuggerActivationCheckbox.checked = controllerActivated;
+    controllerLayer.setAttribute(
+      controllerActivatedAttributeName,
+      controllerActivated
+    );
+    self.toggleDebuggerActivated(controllerActivated);
 
     // Add an event listener to the debugger activation checkbox.
     debuggerActivationCheckbox.addEventListener('change', function() {
@@ -242,7 +276,6 @@ Drupal.controllerElement = {
     selectedElementSuggestionsLayerTitle.textContent = stringThemeSuggestions;
 
     // Append everything to the controller layer.
-    const controllerLayer = document.createElement('div');
     controllerLayer.classList.add(classNameVisualDebugger);
     controllerLayer.classList.add(classNameBaseLayer);
     controllerLayer.style.width =
@@ -259,8 +292,32 @@ Drupal.controllerElement = {
     return controllerLayer;
   },
 
+  // Update the controller position depending on its activation status.
+  checkControllerActivation() {
+    const { controllerDeactivatedGap } = this.constants;
+    const controllerActivated = this.getControllerActivationStatus();
+
+    // If the controller is activated, display it.
+    if (controllerActivated) {
+      this.controllerLayer.style.right = '0px';
+      return;
+    }
+
+    // Calculate the new position of the controller when toggled off.
+    const controllerWidth = parseInt(this.controllerLayer.style.width);
+    const newControllerPosition = (controllerWidth - controllerDeactivatedGap) * -1;
+    this.controllerLayer.style.right = `${newControllerPosition}px`;
+  },
+
+  // This method needs to be requested after controller is activated.
+  executePostActivation() {
+    this.generateSliderButton();
+    this.checkControllerActivation();
+  },
+
   // Create a slider button.
   generateSliderButton() {
+    const self = this;
     const {
       classNameClickDragButton,
       classNameIconSlideResize,
@@ -270,17 +327,21 @@ Drupal.controllerElement = {
     const controllerLayer = this.getControllerLayer();
     const controllerLayerBoundingRectClient = controllerLayer.getBoundingClientRect();
 
+    // Flag to indicate whether the mouse button is pressed
+    let isMouseDown = false;
+
     // const controllerLayerBoundingRectClient = controllerLayer.getBoundingClientRect();
     const sliderButton = document.createElement('button');
     sliderButton.classList.add(classNameClickDragButton);
     sliderButton.classList.add(classNameIconSlideResize);
     sliderButton.setAttribute("aria-label", stringClickDragButton);
 
-    // Flag to indicate whether the mouse button is pressed
-    let isMouseDown = false;
-
     // Add the mousedown event listener to the button
     sliderButton.addEventListener('mousedown', function(event) {
+      if (!self.getControllerActivationStatus()) {
+        isMouseDown = false;
+        return;
+      }
       isMouseDown = true;
     });
 
@@ -308,6 +369,13 @@ Drupal.controllerElement = {
     });
 
     controllerLayer.appendChild(sliderButton);
+  },
+
+  // Get an updated status on controller activation
+  getControllerActivationStatus() {
+    const { controllerActivatedAttributeName } = this.layerAttributes;
+    const controllerLayer = this.getControllerLayer();
+    return controllerLayer.getAttribute(controllerActivatedAttributeName) === 'true';
   },
 
   // Setter methods.

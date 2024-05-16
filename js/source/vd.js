@@ -373,7 +373,7 @@
       console.warn(controllerElementInstance);
       controllerElementInstance.init(baseLayer, themeDebugNodes);
       body.appendChild(controllerElementInstance.generateControllerLayer());
-      controllerElementInstance.generateSliderButton();
+      controllerElementInstance.executePostActivation();
     },
     detach: function (context, settings, trigger) {
       // Code to be run on page unload and
