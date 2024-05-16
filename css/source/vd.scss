@@ -164,27 +164,34 @@
 
   // Click-drag button.
   .click-drag-button {
-    background-color: $click-drag-button--background-color;
-    border: $click-drag-button--border;
+    background-color: var(--#{$prefix}click-drag-button--background-color);
+    border: var(--#{$prefix}click-drag-button--border);
     border-radius: 50%;
-    cursor: grab;
-    height: $click-drag-button--size;
-    left: $click-drag-button--size * - .5;
+    cursor: not-allowed;
+    height: var(--#{$prefix}click-drag-button--size);
+    left: calc(#{var(--#{$prefix}click-drag-button--size)} * -0.5);
+    opacity: 0.5;
     position: absolute;
     top: 50%;
     transform-origin: center center;
     transform: translateY(-50%);
+    width: var(--#{$prefix}click-drag-button--size);
+    z-index: var(--#{$prefix}z-index--click-drag-button);
+
+    body.visual-debugger--activated & {
+      background-color: var(--#{$prefix}click-drag-button--background-color);
+      cursor: grab;
+      opacity: 1;
     transition: all .25s;
-    width: $click-drag-button--size;
-    z-index: $z-index--instance;
 
     &:hover {
       transform: translateY(-50%) scale(1.15);
     }
 
     &:active {
-      background-color: $click-drag-button--background-color--active;
+        background-color: var(--#{$prefix}click-drag-button--background-color--active);
       cursor: grabbing;
+      }
     }
   }
 }
