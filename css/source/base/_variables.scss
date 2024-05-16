@@ -161,6 +161,16 @@ $z-index--base: 10000;
   --#{$prefix}color--shadow: var(--#{$prefix}color--gray);
   --#{$prefix}color--icon--selected-true: var(--#{$prefix}color--mid-green);
   --#{$prefix}color--icon--selected-false: var(--#{$prefix}color--mid-maroon);
+
+  // Transparency
+  --#{$prefix}transparency--shadow: .2;
+
+  // Click-drag button.
+  --#{$prefix}click-drag-button--background-color: var(--#{$prefix}color--gray-30);
+  --#{$prefix}click-drag-button--background-color--active: var(--#{$prefix}color--gray-10);
+  --#{$prefix}click-drag-button--border: solid 1px var(--#{$prefix}color--mid-teal);
+  --#{$prefix}click-drag-button--border-radius: 50%;
+  --#{$prefix}click-drag-button--size: 3rem;
 }
 
 $object-type-colors: (
@@ -197,15 +207,6 @@ $shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 
 $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
 $icon-font-size: 1.15rem;
 $icon-font-size--large: 1.75rem;
-
-/**
-  * Click-drag button.
-  */
-$click-drag-button--background-color: $color--gray-30;
-$click-drag-button--background-color--active: $color--gray-10;
-$click-drag-button--border: solid 1px $color--mid-teal;
-$click-drag-button--border-radius: 50%;
-$click-drag-button--size: 3rem;
 
 /**
  * Instance layer.
