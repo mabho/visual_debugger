@@ -59,10 +59,16 @@
     }
 
     &--activation-form {
-      background-color: var(#{$prefix}color--white);
+      background-color: var(--#{$prefix}color--white);
       margin-left: $controller--gutter * -1;
       margin-top: $controller--gutter * -1;
-      padding: $controller--gutter * .5
+      padding: $controller--gutter * .5;
+      transition: .25s all;
+
+      body.visual-debugger--deactivated & {
+        background-color: var(--#{$prefix}color--white);
+        transform: translateX(-200px);
+      }
     }
   }
 
@@ -182,15 +188,15 @@
       background-color: var(--#{$prefix}click-drag-button--background-color);
       cursor: grab;
       opacity: 1;
-    transition: all .25s;
+      transition: all .25s;
 
-    &:hover {
-      transform: translateY(-50%) scale(1.15);
-    }
-
-    &:active {
+      &:hover {
+        transform: translateY(-50%) scale(1.15);
+      }
+  
+      &:active {
         background-color: var(--#{$prefix}click-drag-button--background-color--active);
-      cursor: grabbing;
+        cursor: grabbing;
       }
     }
   }
