@@ -217,6 +217,11 @@ $z-index--base: 10000;
   --#{$prefix}z-index--controller: var(--#{$prefix}z-index--base) + 1000;
   --#{$prefix}controller--font-size--title: 1.25rem;
   --#{$prefix}controller--font-size: .875rem;
+
+  // Transparency.
+  --#{$prefix}transparency--instance-background: .05;
+  --#{$prefix}transparency--instance-background--hover: .2;
+  --#{$prefix}transparency--instance-background--selected: .65;
 }
 
 $object-type-colors: (
