@@ -23,7 +23,9 @@
     position: fixed;
     right: 0;
     top: 0;
-    transition: right .25s;
+    transition:
+      right var(--#{$prefix}transition-speed),
+      transform var(--#{$prefix}transition-speed);
     z-index: $z-index--controller;
 
     h1, h2, h3, h4 {
@@ -51,7 +53,7 @@
       overflow: hidden;
       padding-left: calc(var(--#{$prefix}controller--gutter) * .5);
       padding-right: calc(var(--#{$prefix}controller--gutter) * .5);
-      transition: background-color .25s;
+      transition: background-color var(--#{$prefix}transition-speed);
 
       &:hover {
         background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
@@ -59,16 +61,57 @@
       }
     }
 
+    // When the controller is deactivated...
+    body.visual-debugger--deactivated & {
+      &:hover {
+        transform: translateX(to-rem(-10px));
+      }
+    }
+
     &--activation-form {
       background-color: var(--#{$prefix}color--white);
+      border-radius: to-rem(8px);
       margin-left: $controller--gutter * -1;
       margin-top: $controller--gutter * -1;
       padding: $controller--gutter * .5;
       transition: background-color var(--#{$prefix}transition-speed), transform var(--#{$prefix}transition-speed);
 
+      // When controller is deactivated.
       body.visual-debugger--deactivated & {
         background-color: var(--#{$prefix}color--white);
-        transform: translateX(-200px);
+        transform: translateX(-45px);
+      }
+
+      &-wrapper {
+        align-items: center;
+        column-gap: calc(var(--#{$prefix}controller--gutter));
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        position: relative;
+      }
+
+      // Activation checkbox icon.
+      #debuggerActivationCheckbox {
+        height: var(--#{$prefix}button--controller-checkbox-height);
+        opacity: 0;
+        position: absolute;
+        width: var(--#{$prefix}button--controller-checkbox-width);
+
+        + .icon-controller-activated,
+        ~ .icon-controller-deactivated {
+          display: none;
+        }
+
+        &:checked + .icon-controller-activated,
+        &:not(:checked) ~ .icon-controller-deactivated {
+          display: inline-block;
+        }
+
+        &:not(:checked) + .icon-controller-activated,
+        &:checked + .icon-controller-deactivated {
+          display: none;
+        }
       }
     }
   }

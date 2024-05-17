@@ -222,6 +222,10 @@ $z-index--base: 10000;
   --#{$prefix}transparency--instance-background: .05;
   --#{$prefix}transparency--instance-background--hover: .2;
   --#{$prefix}transparency--instance-background--selected: .65;
+
+  // Buttons.
+  --#{$prefix}button--controller-checkbox-width: 2rem;
+  --#{$prefix}button--controller-checkbox-height: var(--#{$prefix}button--controller-checkbox-width);
 }
 
 $object-type-colors: (

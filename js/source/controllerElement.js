@@ -22,7 +22,7 @@ Drupal.controllerElement = {
 
   constants: {
     initialControllerWidth: '400px',
-    controllerDeactivatedGap: 30,
+    controllerDeactivatedGap: 10,
     controllerDeactivatedInputMargin: '200px',
   },
 
@@ -40,6 +40,7 @@ Drupal.controllerElement = {
     classNameBaseLayerActivated: 'visual-debugger--activated',
     classNameBaseLayerDeactivated: 'visual-debugger--deactivated',
     classNameForm: 'visual-debugger--controller-layer--activation-form',
+    classNameFormWrapper: 'visual-debugger--controller-layer--activation-form-wrapper',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
     classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
     classNameSelectedElementInfoTextContent: 'tag',
@@ -49,6 +50,10 @@ Drupal.controllerElement = {
     classNameSelectedElementSuggestionsSuggestion: 'suggestion',
     classNameIconSelectedTrue: 'icon-selected-true',
     classNameIconSelectedFalse: 'icon-selected-false',
+    classNameIconEye: 'icon-eye',
+    classNameIconControllerActivated: 'icon-controller-activated',
+    classNameIconControllerDeactivated: 'icon-controller-deactivated',
+    classNameIconEyeBlocked: 'icon-eye-blocked',
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameClickDragButton: 'click-drag-button',
@@ -193,9 +198,14 @@ Drupal.controllerElement = {
       classNameVisualDebugger,
       classNameBaseLayer,
       classNameForm,
+      classNameFormWrapper,
       classNameSelectedElementLayer,
       classNameSelectedElementInfo,
       classNameSelectedElementSuggestions,
+      classNameIconEye,
+      classNameIconControllerActivated,
+      classNameIconEyeBlocked,
+      classNameIconControllerDeactivated,
     } = this.classNames
 
     const { controllerActivatedAttributeName } = this.layerAttributes;
@@ -238,6 +248,12 @@ Drupal.controllerElement = {
       self.toggleDebuggerActivated(this.checked)
     });
 
+    // Create icons for the debugger activation checkbox.
+    const iconSelectedTrue = document.createElement('span');
+    iconSelectedTrue.classList.add(classNameIconEye, classNameIconControllerActivated);
+    const iconSelectedFalse = document.createElement('span');
+    iconSelectedFalse.classList.add(classNameIconEyeBlocked, classNameIconControllerDeactivated);
+
     // Create a label element for the debugger activation checkbox.
     const debuggerActivationLabel = document.createElement('label');
     debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
@@ -245,7 +261,10 @@ Drupal.controllerElement = {
 
     // Create a wrapper div.
     const wrapperDiv = document.createElement('div');
+    wrapperDiv.classList.add(classNameFormWrapper);
     wrapperDiv.appendChild(debuggerActivationCheckbox);
+    wrapperDiv.appendChild(iconSelectedTrue);
+    wrapperDiv.appendChild(iconSelectedFalse);
     wrapperDiv.appendChild(debuggerActivationLabel);
 
     // Append the wrapper div to the form.
