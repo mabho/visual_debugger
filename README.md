@@ -26,13 +26,13 @@ Developers can navigate to any page in the website and check a 'skin' layer rend
 ### Development roadmap.
 
 This is the roadmap for module improvements:
-- Retract and disable the controller window when debugging is deactivated (click-drag must not work when it is deactivated; layer details should not be exposed); there should be minimal interference of Visual Debugger when it is disabled.
+- ~~Retract and disable the controller window when debugging is deactivated (click-drag must not work when it is deactivated; layer details should not be exposed); there should be minimal interference of Visual Debugger when it is disabled.~~
 - Apply template file path to the `Selected element` block.
 - Cast all SASS variables into CSS variables so other themes can more easily override the defaults and customize the UI.
 - Add the ability to deactivate/disable the `Selected element` from within the controller block.
-- Extend the custom object type colors to the overlay layers, instead of the vanilla, default yellow.
-- Change the hover behavior to be more subtle: make the custom object type color less transparent, but avoid excess (current approach seems to be exaggerated).
-- Apply a special style to the selected (default) element. Currently, it lacks a custom style. Selected elements should be highlighted all the time. The ideal solution could be one that makes its custom background (object type related) even less transparent.
+- ~~Extend the custom object type colors to the overlay layers, instead of the vanilla, default yellow.~~
+- ~~Change the hover behavior to be more subtle: make the custom object type color less transparent, but avoid excess (current approach seems to be exaggerated).~~
+- ~~Apply a special style to the selected (default) element. Currently, it lacks a custom style. Selected elements should be highlighted all the time. The ideal solution could be one that makes its custom background (object type related) even less transparent.~~
 - Apply extended cache information, when available, on elements carrying that type of information on the source code. This cache data can potentially be pulled to the frontend (still subject to an in-depth analysis for its feasibility):
   - Cache hit
   - Cache tags
