@@ -16,8 +16,8 @@
       classNameInstanceLayer: 'visual-debugger--instance-layer',
       classNameInstanceLayerUnchecked: 'visual-debugger--instance-layer--unchecked',
       classNameInstanceLayerChecked: 'visual-debugger--instance-layer--checked',
-      classNameObjectType: (objectType) =>
-        `object-type--${objectType}`,
+      classNameObjectType: 'object-type',
+      classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
     },
 
     // layerAttributes.
@@ -146,11 +146,15 @@
         classNameInstanceLayer,
         classNameInstanceLayerChecked,
         classNameInstanceLayerUnchecked,
-        classNameObjectType
+        classNameObjectType,
+        classNameObjectTypeTyped
       } = this.classNames;
-      thisLayer.classList.add(classNameInstanceLayer);
-      thisLayer.classList.add(classNameObjectType(thisThemeElement.getPropertyHook()));
-      thisLayer.classList.add(classNameInstanceLayerUnchecked);
+      thisLayer.classList.add(
+        classNameInstanceLayer,
+        classNameObjectType,
+        classNameObjectTypeTyped(thisThemeElement.getObjectType()),
+        classNameInstanceLayerUnchecked
+      );
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
 
       // Set the size and position of the instance layer.
