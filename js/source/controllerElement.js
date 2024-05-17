@@ -425,11 +425,10 @@ Drupal.controllerElement = {
   // Basic information on the selected element.
   setSelectedElementInfo() {
     const selectedThemeElement = this.getSelectedThemeElement();
+    let objectTypeText = '';
     const {
-      classNameSelectedElementInfo,
       classNameSelectedElementInfoTextContent,
       classNameSelectedElementInfoObjectType,
-      classNameSelectedElementInfoPropertyHook,
     } = this.classNames;
 
     // Clear legacy information showing in the suggestions layer.
@@ -448,7 +447,8 @@ Drupal.controllerElement = {
         classNameSelectedElementInfoObjectType,
         `${classNameSelectedElementInfoObjectType}--${selectedThemeElement.objectType}`,
       );
-      objectTypeWrapper.textContent = selectedThemeElement.objectType;
+      objectTypeText = selectedThemeElement.objectType;
+      objectTypeWrapper.textContent = objectTypeText;
       selectedElementInfoLayer.appendChild(objectTypeWrapper);
     }
 
@@ -456,7 +456,8 @@ Drupal.controllerElement = {
     if (
       selectedThemeElement !== null &&
       selectedThemeElement.hasOwnProperty('propertyHook') &&
-      selectedThemeElement.propertyHook !== null
+      selectedThemeElement.propertyHook !== null &&
+      objectTypeText !== selectedThemeElement.propertyHook
     ) {
       const elementTypeWrapper = document.createElement('div');
       elementTypeWrapper.classList.add(
