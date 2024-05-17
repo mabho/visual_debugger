@@ -1,31 +1,34 @@
 .visual-debugger {
   .tag {
+    background-color: rgb(var(--#{$prefix}color--object-type)...);
+    color: $color--white;
+    display: inline-block;
+    line-height: 1.125;
+    padding: calc(var(--#{$prefix}controller--gutter) * .25);
+
     &--object-type {
-  
       @each $type, $color in $object-type-colors {
         &--#{$type} {
           --#{$prefix}color--object-type: #{$color};
         }
       }
-  
-      // Page
-      &--page {
-        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--page);
-      }
-  
-      // Region
-      &--region {
-        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--region);
-      }
-  
-      // Block
-      &--block {
-        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--block);
-      }
-  
-      // Field
-      &--field {
-        --#{$prefix}color--object-type: var(--#{$prefix}color--object-type--field);
+    }
+  }
+
+  .object-type {
+    background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background));
+
+    &:hover {
+      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--hover));
+    }
+
+    &.visual-debugger--instance-layer--checked {
+      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--selected));
+    }
+
+    @each $type, $color in $object-type-colors {
+      &--#{$type} {
+        --#{$prefix}color--object-type: #{$color};
       }
     }
   }

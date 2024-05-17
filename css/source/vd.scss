@@ -12,7 +12,7 @@
 
   // Controller.
   &--controller-layer {
-    background-color: white;
+    background-color: var(--#{$prefix}color--white);
     border-radius: 0;
     bottom: 0;
     box-shadow: $shadow--full;
@@ -136,14 +136,6 @@
       column-gap: var(--#{$prefix}controller--gutter);
       display: flex;
       flex-direction: row;
-
-      .tag {
-        background-color: var(--#{$prefix}color--object-type);
-        color: $color--white;
-        display: inline-block;
-        line-height: 1.125;
-        padding: calc(var(--#{$prefix}controller--gutter) * .25);
-      }
     }
 
     // Suggestions.
@@ -167,16 +159,6 @@
           }
         }
       }
-    }
-  }
-
-  .object-type {
-    &--page {
-      background-color: rgba(#ffc, $transparency--instance-background);
-    }
-
-    &--block {
-      background-color: rgba(green, $transparency--instance-background);
     }
   }
 
