@@ -31,6 +31,7 @@ Drupal.controllerElement = {
     idControllerElement: 'visual-debugger--controller-layer',
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
+    idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
   },
 
   // Class names for the controller layer.
@@ -50,6 +51,11 @@ Drupal.controllerElement = {
     classNameSelectedElementSuggestionsWrapper: 'visual-debugger--selected-element-layer--suggestions-wrapper',
     classNameSelectedElementSuggestions: 'visual-debugger--selected-element-layer--suggestions',
     classNameSelectedElementSuggestionsSuggestion: 'suggestion',
+    classNameSelectedElementTemplateFilePathWrapper: 'visual-debugger--selected-element-layer--template-file-path-wrapper',
+    classNameSelectedElementTemplateFilePath: 'visual-debugger--selected-element-layer--template-file-path',
+    classNameSelectedElementTemplateFilePathLabel: 'visual-debugger--selected-element-layer--template-file-path--label',
+    classNameContentCopyData: 'content-copy-data',
+    classNameContentCopyDataLabel: 'content-copy-data__label',
     classNameIconSelectedTrue: 'icon-selected-true',
     classNameIconSelectedFalse: 'icon-selected-false',
     classNameIconEye: 'icon-eye',
@@ -74,6 +80,9 @@ Drupal.controllerElement = {
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
     stringClickDragButton: Drupal.t('Click and drag to resize'),
+    stringTemplateFilePath: Drupal.t('Template File Path'),
+    stringFolderPath: Drupal.t('Folder path'),
+    stringFilePath: Drupal.t('File path'),
   },
 
   system: {
@@ -144,7 +153,7 @@ Drupal.controllerElement = {
   },
 
   // Prepare the theme suggestions.
-  prepareThemeSuggestions(item) {
+  prepareThemeSuggestion(item) {
     const { body } = this;
 
     const {
@@ -157,6 +166,8 @@ Drupal.controllerElement = {
     const {
       stringCopyToClipboard,
     } = this.strings;
+
+    const self = this;
     const suggestionWrapper = document.createElement('div');
     const clipboardActivated = document.createElement('div');
     const clipboardContent = document.createElement('pre');
@@ -175,23 +186,75 @@ Drupal.controllerElement = {
     cliboardButton.classList.add(classNameIconCopyToClipboard);
     cliboardButton.setAttribute('aria-label', stringCopyToClipboard);
     cliboardButton.addEventListener('click', function() {
-      const textToCopy = clipboardContent.textContent;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(textToCopy);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        body.removeChild(textarea);
-      }
+      self.clipboardCopy(clipboardContent.textContent);
     });
 
     suggestionWrapper.appendChild(clipboardActivated);
     suggestionWrapper.appendChild(clipboardContent);
     suggestionWrapper.appendChild(cliboardButton);
     return suggestionWrapper;
+  },
+
+  prepareContentCopyData(itemLabel, itemLabelClass, itemContent) {
+
+    // Configuration
+    const { body } = this;
+    const self = this;
+    const {
+      stringCopyToClipboard,
+    } = this.strings;
+    const {
+      classNameContentCopyData,
+      classNameIconCopyToClipboard
+    } = this.classNames;
+
+    // Elements
+    const itemWrapper = document.createElement('div');
+    const itemLabelWrapper = document.createElement('div');
+    const clipboardContent = document.createElement('pre');
+    const clipboardButton = document.createElement('button');
+
+    // Label and content
+    itemWrapper.classList.add(classNameContentCopyData);
+    itemLabelWrapper.classList.add(
+      itemLabelClass
+    );
+    itemLabelWrapper.textContent = itemLabel;
+    clipboardContent.textContent = itemContent;
+
+    // Copy-to-clipboard button.
+    clipboardButton.classList.add(classNameIconCopyToClipboard);
+    clipboardButton.setAttribute('aria-label', stringCopyToClipboard);
+    clipboardButton.addEventListener('click', function() {
+      self.clipboardCopy(clipboardContent.textContent);
+    });
+
+    itemWrapper.append(
+      itemLabelWrapper,
+      clipboardContent,
+      clipboardButton
+    );
+
+    return itemWrapper;
+  },
+
+  /**
+   * Copies the given text to the clipboard.
+   * @param {string} textToCopy
+   * @return {void}
+   */
+  clipboardCopy(textToCopy) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy);
+    } else {
+      const { body } = this;
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      body.removeChild(textarea);
+    }
   },
 
   // Generate the controller layer; this is the main component structure.
@@ -296,6 +359,8 @@ Drupal.controllerElement = {
       classNameSelectedElementInfo,
       classNameSelectedElementSuggestionsWrapper,
       classNameSelectedElementSuggestions,
+      classNameSelectedElementTemplateFilePathWrapper,
+      classNameSelectedElementTemplateFilePath,
     } = this.classNames;
     const {
       idControllerElementInfo,
@@ -305,6 +370,7 @@ Drupal.controllerElement = {
       stringSelectedElement,
       stringBasicInfo,
       stringThemeSuggestions,
+      stringTemplateFilePath,
     } = this.strings;
 
     selectedElementLayer.classList.add(classNameSelectedElementLayer);
@@ -338,10 +404,24 @@ Drupal.controllerElement = {
       selectedElementSuggestionsLayer
     );
 
+    // Theme file path.
+    const selectedElementTemplateFilePathWrapper = document.createElement('div');
+    const selectedElementTemplateFilePath = document.createElement('div');
+    const selectedElementTemplateFilePathTitle = document.createElement('h4');
+    selectedElementTemplateFilePathWrapper.classList.add(classNameSelectedElementTemplateFilePathWrapper);
+    selectedElementTemplateFilePath.classList.add(classNameSelectedElementTemplateFilePath);
+    selectedElementTemplateFilePath.setAttribute('id', this.ids.idControllerElementTemplateFilePath);
+    selectedElementTemplateFilePathTitle.textContent = stringTemplateFilePath;
+    selectedElementTemplateFilePathWrapper.append(
+      selectedElementTemplateFilePathTitle,
+      selectedElementTemplateFilePath,
+    );
+
     // Append everything to the selected element layer.
     selectedElementLayer.append(
       selectedElementBasicInfoWrapper,
-      selectedElementSuggestionsWrapper
+      selectedElementSuggestionsWrapper,
+      selectedElementTemplateFilePathWrapper
     );
 
     // Return
@@ -451,6 +531,12 @@ Drupal.controllerElement = {
     );
   },
 
+  getSelectedElementTemplateFilePathLayer() {
+    return this.getControllerLayer().querySelector(
+      `#${this.ids.idControllerElementTemplateFilePath}`
+    );
+  },
+
   // Establishes the element that is currently selected.
   // Active is priority; default comes right after; null if none.
   getSelectedThemeElement() {
@@ -519,15 +605,42 @@ Drupal.controllerElement = {
     ) {
       const clipboardContent = selectedThemeElement.suggestions;
       clipboardContent.forEach((item) => {
-        const themeSuggestion = this.prepareThemeSuggestions(item);
+        const themeSuggestion = this.prepareThemeSuggestion(item);
         selectedElementSuggestionsLayer.appendChild(themeSuggestion);
       });
+    }
+  },
+
+  setSelectedElementTemplateFilePath() {
+    const selectedThemeElement = this.getSelectedThemeElement();
+    const selectedElementTemplateFilePathWrapper = this.getSelectedElementTemplateFilePathLayer();
+    const { classNameSelectedElementTemplateFilePathLabel } = this.classNames;
+    const { stringFilePath } = this.strings;
+
+    // Clear legacy information showing in the suggestions layer.
+    selectedElementTemplateFilePathWrapper.innerHTML = '';
+
+    // If suggestions are available, display them.
+    if (
+        selectedThemeElement &&
+        selectedThemeElement.hasOwnProperty('filePath') &&
+        selectedThemeElement.filePath !== null
+    ) {
+      const filePath = selectedThemeElement.filePath;
+      const filePathWrapper = this.prepareContentCopyData(
+        stringFilePath,
+        classNameSelectedElementTemplateFilePathLabel,
+        filePath,
+        this.classNames.classNameSelectedElementTemplateFilePath
+      );
+      selectedElementTemplateFilePathWrapper.appendChild(filePathWrapper);
     }
   },
 
   updateSelectedElement() {
     this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
+    this.setSelectedElementTemplateFilePath();
   },
 
   // Active theme element.
