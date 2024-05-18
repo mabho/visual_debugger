@@ -286,31 +286,7 @@
 
         // Loop through all child nodes.
         const childNodes = node.childNodes;
-        Array.from(childNodes).forEach((child, index) => {
-
-          // If this is a DOM element, and it is time to load it into
-          // the `activeElement` object.
-          if (
-            child.nodeType === Node.ELEMENT_NODE &&
-            activeElement.beginOutput === true &&
-            activeElement.dataNode === null
-          ) {
-            activeElement.setDataNode(child);
-            const instanceActiveElement = Object.assign({}, activeElement);
-            const instanceLayerId = `element-${index}`;
-            const instanceLayer = this.generateInstanceLayer(instanceActiveElement, child, instanceLayerId);
-            child.setAttribute(layerIdAttributeName, instanceLayerId);
-            themeDebugNodes.push(
-              {
-                'instanceActiveElement': instanceActiveElement,
-                'instanceLayer': instanceLayer,
-                'instanceRefElement': child,
-              }
-            );
-            baseLayer.appendChild(instanceLayer);
-            activeElement.reset();
-            return;
-          }
+        Array.from(childNodes).forEach((child) => {
 
           // Analyze comment nodes only.
           if (child.nodeType !== Node.COMMENT_NODE) return;
@@ -349,13 +325,40 @@
             return;
           }
 
-          // Gets the template file path and confirms output is beginning.
+          // Gets the template file path and fills dataNode.
           const templateFilePathMatch = child.textContent.match(
             regexGetTemplateFilePath()
           );
           if (templateFilePathMatch) {
-            activeElement.setBeginOutput();
+
+            // Set the file path.
             activeElement.setFilePath(templateFilePathMatch[1]);
+
+            // Get the next element sibling (dataNode).
+            const dataNode = child.nextElementSibling;
+
+            // Confirm it is a DOM element.
+            if (
+              (
+                dataNode &&
+                dataNode.nodeType === Node.ELEMENT_NODE
+              ) && activeElement.dataNode === null
+            ) {
+              activeElement.setDataNode(dataNode);
+              const instanceActiveElement = Object.assign({}, activeElement);
+              const instanceLayerId = `element-${Math.random().toString(36).substring(7)}`;
+              const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
+              const themeDebugNode = {
+                'instanceActiveElement': instanceActiveElement,
+                'instanceLayer': instanceLayer,
+                'instanceRefElement': dataNode,
+              }
+              dataNode.setAttribute(layerIdAttributeName, instanceLayerId);
+              themeDebugNodes.push(themeDebugNode);
+              baseLayer.appendChild(instanceLayer);
+            }
+
+            activeElement.reset();
           }
         });
       });

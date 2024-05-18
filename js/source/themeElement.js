@@ -10,7 +10,6 @@ Drupal.themeElement = {
   suggestions: null,
   filePath: null,
   dataNode: null,
-  beginOutput: false,
 
   // Store the initial state.
   initialState: null,
@@ -25,7 +24,6 @@ Drupal.themeElement = {
       suggestions: this.suggestions,
       filePath: this.filePath,
       dataNode: this.dataNode,
-      beginOutput: this.beginOutput
     };
   },
 
@@ -56,10 +54,6 @@ Drupal.themeElement = {
 
   setSuggestions(input) {
     this.suggestions = input;
-  },
-
-  setBeginOutput() {
-    this.beginOutput = true;
   },
 
   setDataNode(input) {
