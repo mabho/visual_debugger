@@ -442,14 +442,16 @@ Drupal.controllerElement = {
     document.addEventListener('mousemove', function(event) {
       if (!isMouseDown) return;
 
-      // Calculate the new width based on the current mouse position
-      const newWidth =
-        controllerLayerBoundingRectClient.width
-          + controllerLayerBoundingRectClient.left
-          - event.clientX;
-
-      // Update the width of the controller element
-      controllerLayer.style.width = `${newWidth}px`;
+      requestAnimationFrame(() => {
+        // Calculate the new width based on the current mouse position
+        const newWidth =
+          controllerLayerBoundingRectClient.width
+            + controllerLayerBoundingRectClient.left
+            - event.clientX;
+    
+        // Update the width of the controller element
+        controllerLayer.style.width = `${newWidth}px`;
+      });
     });
 
     // Add the mouseup event listener to the document
