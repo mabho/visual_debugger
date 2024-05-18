@@ -42,10 +42,12 @@ Drupal.controllerElement = {
     classNameForm: 'visual-debugger--controller-layer--activation-form',
     classNameFormWrapper: 'visual-debugger--controller-layer--activation-form-wrapper',
     classNameSelectedElementLayer: 'visual-debugger--selected-element-layer',
+    classNameSelectedElementInfoWrapper: 'visual-debugger--selected-element-layer--info-wrapper',
     classNameSelectedElementInfo: 'visual-debugger--selected-element-layer--info',
     classNameSelectedElementInfoTextContent: 'tag',
     classNameSelectedElementInfoObjectType: 'tag--object-type',
     classNameSelectedElementInfoPropertyHook: 'tag--prop-hook',
+    classNameSelectedElementSuggestionsWrapper: 'visual-debugger--selected-element-layer--suggestions-wrapper',
     classNameSelectedElementSuggestions: 'visual-debugger--selected-element-layer--suggestions',
     classNameSelectedElementSuggestionsSuggestion: 'suggestion',
     classNameIconSelectedTrue: 'icon-selected-true',
@@ -199,9 +201,6 @@ Drupal.controllerElement = {
       classNameBaseLayer,
       classNameForm,
       classNameFormWrapper,
-      classNameSelectedElementLayer,
-      classNameSelectedElementInfo,
-      classNameSelectedElementSuggestions,
       classNameIconEye,
       classNameIconControllerActivated,
       classNameIconEyeBlocked,
@@ -210,17 +209,7 @@ Drupal.controllerElement = {
 
     const { controllerActivatedAttributeName } = this.layerAttributes;
 
-    const {
-      idControllerElementInfo,
-      idControllerElementSuggestions
-    } = this.ids;
-
-    const {
-      stringActivateDebugger,
-      stringSelectedElement,
-      stringBasicInfo,
-      stringThemeSuggestions,
-    } = this.strings;
+    const { stringActivateDebugger } = this.strings;
 
     const controllerLayer = document.createElement('div');
     const { initialControllerWidth } = this.constants;
@@ -273,42 +262,90 @@ Drupal.controllerElement = {
     formElement.appendChild(wrapperDiv);
 
     // Selected element layer.
+    const selectedElementLayer = this.generateSelectedElementLayer();
+
+    // Append everything to the controller layer.
+    controllerLayer.classList.add(
+      classNameVisualDebugger,
+      classNameBaseLayer
+    );
+
+    // Slider controller.
+    controllerLayer.style.width =
+      localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
+
+    // Activation checkbox form.
+    controllerLayer.appendChild(formElement);
+
+    // Selected element layer.
+    controllerLayer.appendChild(selectedElementLayer);
+
+    // Load the controller layer just created to the current object.
+    this.setControllerLayer(controllerLayer);
+
+    // Return
+    return controllerLayer;
+  },
+
+  generateSelectedElementLayer() {
     const selectedElementLayer = document.createElement('div');
     const selectedElementLayerTitle = document.createElement('h3');
+    const {
+      classNameSelectedElementLayer,
+      classNameSelectedElementInfoWrapper,
+      classNameSelectedElementInfo,
+      classNameSelectedElementSuggestionsWrapper,
+      classNameSelectedElementSuggestions,
+    } = this.classNames;
+    const {
+      idControllerElementInfo,
+      idControllerElementSuggestions,
+    } = this.ids;
+    const {
+      stringSelectedElement,
+      stringBasicInfo,
+      stringThemeSuggestions,
+    } = this.strings;
+
     selectedElementLayer.classList.add(classNameSelectedElementLayer);
     selectedElementLayerTitle.textContent = stringSelectedElement;
     selectedElementLayer.appendChild(selectedElementLayerTitle);
     selectedElementLayer.appendChild(document.createElement('hr'));
 
     // Selected element basic info.
+    const selectedElementBasicInfoWrapper = document.createElement('div');
     const selectedElementBasicInfo = document.createElement('div');
     const selectedElementBasicInfoTitle = document.createElement('h4');
+    selectedElementBasicInfoWrapper.classList.add(classNameSelectedElementInfoWrapper);
     selectedElementBasicInfo.setAttribute('id', idControllerElementInfo);
     selectedElementBasicInfo.classList.add(classNameSelectedElementInfo);
     selectedElementBasicInfoTitle.textContent = stringBasicInfo;
+    selectedElementBasicInfoWrapper.append(
+      selectedElementBasicInfoTitle,
+      selectedElementBasicInfo
+    );
 
     // Theme suggestions layer.
+    const selectedElementSuggestionsWrapper = document.createElement('div');
     const selectedElementSuggestionsLayer = document.createElement('div');
     const selectedElementSuggestionsLayerTitle = document.createElement('h4');
+    selectedElementSuggestionsWrapper.classList.add(classNameSelectedElementSuggestionsWrapper);
     selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
     selectedElementSuggestionsLayer.classList.add(classNameSelectedElementSuggestions);
     selectedElementSuggestionsLayerTitle.textContent = stringThemeSuggestions;
+    selectedElementSuggestionsWrapper.append(
+      selectedElementSuggestionsLayerTitle,
+      selectedElementSuggestionsLayer
+    );
 
-    // Append everything to the controller layer.
-    controllerLayer.classList.add(classNameVisualDebugger);
-    controllerLayer.classList.add(classNameBaseLayer);
-    controllerLayer.style.width =
-      localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
-    controllerLayer.appendChild(formElement);
-    controllerLayer.appendChild(selectedElementLayer);
-    controllerLayer.appendChild(selectedElementBasicInfoTitle);
-    controllerLayer.appendChild(selectedElementBasicInfo);
-    controllerLayer.appendChild(selectedElementSuggestionsLayerTitle);
-    controllerLayer.appendChild(selectedElementSuggestionsLayer);
-    this.setControllerLayer(controllerLayer);
+    // Append everything to the selected element layer.
+    selectedElementLayer.append(
+      selectedElementBasicInfoWrapper,
+      selectedElementSuggestionsWrapper
+    );
 
     // Return
-    return controllerLayer;
+    return selectedElementLayer;
   },
 
   // Update the controller position depending on its activation status.
@@ -476,7 +513,7 @@ Drupal.controllerElement = {
 
     // If suggestions are available, display them.
     if (
-        selectedThemeElement !== null &&
+        selectedThemeElement &&
         selectedThemeElement.hasOwnProperty('suggestions') &&
         selectedThemeElement.suggestions !== null
     ) {
