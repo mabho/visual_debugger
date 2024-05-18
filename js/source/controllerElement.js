@@ -152,49 +152,6 @@ Drupal.controllerElement = {
     }
   },
 
-  // Prepare the theme suggestions.
-  prepareThemeSuggestion(item) {
-    const { body } = this;
-
-    const {
-      classNameSelectedElementSuggestionsSuggestion,
-      classNameIconSelectedTrue,
-      classNameIconSelectedFalse,
-      classNameIconCopyToClipboard,
-    } = this.classNames;
-
-    const {
-      stringCopyToClipboard,
-    } = this.strings;
-
-    const self = this;
-    const suggestionWrapper = document.createElement('div');
-    const clipboardActivated = document.createElement('div');
-    const clipboardContent = document.createElement('pre');
-    const cliboardButton = document.createElement('button');
-
-    suggestionWrapper.classList.add(
-      classNameSelectedElementSuggestionsSuggestion);
-    clipboardActivated.classList.add(
-      item.activated
-        ? classNameIconSelectedTrue
-        : classNameIconSelectedFalse
-    );
-    clipboardContent.textContent = item.suggestion;
-
-    // Setup the button that copies theme suggestion to the clipboard.
-    cliboardButton.classList.add(classNameIconCopyToClipboard);
-    cliboardButton.setAttribute('aria-label', stringCopyToClipboard);
-    cliboardButton.addEventListener('click', function() {
-      self.clipboardCopy(clipboardContent.textContent);
-    });
-
-    suggestionWrapper.appendChild(clipboardActivated);
-    suggestionWrapper.appendChild(clipboardContent);
-    suggestionWrapper.appendChild(cliboardButton);
-    return suggestionWrapper;
-  },
-
   prepareContentCopyData(itemLabel, itemLabelClass, itemContent) {
 
     // Configuration
@@ -593,6 +550,10 @@ Drupal.controllerElement = {
   setSelectedElementSuggestions() {
     const selectedThemeElement = this.getSelectedThemeElement();
     const selectedElementSuggestionsLayer = this.getSelectedElementSuggestionsLayer();
+    const {
+      classNameIconSelectedTrue,
+      classNameIconSelectedFalse
+    } = this.classNames;
 
     // Clear legacy information showing in the suggestions layer.
     selectedElementSuggestionsLayer.innerHTML = '';
@@ -605,7 +566,13 @@ Drupal.controllerElement = {
     ) {
       const clipboardContent = selectedThemeElement.suggestions;
       clipboardContent.forEach((item) => {
-        const themeSuggestion = this.prepareThemeSuggestion(item);
+        const themeSuggestion = this.prepareContentCopyData(
+          null,
+          item.activated
+            ? classNameIconSelectedTrue
+            : classNameIconSelectedFalse,
+          item.suggestion,
+        );
         selectedElementSuggestionsLayer.appendChild(themeSuggestion);
       });
     }
@@ -614,7 +581,10 @@ Drupal.controllerElement = {
   setSelectedElementTemplateFilePath() {
     const selectedThemeElement = this.getSelectedThemeElement();
     const selectedElementTemplateFilePathWrapper = this.getSelectedElementTemplateFilePathLayer();
-    const { classNameSelectedElementTemplateFilePathLabel } = this.classNames;
+    const {
+      classNameSelectedElementTemplateFilePath,
+      classNameSelectedElementTemplateFilePathLabel
+    } = this.classNames;
     const { stringFilePath } = this.strings;
 
     // Clear legacy information showing in the suggestions layer.
@@ -631,7 +601,7 @@ Drupal.controllerElement = {
         stringFilePath,
         classNameSelectedElementTemplateFilePathLabel,
         filePath,
-        this.classNames.classNameSelectedElementTemplateFilePath
+        classNameSelectedElementTemplateFilePath
       );
       selectedElementTemplateFilePathWrapper.appendChild(filePathWrapper);
     }
