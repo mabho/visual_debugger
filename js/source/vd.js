@@ -17,6 +17,12 @@
       classNameInstanceLayerUnchecked: 'instance-element--unchecked',
       classNameInstanceLayerChecked: 'instance-element--checked',
       classNameObjectType: 'object-type',
+      classNameIconActivated: 'icon-checkbox-checked',
+      classNameIconDectivated: 'icon-checkbox-unchecked',
+      classNameCheckboxToggle: 'checkbox-toggle',
+      classNameSpanToggle: 'span-toggle',
+      classNameActivated: 'item-activated',
+      classNameDeactivated: 'item-deactivated',
       classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
     },
 
@@ -147,8 +153,15 @@
         classNameInstanceLayerChecked,
         classNameInstanceLayerUnchecked,
         classNameObjectType,
-        classNameObjectTypeTyped
+        classNameObjectTypeTyped,
+        classNameIconActivated,
+        classNameIconDectivated,
+        classNameCheckboxToggle,
+        classNameSpanToggle,
+        classNameActivated,
+        classNameDeactivated,
       } = this.classNames;
+
       thisLayer.classList.add(
         classNameInstanceLayer,
         classNameObjectType,
@@ -164,12 +177,27 @@
       const thisThemeElementPropertyHook = thisThemeElement;
       const checkboxSelector = document.createElement('input');
       checkboxSelector.setAttribute('type', 'checkbox');
+      checkboxSelector.classList.add(classNameCheckboxToggle);
 
-      // Set a 'change' event listener.
-      checkboxSelector.addEventListener('change', () => {
+      // Set <span> tags for activated and deactivated icons.
+      const activatedIcon = document.createElement('span');
+      activatedIcon.classList.add(
+        classNameSpanToggle,
+        classNameActivated,
+        classNameIconActivated
+      );
+      const deactivatedIcon = document.createElement('span');
+      deactivatedIcon.classList.add(
+        classNameSpanToggle,
+        classNameDeactivated,
+        classNameIconDectivated
+      );
 
-      });
-      thisLayer.appendChild(checkboxSelector);
+      thisLayer.append(
+        checkboxSelector,
+        activatedIcon,
+        deactivatedIcon
+      );
 
       // Set a mouseenter event listener.
       thisLayer.addEventListener(

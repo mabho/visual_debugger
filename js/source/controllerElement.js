@@ -32,6 +32,7 @@ Drupal.controllerElement = {
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
     idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
+    idControllerActivationCheckbox: 'debuggerActivationCheckbox',
   },
 
   // Class names for the controller layer.
@@ -65,6 +66,9 @@ Drupal.controllerElement = {
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameClickDragButton: 'click-drag-button',
+    classNameCheckboxToggle: 'checkbox-toggle',
+    classNameActivated: 'item-activated',
+    classNameDeactivated: 'item-deactivated',
   },
 
   // layerAttributes.
@@ -221,25 +225,35 @@ Drupal.controllerElement = {
       classNameBaseLayer,
       classNameForm,
       classNameFormWrapper,
+      classNameCheckboxToggle,
+      classNameActivated,
       classNameIconEye,
       classNameIconControllerActivated,
+      classNameDeactivated,
       classNameIconEyeBlocked,
       classNameIconControllerDeactivated,
     } = this.classNames
+
+    const { idControllerActivationCheckbox } = this.ids;
 
     const { controllerActivatedAttributeName } = this.layerAttributes;
 
     const { stringActivateDebugger } = this.strings;
 
-    const controllerLayer = document.createElement('div');
     const { initialControllerWidth } = this.constants;
+
     const { localStorageControllerWidthKey } = this.system;
-    const self = this; // Save the context of `this`
+
+    const self = this;
+
+    // Create the controller layer.
+    const controllerLayer = document.createElement('div');
 
     // Create a checkbox input element for debugger activation
     const debuggerActivationCheckbox = document.createElement('input');
     debuggerActivationCheckbox.type = 'checkbox';
-    debuggerActivationCheckbox.id = 'debuggerActivationCheckbox';
+    debuggerActivationCheckbox.id = idControllerActivationCheckbox;
+    debuggerActivationCheckbox.classList.add(classNameCheckboxToggle);
 
     // Applies the initial controller state based on localStorage setting.
     const controllerActivated = (
@@ -259,9 +273,17 @@ Drupal.controllerElement = {
 
     // Create icons for the debugger activation checkbox.
     const iconSelectedTrue = document.createElement('span');
-    iconSelectedTrue.classList.add(classNameIconEye, classNameIconControllerActivated);
+    iconSelectedTrue.classList.add(
+      classNameIconEye,
+      classNameActivated,
+      classNameIconControllerActivated
+    );
     const iconSelectedFalse = document.createElement('span');
-    iconSelectedFalse.classList.add(classNameIconEyeBlocked, classNameIconControllerDeactivated);
+    iconSelectedFalse.classList.add(
+      classNameIconEyeBlocked,
+      classNameDeactivated,
+      classNameIconControllerDeactivated
+    );
 
     // Create a label element for the debugger activation checkbox.
     const debuggerActivationLabel = document.createElement('label');

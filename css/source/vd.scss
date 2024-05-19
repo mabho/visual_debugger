@@ -179,18 +179,22 @@
       top var(--#{$prefix}transition-speed),
       left var(--#{$prefix}transition-speed);
 
-    input[type='checkbox'] {
-      margin: calc(var(--#{$prefix}controller--gutter) * .5);
+    input.checkbox-toggle {
       pointer-events: none;
-      transition: .25s all;
+      opacity: 0;
     }
 
     &:hover {
       box-shadow: var(--#{$prefix}shadow--full);
 
-      input[type='checkbox'] {
+      .span-toggle {
         @extend %instance-selected;
       }
+    }
+
+    .span-toggle {
+      margin: calc(var(--#{$prefix}controller--gutter) * .25) calc(var(--#{$prefix}controller--gutter) * .125);
+      transition: opacity var(--#{$prefix}transition-speed);
     }
 
     &--checked {
@@ -200,7 +204,7 @@
     }
 
     &--unchecked {
-      input[type='checkbox'] {
+      .span-toggle {
         opacity: 0;
       }
     }
