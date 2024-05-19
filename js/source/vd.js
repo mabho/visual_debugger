@@ -219,7 +219,9 @@
 
       // Establish a resize observer.
       const resizeObserver = new ResizeObserver(() => {
-        this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
+        requestAnimationFrame(() => {
+          this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
+        });
       });
       resizeObserver.observe(instanceLayerRef);
 
