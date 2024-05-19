@@ -14,12 +14,27 @@
     font-size: var(--#{$prefix}icon-font-size--large);
   }
 
-  .icon-slide-resize {
-    font-size: var(--#{$prefix}icon-font-size--large);
-  }
-
+  .icon-slide-resize,
   .icon-eye,
   .icon-eye-blocked {
     font-size: var(--#{$prefix}icon-font-size--large);
+  }
+  
+  // Toggle on/off icons.
+  .icon-toggle-on,
+  .icon-toggle-off {
+    background-color: var(--#{$prefix}color--white);
+    border-radius: 50px;
+    font-size: var(--#{$prefix}icon-font-size--mid-large);
+    line-height: .7;
+  }
+
+  // Toggle on/off icons.
+  .icon-checkbox-checked,
+  .icon-checkbox-unchecked {
+    background-color: var(--#{$prefix}color--white);
+    border-radius: to-rem(3px);
+    font-size: var(--#{$prefix}icon-font-size--mid-large);
+    line-height: .7;
   }
 }
