@@ -22,7 +22,7 @@
       background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--hover));
     }
 
-    &.visual-debugger--instance-layer--checked {
+    &.instance-element--checked {
       background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--selected));
     }
 

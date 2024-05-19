@@ -15,7 +15,7 @@
 .visual-debugger {
 
   // Controller.
-  &--controller-layer {
+  &--controller {
     background-color: var(--#{$prefix}color--white);
     border-radius: 0;
     bottom: 0;
@@ -72,7 +72,7 @@
       }
     }
 
-    &--activation-form {
+    .activation-form {
       background-color: var(--#{$prefix}color--white);
       border-radius: to-rem(8px);
       margin-left: $controller--gutter * -1;
@@ -118,10 +118,61 @@
         }
       }
     }
+
+    // Selected element.
+    .selected-element {
+
+      // Info.
+      &__info {
+        column-gap: var(--#{$prefix}controller--gutter);
+        display: flex;
+        flex-direction: row;
+
+        &-wrapper {
+          @extend %selected-item-wrapper;
+        }
+      }
+
+      // Suggestions.
+      &__suggestions {
+        &-wrapper {
+          @extend %selected-item-wrapper;
+        }
+
+        .suggestion {
+          align-items: center;
+          column-gap: calc(var(--#{$prefix}controller--gutter) * .25);
+          display: flex;
+          flex-direction: row;
+          margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
+          margin-top: calc(var(--#{$prefix}controller--gutter) * .25);
+
+          button {
+            background-color: transparent;
+            border: 0;
+            cursor: pointer;
+            transition: transform var(--#{$prefix}transition-speed);
+
+            &:hover {
+              transform: scale(1.2);
+            }
+          }
+        }
+      }
+
+      // Tempalte File Path.
+      &__template-file-path {
+        .label {
+          background-color: var(--#{$prefix}color--light-gray);
+          padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
+          white-space: nowrap;
+        }
+      }
+    }
   }
 
   // Base layer.
-  &--base-layer {
+  &--base {
     position: absolute;
     top: 0;
     left: 0;
@@ -135,8 +186,7 @@
   }
 
   // Instance layer.
-  &--instance-layer {
-    background-color: rgba($color--instance-background, $transparency--instance-background);
+  .instance-element {
     background-blend-mode: difference;
     border: solid 1px $color--instance-border;
     position: absolute;
@@ -155,7 +205,6 @@
     }
 
     &:hover {
-      background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
       box-shadow: $shadow--full;
 
       input[type='checkbox'] {
@@ -172,56 +221,6 @@
     &--unchecked {
       input[type='checkbox'] {
         opacity: 0;
-      }
-    }
-  }
-
-  &--selected-element-layer {
-
-    // Info.
-    &--info {
-      column-gap: var(--#{$prefix}controller--gutter);
-      display: flex;
-      flex-direction: row;
-
-      &-wrapper {
-        @extend %selected-item-wrapper;
-      }
-    }
-
-    // Suggestions.
-    &--suggestions {
-      &-wrapper {
-        @extend %selected-item-wrapper;
-      }
-
-      .suggestion {
-        align-items: center;
-        column-gap: calc(var(--#{$prefix}controller--gutter) * .25);
-        display: flex;
-        flex-direction: row;
-        margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
-        margin-top: calc(var(--#{$prefix}controller--gutter) * .25);
-
-        button {
-          background-color: transparent;
-          border: 0;
-          cursor: pointer;
-          transition: transform var(--#{$prefix}transition-speed);
-
-          &:hover {
-            transform: scale(1.2);
-          }
-        }
-      }
-    }
-
-    // Tempalte File Path.
-    &--template-file-path {
-      &--label {
-        background-color: var(--#{$prefix}color--light-gray);
-        padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
-        white-space: nowrap;
       }
     }
   }
@@ -251,7 +250,7 @@
       &:hover {
         transform: translateY(-50%) scale(1.15);
       }
-  
+
       &:active {
         background-color: var(--#{$prefix}click-drag-button--background-color--active);
         cursor: grabbing;
