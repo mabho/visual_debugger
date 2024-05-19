@@ -251,6 +251,12 @@ $z-index--base: 10000;
   --#{$prefix}controller--right: 0;
   --#{$prefix}controller--top: 0;
   --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);
+
+  // Selected Element
+  --#{$prefix}selected-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}selected-element--info--flex-direction: row;
+
+  // <pre>
   --#{$prefix}controller--pre--background-color: var(--#{$prefix}color--gray-10);
   --#{$prefix}controller--pre--background-color--hover: var(--#{$prefix}color--gray-30);
   --#{$prefix}controller--pre--border: solid 1px var(--#{$prefix}color--mid-teal);

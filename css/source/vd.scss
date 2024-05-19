@@ -105,9 +105,9 @@
 
       // Info.
       &__info {
-        column-gap: var(--#{$prefix}controller--gutter);
+        column-gap: var(--#{$prefix}selected-element--info--column-gap);
         display: flex;
-        flex-direction: row;
+        flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
 
         &-wrapper {
           @extend %selected-item-wrapper;
