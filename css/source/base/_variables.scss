@@ -196,7 +196,7 @@ $z-index--base: 10000;
   --#{$prefix}color--object-type--views_view: var(--#{$prefix}color--dark-olive--rgb);
   --#{$prefix}color--object-type--views_view_unformatted: var(--#{$prefix}color--dark-forest--rgb);
 
-  --#{$prefix}color--shadow: var(--#{$prefix}color--gray);
+  --#{$prefix}color--shadow--rgb: #{hex-to-rgb($color--shadow)};
   --#{$prefix}color--icon--selected-true: var(--#{$prefix}color--mid-green);
   --#{$prefix}color--icon--selected-false: var(--#{$prefix}color--mid-maroon);
 
@@ -229,11 +229,12 @@ $z-index--base: 10000;
 
   // Shadow.
   --#{$prefix}transparency--shadow: .2;
-  --#{$prefix}shadow-blur: 15px;
-  --#{$prefix}shadow-full: 0 0 var(--#{$prefix}shadow-blur) 0 rgba(var(--#{$prefix}color--shadow), var(--#{$prefix}transparency--shadow)), 0 0 var(--#{$prefix}shadow-blur) 0 rgba(var(--#{$prefix}color--shadow), var(--#{$prefix}transparency--shadow));
+  --#{$prefix}shadow--blur: 15px;
+  --#{$prefix}shadow--full: 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}transparency--shadow)), 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}transparency--shadow));
 
   // Icon font
   --#{$prefix}icon-font-size: 1.15rem;
+  --#{$prefix}icon-font-size--mid-large: 1.5rem;
   --#{$prefix}icon-font-size--large: 1.75rem;
 
   // Controller
@@ -300,20 +301,11 @@ $object-type-colors: (
 );
 
 /**
- * Instance layer.
- */
-
-// Conf
-$z-index--instance: $z-index--base + 1;
-
-/**
  * Controller layer.
  */
 
 // Conf
 $z-index--controller: $z-index--base + 1000;
-$controller--font-size--title: 1.25rem;
-$controller--font-size: .875rem;
 
 // Colors.
 $color--instance-background: yellow;
