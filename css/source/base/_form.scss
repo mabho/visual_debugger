@@ -1,0 +1,25 @@
+.visual-debugger {
+
+  // Checkbox toggle.
+  .checkbox-toggle {
+    height: var(--#{$prefix}button--controller-checkbox-height);
+    opacity: 0;
+    position: absolute;
+    width: var(--#{$prefix}button--controller-checkbox-width);
+
+    + .item-activated,
+    ~ .item-deactivated {
+      display: none;
+    }
+
+    &:checked + .item-activated,
+    &:not(:checked) ~ .item-deactivated {
+      display: inline-block;
+    }
+
+    &:not(:checked) + .item-activated,
+    &:checked + .item-deactivated {
+      display: none;
+    }
+  }
+}

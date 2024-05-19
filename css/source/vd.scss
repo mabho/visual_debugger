@@ -2,6 +2,7 @@
 @import "base/variables";
 @import "base/types";
 @import "base/icons";
+@import "base/form";
 @import "../../fonts/visual-debugger-icons/style.scss";
 
 %instance-selected {
@@ -96,29 +97,6 @@
         flex-direction: row;
         justify-content: flex-start;
         position: relative;
-      }
-
-      // Activation checkbox icon.
-      #debuggerActivationCheckbox {
-        height: var(--#{$prefix}button--controller-checkbox-height);
-        opacity: 0;
-        position: absolute;
-        width: var(--#{$prefix}button--controller-checkbox-width);
-
-        + .icon-controller-activated,
-        ~ .icon-controller-deactivated {
-          display: none;
-        }
-
-        &:checked + .icon-controller-activated,
-        &:not(:checked) ~ .icon-controller-deactivated {
-          display: inline-block;
-        }
-
-        &:not(:checked) + .icon-controller-activated,
-        &:checked + .icon-controller-deactivated {
-          display: none;
-        }
       }
     }
 
