@@ -72,11 +72,11 @@ $color--icon--selected-true: $color--mid-green;
 $color--icon--selected-false: $color--mid-maroon;
 
 // Conf
+$icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
 $z-index--base: 10000;
 
 .visual-debugger {
   // Conf
-  $z-index--base: 10000;
   --#{$prefix}z-index--base: 10000;
   --#{$prefix}transition-speed: .25s;
 
@@ -213,7 +213,7 @@ $z-index--base: 10000;
   // Conf
   --#{$prefix}controller--gutter: 30px;
   --#{$prefix}controller--max-width: 50%;
-  --#{$prefix}controller--min-width: to-rem(150px);
+  --#{$prefix}controller--min-width: #{to-rem(150px)};
   --#{$prefix}z-index--controller: var(--#{$prefix}z-index--base) + 1000;
   --#{$prefix}controller--font-size--title: 1.25rem;
   --#{$prefix}controller--font-size: .875rem;
@@ -226,6 +226,54 @@ $z-index--base: 10000;
   // Buttons.
   --#{$prefix}button--controller-checkbox-width: 2rem;
   --#{$prefix}button--controller-checkbox-height: var(--#{$prefix}button--controller-checkbox-width);
+
+  // Shadow.
+  --#{$prefix}transparency--shadow: .2;
+  --#{$prefix}shadow-blur: 15px;
+  --#{$prefix}shadow-full: 0 0 var(--#{$prefix}shadow-blur) 0 rgba(var(--#{$prefix}color--shadow), var(--#{$prefix}transparency--shadow)), 0 0 var(--#{$prefix}shadow-blur) 0 rgba(var(--#{$prefix}color--shadow), var(--#{$prefix}transparency--shadow));
+
+  // Icon font
+  --#{$prefix}icon-font-size: 1.15rem;
+  --#{$prefix}icon-font-size--large: 1.75rem;
+
+  // Controller
+  --#{$prefix}controller--gutter: 30px;
+  --#{$prefix}controller--background-color: var(--#{$prefix}color--white);
+  --#{$prefix}controller--border-radius: 0;
+  --#{$prefix}controller--bottom: 0;
+  --#{$prefix}controller--box-shadow: var(--#{$prefix}shadow--full);
+  --#{$prefix}controller--font-size: 1rem;
+  --#{$prefix}controller--font-size--title: 1.25rem;
+  --#{$prefix}controller--max-width: 50%;
+  --#{$prefix}controller--min-width: #{to-rem(150px)};
+  --#{$prefix}controller--position: fixed;
+  --#{$prefix}controller--right: 0;
+  --#{$prefix}controller--top: 0;
+  --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);
+  --#{$prefix}controller--pre--background-color: var(--#{$prefix}color--gray-10);
+  --#{$prefix}controller--pre--background-color--hover: var(--#{$prefix}color--gray-30);
+  --#{$prefix}controller--pre--border: solid 1px var(--#{$prefix}color--mid-teal);
+  --#{$prefix}controller--pre--margin: 0;
+  --#{$prefix}controller--pre--overflow: hidden;
+  --#{$prefix}controller--pre--padding-left: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}controller--pre--padding-right: calc(var(--#{$prefix}controller--gutter) * .5);
+
+  // Titles.
+  --#{$prefix}h--margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
+  --#{$prefix}h--margin-top: calc(var(--#{$prefix}controller--gutter) * .5);
+
+  // Controller Activati9on form.
+  --#{$prefix}controller-activation-form--background-color: var(--#{$prefix}color--white);
+  --#{$prefix}controller-activation-form--border-radius: #{to-rem(8px)};
+  --#{$prefix}controller-activation-form--margin-left: calc(var(--#{$prefix}controller--gutter) * -1);
+  --#{$prefix}controller-activation-form--margin-top: calc(var(--#{$prefix}controller--gutter) * -1);
+  --#{$prefix}controller-activation-form--padding: calc(var(--#{$prefix}controller--gutter) * .5);
+
+  // Instance
+  --#{$prefix}z-index--instance: var(--#{$prefix}z-index--base) + 1;
+  --#{$prefix}instance--border: solid 1px var(--#{$prefix}color--gray-40);
+  --#{$prefix}color--instance-background: var(--#{$prefix}color--light-yellow);
+  --#{$prefix}color--instance-background--hover: var(--#{$prefix}color--mid-navy);
 }
 
 $object-type-colors: (
@@ -251,18 +299,6 @@ $object-type-colors: (
   'views_view_unformatted': var(--#{$prefix}color--object-type--views_view_unformatted),
 );
 
-// Transparency
-$transparency--shadow: .2;
-
-// Shadow.
-$shadow--blur: 15px;
-$shadow--full: 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow), 0 0 $shadow--blur 0 rgba($color--shadow, $transparency--shadow);
-
-// Font
-$icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
-$icon-font-size: 1.15rem;
-$icon-font-size--large: 1.75rem;
-
 /**
  * Instance layer.
  */
@@ -270,23 +306,11 @@ $icon-font-size--large: 1.75rem;
 // Conf
 $z-index--instance: $z-index--base + 1;
 
-// Colors.
-$color--instance-background: yellow;
-$color--instance-background--hover: blue;
-$color--instance-border: gray;
-
-// Transparency.
-$transparency--instance-background: .05;
-$transparency--instance-background--hover: .2;
-
 /**
  * Controller layer.
  */
 
 // Conf
-$controller--gutter: 30px;
-$controller--max-width: 50%;
-$controller--min-width: to-rem(150px);
 $z-index--controller: $z-index--base + 1000;
 $controller--font-size--title: 1.25rem;
 $controller--font-size: .875rem;

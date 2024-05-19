@@ -16,29 +16,29 @@
 
   // Controller.
   &--controller {
-    background-color: var(--#{$prefix}color--white);
-    border-radius: 0;
-    bottom: 0;
-    box-shadow: $shadow--full;
-    font-size: $controller--font-size;
-    max-width: $controller--max-width;
-    min-width: $controller--min-width;
+    background-color: var(--#{$prefix}controller--background-color);
+    border-radius: var(--#{$prefix}controller--border-radius);
+    bottom: var(--#{$prefix}controller--bottom);
+    box-shadow: var(--#{$prefix}controller--box-shadow);
+    font-size: var(--#{$prefix}controller--font-size);
+    max-width: var(--#{$prefix}controller--max-width);
+    min-width: var(--#{$prefix}controller--min-width);
     padding: var(--#{$prefix}controller--gutter);
-    position: fixed;
-    right: 0;
-    top: 0;
+    position: var(--#{$prefix}controller--position);
+    right: var(--#{$prefix}controller--right);
+    top: var(--#{$prefix}controller--top);
     transition:
       right var(--#{$prefix}transition-speed),
       transform var(--#{$prefix}transition-speed);
-    z-index: $z-index--controller;
+    z-index: var(--#{$prefix}controller--z-index);
 
     h1, h2, h3, h4 {
-      margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25) !important;
-      margin-top: calc(var(--#{$prefix}controller--gutter) .5) !important;
+      margin-bottom: var(--#{$prefix}h-margin-bottom);
+      margin-top: var(--#{$prefix}h-margin-top);
     }
 
     h3 {
-      font-size: $controller--font-size--title;
+      font-size: var(--#{$prefix}controller--font-size--title);
     }
 
     input[type="checkbox"] {
@@ -52,16 +52,17 @@
     }
 
     pre {
-      border: solid 1px $color--instance-border;
-      margin: 0;
-      overflow: hidden;
-      padding-left: calc(var(--#{$prefix}controller--gutter) * .5);
-      padding-right: calc(var(--#{$prefix}controller--gutter) * .5);
+      background-color: var(--#{$prefix}controller--pre--background-color);
+      border: var(--#{$prefix}controller--pre--border);
+      margin: var(--#{$prefix}controller--pre--margin);
+      overflow: var(--#{$prefix}controller--pre--overflow);
+      padding-left: var(--#{$prefix}controller--pre--padding-left);
+      padding-right: var(--#{$prefix}controller--pre--padding-right);
       transition: background-color var(--#{$prefix}transition-speed);
 
       &:hover {
-        background-color: rgba($color--instance-background--hover, $transparency--instance-background--hover);
-        box-shadow: $shadow--full;
+        background-color: var(--#{$prefix}controller--pre--background-color--hover);
+        box-shadow: var(--#{$prefix}shadow--full);
       }
     }
 
@@ -73,12 +74,14 @@
     }
 
     .activation-form {
-      background-color: var(--#{$prefix}color--white);
-      border-radius: to-rem(8px);
-      margin-left: $controller--gutter * -1;
-      margin-top: $controller--gutter * -1;
-      padding: $controller--gutter * .5;
-      transition: background-color var(--#{$prefix}transition-speed), transform var(--#{$prefix}transition-speed);
+      background-color: var(--#{$prefix}controller-activation-form--background-color);
+      border-radius: var(--#{$prefix}controller-activation-form--border-radius);
+      margin-left: var(--#{$prefix}controller-activation-form--margin-left);
+      margin-top: var(--#{$prefix}controller-activation-form--margin-top);
+      padding: var(--#{$prefix}controller-activation-form--padding);
+      transition:
+        background-color var(--#{$prefix}transition-speed),
+        transform var(--#{$prefix}transition-speed);
 
       // When controller is deactivated.
       body.visual-debugger--deactivated & {
@@ -188,7 +191,7 @@
   // Instance layer.
   .instance-element {
     background-blend-mode: difference;
-    border: solid 1px $color--instance-border;
+    border: var(--#{$prefix}instance--border);
     position: absolute;
     transition:
       background-color var(--#{$prefix}transition-speed),
@@ -199,13 +202,13 @@
       left var(--#{$prefix}transition-speed);
 
     input[type='checkbox'] {
-      margin: $controller--gutter * .5;
+      margin: calc(var(--#{$prefix}controller--gutter) * .5);
       pointer-events: none;
       transition: .25s all;
     }
 
     &:hover {
-      box-shadow: $shadow--full;
+      box-shadow: var(--#{$prefix}shadow--full);
 
       input[type='checkbox'] {
         @extend %instance-selected;

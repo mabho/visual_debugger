@@ -1,25 +1,25 @@
 .visual-debugger {
   // Icon font.
   [class^="icon-"], [class*=" icon-"] {
-    font-size: $icon-font-size;
+    font-size: var(--#{$prefix}icon-font-size);
   }
 
   .icon-selected-true {
     color: var(--#{$prefix}color--icon--selected-true);
-    font-size: $icon-font-size--large;
+    font-size: var(--#{$prefix}icon-font-size--large);
   }
 
   .icon-selected-false {
     color: var(--#{$prefix}color--icon--selected-false);
-    font-size: $icon-font-size--large;
+    font-size: var(--#{$prefix}icon-font-size--large);
   }
 
   .icon-slide-resize {
-    font-size: $icon-font-size--large;
+    font-size: var(--#{$prefix}icon-font-size--large);
   }
 
   .icon-eye,
   .icon-eye-blocked {
-    font-size: $icon-font-size--large;
+    font-size: var(--#{$prefix}icon-font-size--large);
   }
 }
