@@ -1,10 +1,14 @@
 $icomoon-font-family: "visual-debugger-icons" !default;
 $icomoon-font-path: "fonts" !default;
 
+$icon-toggle-on: unquote('"\\e903"');
+$icon-toggle-off: unquote('"\\e905"');
 $icon-slide-resize: unquote('"\\e904"');
 $icon-selected-false: unquote('"\\e901"');
 $icon-selected-true: unquote('"\\e902"');
 $icon-copy: unquote('"\\e900"');
 $icon-eye: unquote('"\\e9ce"');
 $icon-eye-blocked: unquote('"\\e9d1"');
+$icon-checkbox-checked: unquote('"\\ea52"');
+$icon-checkbox-unchecked: unquote('"\\ea53"');
 

@@ -3,9 +3,9 @@
 @font-face {
   font-family: '#{$icomoon-font-family}';
   src:
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?fquklf') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?fquklf') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?fquklf##{$icomoon-font-family}') format('svg');
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?6bmvws') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?6bmvws') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?6bmvws##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,6 +26,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-toggle-on {
+  &:before {
+    content: $icon-toggle-on; 
+  }
+}
+.icon-toggle-off {
+  &:before {
+    content: $icon-toggle-off; 
+  }
+}
 .icon-slide-resize {
   &:before {
     content: $icon-slide-resize; 
@@ -54,6 +64,16 @@
 .icon-eye-blocked {
   &:before {
     content: $icon-eye-blocked; 
+  }
+}
+.icon-checkbox-checked {
+  &:before {
+    content: $icon-checkbox-checked; 
+  }
+}
+.icon-checkbox-unchecked {
+  &:before {
+    content: $icon-checkbox-unchecked; 
   }
 }
 
