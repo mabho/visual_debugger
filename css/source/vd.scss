@@ -154,23 +154,22 @@
 
   // Base layer.
   &--base {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    // display: none;
+    left: var(--#{$prefix}base--left);
+    position: var(--#{$prefix}base--position);
+    top: var(--#{$prefix}base--top);
+    z-index: var(--#{$prefix}base--z-index);
 
     body.visual-debugger--deactivated & {
-      display: none;
-      pointer-events: none;
+      display: var(--#{$prefix}base--display--on-deactivated);
+      pointer-events: var(--#{$prefix}base--pointer-events--on-deactivated);
     }
   }
 
   // Instance layer.
   .instance-element {
-    background-blend-mode: difference;
+    background-blend-mode: var(--#{$prefix}instance--background-blend-mode);
     border: var(--#{$prefix}instance--border);
-    position: absolute;
+    position: var(--#{$prefix}instance--position);
     transition:
       background-color var(--#{$prefix}transition-speed),
       margin var(--#{$prefix}transition-speed),

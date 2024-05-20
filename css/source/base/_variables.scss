@@ -237,6 +237,22 @@ $z-index--base: 10000;
   --#{$prefix}icon-font-size--mid-large: 1.5rem;
   --#{$prefix}icon-font-size--large: 1.75rem;
 
+  // Base
+  --#{$prefix}base--left: 0;
+  --#{$prefix}base--position: absolute;
+  --#{$prefix}base--top: 0;
+  --#{$prefix}base--z-index: 10000;
+  --#{$prefix}base--display--on-deactivated: none;
+  --#{$prefix}base--pointer-events--on-deactivated: none;
+
+  // Instance
+  --#{$prefix}instance--background-blend-mode: difference;
+  --#{$prefix}instance--position: absolute;
+  --#{$prefix}z-index--instance: var(--#{$prefix}z-index--base) + 1;
+  --#{$prefix}instance--border: solid 1px var(--#{$prefix}color--gray-40);
+  --#{$prefix}color--instance-background: var(--#{$prefix}color--light-yellow);
+  --#{$prefix}color--instance-background--hover: var(--#{$prefix}color--mid-navy);
+
   // Controller
   --#{$prefix}controller--gutter: 30px;
   --#{$prefix}controller--background-color: var(--#{$prefix}color--white);
@@ -275,12 +291,6 @@ $z-index--base: 10000;
   --#{$prefix}controller-activation-form--margin-left: calc(var(--#{$prefix}controller--gutter) * -1);
   --#{$prefix}controller-activation-form--margin-top: calc(var(--#{$prefix}controller--gutter) * -1);
   --#{$prefix}controller-activation-form--padding: calc(var(--#{$prefix}controller--gutter) * .5);
-
-  // Instance
-  --#{$prefix}z-index--instance: var(--#{$prefix}z-index--base) + 1;
-  --#{$prefix}instance--border: solid 1px var(--#{$prefix}color--gray-40);
-  --#{$prefix}color--instance-background: var(--#{$prefix}color--light-yellow);
-  --#{$prefix}color--instance-background--hover: var(--#{$prefix}color--mid-navy);
 }
 
 $object-type-colors: (
