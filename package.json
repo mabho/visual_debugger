@@ -12,7 +12,8 @@
     "watch:scss": "chokidar 'css/source/*.scss' 'css/source/**/*.scss' -c 'npm run compile:scss'",
     "minify:js": "gulp minify",
     "watch:js": "gulp watch",
-    "watch": "npm run watch:js & npm run watch:scss"
+    "build": "npm run compile:scss && npm run minify:js",
+    "watch": "npm run build & npm run watch:js & npm run watch:scss"
   },
   "devDependencies": {
     "chokidar-cli": "^3.0.0",
