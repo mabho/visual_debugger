@@ -217,7 +217,8 @@
         }
       );
 
-      // Set a 'click' event listener.
+      // Set a 'click' event listener on the instance layer that triggers a
+      // click on the checkbox within.
       thisLayer.addEventListener(
         'click',
         () => {
@@ -229,16 +230,27 @@
               node.instanceLayer.click();
           });
 
-          // Toggle the checkbox and classes.
-          checkboxSelector.checked = !checkboxSelector.checked; 
+          // Trigger click the checkbox.
+          checkboxSelector.click();
+        }
+      );
+
+      // On checkbox change.
+      checkboxSelector.addEventListener(
+        'change',
+        () => {
+
+          // Toggle the checked and unchecked classes on the instance layer.
           thisLayer.classList.toggle(classNameInstanceLayerChecked);
           thisLayer.classList.toggle(classNameInstanceLayerUnchecked);
 
-          // Update the default theme element.
+          // Trigger the change in the default selected element in controller.
           if (checkboxSelector.checked === true) {
+            console.warn('this thing was checked');
             checkboxSelector.focus();
             controllerElementInstance.setDefaultThemeElement(thisThemeElement);
           } else {
+            console.warn('this thing is not checked');
             checkboxSelector.blur();
             controllerElementInstance.resetDefaultThemeElement(thisThemeElement);
           }
