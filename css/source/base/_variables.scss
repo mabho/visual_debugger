@@ -71,7 +71,6 @@ $color--object-type--field: $color--dark-forest;
 
 // Conf
 $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
-$z-index--base: 10000;
 
 .visual-debugger {
   // Conf
@@ -331,10 +330,3 @@ $object-type-colors: (
   'views_view': var(--#{$prefix}color--object-type--views_view),
   'views_view_unformatted': var(--#{$prefix}color--object-type--views_view_unformatted),
 );
-
-/**
- * Controller layer.
- */
-
-// Conf
-$z-index--controller: $z-index--base + 1000;
