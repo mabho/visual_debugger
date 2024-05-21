@@ -16,14 +16,14 @@
   }
 
   .object-type {
-    background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background));
+    background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency));
 
     &:hover {
-      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--hover));
+      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
     }
 
     &.instance-element--checked {
-      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}transparency--instance-background--selected));
+      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--selected));
     }
 
     @each $type, $color in $object-type-colors {

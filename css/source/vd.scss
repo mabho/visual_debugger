@@ -34,18 +34,12 @@
     z-index: var(--#{$prefix}controller--z-index);
 
     h1, h2, h3, h4 {
-      margin-bottom: var(--#{$prefix}h-margin-bottom);
-      margin-top: var(--#{$prefix}h-margin-top);
+      margin-bottom: var(--#{$prefix}h--margin-bottom);
+      margin-top: var(--#{$prefix}h--margin-top);
     }
 
     h3 {
       font-size: var(--#{$prefix}controller--font-size--title);
-    }
-
-    input[type="checkbox"] {
-      cursor: pointer;
-      height: 1.5rem;
-      width: 1.5rem;
     }
 
     label {
@@ -70,33 +64,32 @@
     // When the controller is deactivated...
     body.visual-debugger--deactivated & {
       &:hover {
-        transform: translateX(to-rem(-10px));
+        transform: var(--#{$prefix}controller--transform--on-deactivated);
       }
     }
 
     .activation-form {
-      background-color: var(--#{$prefix}controller-activation-form--background-color);
-      border-radius: var(--#{$prefix}controller-activation-form--border-radius);
-      margin-left: var(--#{$prefix}controller-activation-form--margin-left);
-      margin-top: var(--#{$prefix}controller-activation-form--margin-top);
-      padding: var(--#{$prefix}controller-activation-form--padding);
+      background-color: var(--#{$prefix}controller--activation-form--background-color);
+      border-radius: var(--#{$prefix}controller--activation-form--border-radius);
+      margin-left: var(--#{$prefix}controller--activation-form--margin-left);
+      margin-top: var(--#{$prefix}controller--activation-form--margin-top);
+      padding: var(--#{$prefix}controller--activation-form--padding);
       transition:
         background-color var(--#{$prefix}transition-speed),
         transform var(--#{$prefix}transition-speed);
 
       // When controller is deactivated.
       body.visual-debugger--deactivated & {
-        background-color: var(--#{$prefix}color--white);
-        transform: translateX(-45px);
+        background-color: var(--#{$prefix}controller--activation-form--background-color--on-deactivated);
+        transform: var(--#{$prefix}controller--activation-form--transform--on-deactivated);
       }
 
       &-wrapper {
-        align-items: center;
-        column-gap: calc(var(--#{$prefix}controller--gutter));
+        align-items: var(--#{$prefix}controller--activation-form-wrapper--align-items);
+        column-gap: var(--#{$prefix}controller--activation-form-wrapper--column-gap);
         display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        position: relative;
+        flex-direction: var(--#{$prefix}controller--activation-form-wrapper--flex-direction);
+        justify-content: var(--#{$prefix}controller--activation-form-wrapper--justify-content);
       }
     }
 
@@ -118,26 +111,6 @@
       &__suggestions {
         &-wrapper {
           @extend %selected-item-wrapper;
-        }
-
-        .suggestion {
-          align-items: center;
-          column-gap: calc(var(--#{$prefix}controller--gutter) * .25);
-          display: flex;
-          flex-direction: row;
-          margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
-          margin-top: calc(var(--#{$prefix}controller--gutter) * .25);
-
-          button {
-            background-color: transparent;
-            border: 0;
-            cursor: pointer;
-            transition: transform var(--#{$prefix}transition-speed);
-
-            &:hover {
-              transform: scale(1.2);
-            }
-          }
         }
       }
 
@@ -213,51 +186,53 @@
   .click-drag-button {
     background-color: var(--#{$prefix}click-drag-button--background-color);
     border: var(--#{$prefix}click-drag-button--border);
-    border-radius: 50%;
-    cursor: not-allowed;
+    border-radius: var(--#{$prefix}click-drag-button--border-radius);
+    cursor: var(--#{$prefix}click-drag-button--cursor);
     height: var(--#{$prefix}click-drag-button--size);
     left: calc(#{var(--#{$prefix}click-drag-button--size)} * -0.5);
-    opacity: 0.5;
+    opacity: var(--#{$prefix}click-drag-button--opacity);
     position: absolute;
-    top: 50%;
-    transform-origin: center center;
-    transform: translateY(-50%);
+    top: var(--#{$prefix}click-drag-button--top);
+    transform-origin: var(--#{$prefix}click-drag-button--transform-origin);
+    transform: var(--#{$prefix}click-drag-button--transform);
+    transition:
+      background-color var(--#{$prefix}transition-speed),
+      transform var(--#{$prefix}transition-speed);
     width: var(--#{$prefix}click-drag-button--size);
-    z-index: var(--#{$prefix}z-index--click-drag-button);
+    z-index: var(--#{$prefix}click-drag-button--z-index);
 
     body.visual-debugger--activated & {
-      background-color: var(--#{$prefix}click-drag-button--background-color);
-      cursor: grab;
-      opacity: 1;
-      transition: transform var(--#{$prefix}transition-speed);
+      background-color: var(--#{$prefix}click-drag-button--background-color--on-activated);
+      cursor: var(--#{$prefix}click-drag-button--cursor--on-activated);
+      opacity: var(--#{$prefix}click-drag-button--opacity--on-activated);
 
       &:hover {
-        transform: translateY(-50%) scale(1.15);
+        transform: var(--#{$prefix}click-drag-button--transform--on-activated--hover);
       }
 
       &:active {
-        background-color: var(--#{$prefix}click-drag-button--background-color--active);
-        cursor: grabbing;
+        background-color: var(--#{$prefix}click-drag-button--background-color--on-activated--active);
+        cursor: var(--#{$prefix}click-drag-button--cursor--on-activated--active);
       }
     }
   }
 
+  // The content copy component.
   .content-copy-data {
-    align-items: center;
-    column-gap: calc(var(--#{$prefix}controller--gutter) * .25);
+    align-items: var(--#{$prefix}content-copy-data--align-items);
+    column-gap: var(--#{$prefix}content-copy-data--column-gap);
     display: flex;
-    flex-direction: row;
-    margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
-    margin-top: calc(var(--#{$prefix}controller--gutter) * .25);
+    flex-direction: var(--#{$prefix}content-copy-data--flex-direction);
+    margin: var(--#{$prefix}content-copy-data--margin);
 
     button {
-      background-color: transparent;
-      border: 0;
+      background-color: var(--#{$prefix}content-copy-data--button--background-color);
+      border: var(--#{$prefix}content-copy-data--button--border);
       cursor: pointer;
       transition: transform var(--#{$prefix}transition-speed);
 
       &:hover {
-        transform: scale(1.2);
+        transform: var(--#{$prefix}content-copy-data--button--transform--on-hover);
       }
     }
   }

@@ -68,8 +68,6 @@ $color--object-type--page: $color--gray;
 $color--object-type--region: $color--mid-teal;
 $color--object-type--block: $color--mid-olive;
 $color--object-type--field: $color--dark-forest;
-$color--icon--selected-true: $color--mid-green;
-$color--icon--selected-false: $color--mid-maroon;
 
 // Conf
 $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
@@ -197,45 +195,47 @@ $z-index--base: 10000;
   --#{$prefix}color--object-type--views_view_unformatted: var(--#{$prefix}color--dark-forest--rgb);
 
   --#{$prefix}color--shadow--rgb: #{hex-to-rgb($color--shadow)};
-  --#{$prefix}color--icon--selected-true: var(--#{$prefix}color--mid-green);
-  --#{$prefix}color--icon--selected-false: var(--#{$prefix}color--mid-maroon);
-
-  // Transparency
-  --#{$prefix}transparency--shadow: .2;
 
   // Click-drag button.
   --#{$prefix}click-drag-button--background-color: var(--#{$prefix}color--gray-30);
-  --#{$prefix}click-drag-button--background-color--active: var(--#{$prefix}color--gray-10);
+  --#{$prefix}click-drag-button--background-color--on-activated: var(--#{$prefix}color--gray-10);
+  --#{$prefix}click-drag-button--background-color--on-activated--active: var(--#{$prefix}color--gray-30);
   --#{$prefix}click-drag-button--border: solid 1px var(--#{$prefix}color--mid-teal);
-  --#{$prefix}click-drag-button--border-radius: 50%;
+  --#{$prefix}click-drag-button--border-radius: #{to-rem(50px)};
+  --#{$prefix}click-drag-button--cursor: not-allowed;
+  --#{$prefix}click-drag-button--cursor--on-activated: grab;
+  --#{$prefix}click-drag-button--cursor--on-activated--active: grabbing;
+  --#{$prefix}click-drag-button--opacity: 0.5;
+  --#{$prefix}click-drag-button--opacity--on-activated: 1;
   --#{$prefix}click-drag-button--size: 3rem;
+  --#{$prefix}click-drag-button--top: 50%;
+  --#{$prefix}click-drag-button--transform: translateY(-50%);
+  --#{$prefix}click-drag-button--transform--on-activated--hover: translateY(-50%) scale(1.15);
+  --#{$prefix}click-drag-button--transform-origin: center center;
+  --#{$prefix}click-drag-button--z-index: 10;
 
-  // Conf
-  --#{$prefix}controller--gutter: 30px;
-  --#{$prefix}controller--max-width: 50%;
-  --#{$prefix}controller--min-width: #{to-rem(150px)};
-  --#{$prefix}z-index--controller: var(--#{$prefix}z-index--base) + 1000;
-  --#{$prefix}controller--font-size--title: 1.25rem;
-  --#{$prefix}controller--font-size: .875rem;
-
-  // Transparency.
-  --#{$prefix}transparency--instance-background: .05;
-  --#{$prefix}transparency--instance-background--hover: .2;
-  --#{$prefix}transparency--instance-background--selected: .65;
+  // Object type.
+  --#{$prefix}object-type--transparency: .05;
+  --#{$prefix}object-type--transparency--hover: .2;
+  --#{$prefix}object-type--transparency--selected: .65;
 
   // Buttons.
-  --#{$prefix}button--controller-checkbox-width: 2rem;
-  --#{$prefix}button--controller-checkbox-height: var(--#{$prefix}button--controller-checkbox-width);
+  --#{$prefix}checkbox-toggle--height: var(--#{$prefix}checkbox-toggle--width);
+  --#{$prefix}checkbox-toggle--opacity: 0;
+  --#{$prefix}checkbox-toggle--position: absolute;
+  --#{$prefix}checkbox-toggle--width: 2rem;
 
   // Shadow.
-  --#{$prefix}transparency--shadow: .2;
+  --#{$prefix}shadow--transparency: .2;
   --#{$prefix}shadow--blur: 15px;
-  --#{$prefix}shadow--full: 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}transparency--shadow)), 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}transparency--shadow));
+  --#{$prefix}shadow--full: 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}shadow--transparency)), 0 0 var(--#{$prefix}shadow--blur) 0 rgba(var(--#{$prefix}color--shadow--rgb), var(--#{$prefix}shadow--transparency));
 
   // Icon font
-  --#{$prefix}icon-font-size: 1.15rem;
-  --#{$prefix}icon-font-size--mid-large: 1.5rem;
-  --#{$prefix}icon-font-size--large: 1.75rem;
+  --#{$prefix}icon--font-size: 1.15rem;
+  --#{$prefix}icon--font-size--mid-large: 1.5rem;
+  --#{$prefix}icon--font-size--large: 1.75rem;
+  --#{$prefix}icon--color--selected-true: var(--#{$prefix}color--mid-green);
+  --#{$prefix}icon--color--selected-false: var(--#{$prefix}color--mid-maroon);
 
   // Base
   --#{$prefix}base--left: 0;
@@ -248,10 +248,7 @@ $z-index--base: 10000;
   // Instance
   --#{$prefix}instance--background-blend-mode: difference;
   --#{$prefix}instance--position: absolute;
-  --#{$prefix}z-index--instance: var(--#{$prefix}z-index--base) + 1;
   --#{$prefix}instance--border: solid 1px var(--#{$prefix}color--gray-40);
-  --#{$prefix}color--instance-background: var(--#{$prefix}color--light-yellow);
-  --#{$prefix}color--instance-background--hover: var(--#{$prefix}color--mid-navy);
 
   // Controller
   --#{$prefix}controller--gutter: 30px;
@@ -259,18 +256,30 @@ $z-index--base: 10000;
   --#{$prefix}controller--border-radius: 0;
   --#{$prefix}controller--bottom: 0;
   --#{$prefix}controller--box-shadow: var(--#{$prefix}shadow--full);
-  --#{$prefix}controller--font-size: 1rem;
+  --#{$prefix}controller--font-size: .875rem;
   --#{$prefix}controller--font-size--title: 1.25rem;
   --#{$prefix}controller--max-width: 50%;
   --#{$prefix}controller--min-width: #{to-rem(150px)};
   --#{$prefix}controller--position: fixed;
   --#{$prefix}controller--right: 0;
   --#{$prefix}controller--top: 0;
+  --#{$prefix}controller--transform--on-deactivated: translateX(#{to-rem(-10px)});
   --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);
 
-  // Selected Element
+  // Selected Element.
   --#{$prefix}selected-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
   --#{$prefix}selected-element--info--flex-direction: row;
+
+  // Content copy data.
+  --#{$prefix}content-copy-data--align-items: center;
+  --#{$prefix}content-copy-data--column-gap: calc(var(--#{$prefix}controller--gutter) * .25);
+  --#{$prefix}content-copy-data--flex-direction: row;
+  --#{$prefix}content-copy-data--margin: calc(var(--#{$prefix}controller--gutter) * .25) 0;
+
+  // Content copy data <button>.
+  --#{$prefix}content-copy-data--button--background-color: transparent;
+  --#{$prefix}content-copy-data--button--border: 0;
+  --#{$prefix}content-copy-data--button--transform--hover: scale(1.2);
 
   // <pre>
   --#{$prefix}controller--pre--background-color: var(--#{$prefix}color--gray-10);
@@ -285,12 +294,19 @@ $z-index--base: 10000;
   --#{$prefix}h--margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
   --#{$prefix}h--margin-top: calc(var(--#{$prefix}controller--gutter) * .5);
 
-  // Controller Activati9on form.
-  --#{$prefix}controller-activation-form--background-color: var(--#{$prefix}color--white);
-  --#{$prefix}controller-activation-form--border-radius: #{to-rem(8px)};
-  --#{$prefix}controller-activation-form--margin-left: calc(var(--#{$prefix}controller--gutter) * -1);
-  --#{$prefix}controller-activation-form--margin-top: calc(var(--#{$prefix}controller--gutter) * -1);
-  --#{$prefix}controller-activation-form--padding: calc(var(--#{$prefix}controller--gutter) * .5);
+  // Controller Activation form.
+  --#{$prefix}controller--activation-form--background-color: var(--#{$prefix}color--white);
+  --#{$prefix}controller--activation-form--border-radius: #{to-rem(8px)};
+  --#{$prefix}controller--activation-form--margin-left: calc(var(--#{$prefix}controller--gutter) * -1);
+  --#{$prefix}controller--activation-form--margin-top: calc(var(--#{$prefix}controller--gutter) * -1);
+  --#{$prefix}controller--activation-form--padding: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}controller--activation-form--background-color--on-deactivated: var(--#{$prefix}color--white);
+  --#{$prefix}controller--activation-form--transform--on-deactivated: translateX(-45px);
+  --#{$prefix}controller--activation-form-wrapper--align-items: center;
+  --#{$prefix}controller--activation-form-wrapper--column-gap: var(--#{$prefix}controller--gutter);
+  --#{$prefix}controller--activation-form-wrapper--flex-direction: row;
+  --#{$prefix}controller--activation-form-wrapper--justify-content: flex-start;
+  --#{$prefix}controller--activation-form-wrapper--flex-direction: row;
 }
 
 $object-type-colors: (
@@ -322,9 +338,3 @@ $object-type-colors: (
 
 // Conf
 $z-index--controller: $z-index--base + 1000;
-
-// Colors.
-$color--instance-background: yellow;
-$color--instance-background--hover: blue;
-$color--instance-shadow: gray;
-$color--instance-border: gray;

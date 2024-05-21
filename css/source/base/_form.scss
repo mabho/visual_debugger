@@ -2,10 +2,11 @@
 
   // Checkbox toggle.
   .checkbox-toggle {
-    height: var(--#{$prefix}button--controller-checkbox-height);
-    opacity: 0;
-    position: absolute;
-    width: var(--#{$prefix}button--controller-checkbox-width);
+    cursor: pointer;
+    height: var(--#{$prefix}checkbox-toggle--height);
+    opacity: var(--#{$prefix}checkbox-toggle--opacity);
+    position: var(--#{$prefix}checkbox-toggle--position);
+    width: var(--#{$prefix}checkbox-toggle--width);
 
     + .item-activated,
     ~ .item-deactivated {
