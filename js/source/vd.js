@@ -40,12 +40,18 @@
 
     // Resize Observer.
     triggerResizeObserver(themeDebugNodes) {
-      const { layerIdAttributeName, layerTargetIdAttributeName } = this.layerAttributes;
-      const resizeObserver = new ResizeObserver((element) => {
-        const affectedLayer = element[0].target;
+      const { body } = this;
+      const {
+        layerIdAttributeName,
+        layerTargetIdAttributeName
+      } = this.layerAttributes;
+      const resizeObserver = new ResizeObserver((entries) => {
+        entries.forEach(entry => {
+          const affectedLayer = entry.target;
         const instanceLayerId = affectedLayer.getAttribute(layerIdAttributeName);
-        const instanceLayerRef = this.body.querySelector(`[${layerTargetIdAttributeName}="${instanceLayerId}"]`);
+          const instanceLayerRef = body.querySelector(`[${layerTargetIdAttributeName}="${instanceLayerId}"]`);
         this.setInstanceLayerSizeAndPosition(instanceLayerRef, affectedLayer);
+        });
       });
 
       // Loop through all theme debug nodes.
@@ -255,14 +261,6 @@
         }
       );
 
-      // Establish a resize observer.
-      const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(() => {
-          this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
-        });
-      });
-      resizeObserver.observe(instanceLayerRef);
-
       return thisLayer;
     },
 
@@ -409,7 +407,7 @@
       
       // Activate observers.
       this.triggerMutationObserver(themeDebugNodes);
-      // this.triggerResizeObserver(themeDebugNodes);
+      this.triggerResizeObserver(themeDebugNodes);
 
       // Remove duplicates.
       let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
