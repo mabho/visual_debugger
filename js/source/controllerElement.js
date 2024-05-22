@@ -172,7 +172,7 @@ Drupal.controllerElement = {
     // Elements
     const itemWrapper = document.createElement('div');
     const itemLabelWrapper = document.createElement('div');
-    const clipboardContent = document.createElement('pre');
+    const clipboardContent = document.createElement('input');
     const clipboardButton = document.createElement('button');
 
     // Label and content
@@ -181,13 +181,14 @@ Drupal.controllerElement = {
       itemLabelClass
     );
     itemLabelWrapper.textContent = itemLabel;
-    clipboardContent.textContent = itemContent;
+    clipboardContent.value = itemContent;
+    clipboardContent.readOnly = true;
 
     // Copy-to-clipboard button.
     clipboardButton.classList.add(classNameIconCopyToClipboard);
     clipboardButton.setAttribute('aria-label', stringCopyToClipboard);
     clipboardButton.addEventListener('click', function() {
-      self.clipboardCopy(clipboardContent.textContent);
+      self.clipboardCopy(clipboardContent);
     });
 
     itemWrapper.append(
@@ -204,17 +205,15 @@ Drupal.controllerElement = {
    * @param {string} textToCopy
    * @return {void}
    */
-  clipboardCopy(textToCopy) {
+  clipboardCopy(contentRefField) {
+    const textToCopy = contentRefField.textContent;
     if (navigator.clipboard) {
+      console.warn(`copied using this method: ${textToCopy}`)
       navigator.clipboard.writeText(textToCopy);
     } else {
-      const { body } = this;
-      const textarea = document.createElement('textarea');
-      textarea.value = textToCopy;
-      body.appendChild(textarea);
-      textarea.select();
+      contentRefField.select();
       document.execCommand('copy');
-      body.removeChild(textarea);
+      contentRefField.focus();
     }
   },
 
