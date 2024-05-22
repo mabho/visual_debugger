@@ -174,7 +174,10 @@
         classNameObjectTypeTyped(thisThemeElement.getObjectType()),
         classNameInstanceLayerUnchecked
       );
+
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
+      thisLayer.style.zIndex =
+        this.getCalculatedDomDepth(instanceLayerRef);
 
       // Set the size and position of the instance layer.
       this.setInstanceLayerSizeAndPosition(thisLayer, instanceLayerRef);
