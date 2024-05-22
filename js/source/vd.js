@@ -246,11 +246,9 @@
 
           // Trigger the change in the default selected element in controller.
           if (checkboxSelector.checked === true) {
-            console.warn('this thing was checked');
             checkboxSelector.focus();
             controllerElementInstance.setDefaultThemeElement(thisThemeElement);
           } else {
-            console.warn('this thing is not checked');
             checkboxSelector.blur();
             controllerElementInstance.resetDefaultThemeElement(thisThemeElement);
           }
