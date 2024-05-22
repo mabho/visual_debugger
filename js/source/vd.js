@@ -48,9 +48,9 @@
       const resizeObserver = new ResizeObserver((entries) => {
         entries.forEach(entry => {
           const affectedLayer = entry.target;
-        const instanceLayerId = affectedLayer.getAttribute(layerIdAttributeName);
+          const instanceLayerId = affectedLayer.getAttribute(layerIdAttributeName);
           const instanceLayerRef = body.querySelector(`[${layerTargetIdAttributeName}="${instanceLayerId}"]`);
-        this.setInstanceLayerSizeAndPosition(instanceLayerRef, affectedLayer);
+          this.setInstanceLayerSizeAndPosition(instanceLayerRef, affectedLayer);
         });
       });
 
@@ -61,7 +61,11 @@
       });
     },
 
-    // Mutation Observer.
+    /**
+     * Activates the Mutation Observer.
+     * @param {object} themeDebugNodes
+     *   This is the array of theme debug nodes.
+     */
     triggerMutationObserver: function(themeDebugNodes) {
       const mutationObserver = new MutationObserver(() => {
         themeDebugNodes.forEach((instance) => {
@@ -112,7 +116,13 @@
         .sort();
     },
 
-    // Gets the DOM depth of the referenced element.
+    /**
+     * Gets the DOM depth of the referenced element.
+     * @param {object} element
+     *   The object being analyzed. 
+     * @returns
+     *   The number that corresponds to the element depth.
+     */
     getCalculatedDomDepth(element) {
       let depth = 0;
       while (element.parentNode) {
@@ -122,7 +132,12 @@
       return depth;
     },
 
-    // Base Layer.
+    // 
+    /**
+     * Generates the base layer from scratch.
+     * @returns {object}
+     *   The base layer object.
+     */
     getBaseLayer() {
       const thisLayer = document.createElement('div');
       const {
@@ -134,14 +149,25 @@
       return thisLayer;
     },
 
-    // Filters all checked nodes.
+    /**
+     * Filters all checked nodes.
+     * @returns {boolean}
+     *   An array of nodes.
+     */
     getCheckedNodes() {
       return this.themeDebugNodes.filter((node) => {
         return node.instanceLayer.classList.contains(this.classNames.classNameInstanceLayerChecked);
       });
     },
 
-    // Instance Layer.
+    /**
+     * Generates an instance layer from scratch; applies all the attributes,
+     * classes and event observers.
+     * @param {*} thisThemeElement 
+     * @param {*} instanceLayerRef 
+     * @param {*} instanceLayerId 
+     * @returns 
+     */
     generateInstanceLayer(thisThemeElement, instanceLayerRef, instanceLayerId) {
 
       // This instance layer.
@@ -267,7 +293,15 @@
       return thisLayer;
     },
 
-    // Instance Layer Size and Position calculations.
+    // 
+    /**
+     * Applies the top and left offset, as well as width and height of the
+     * target element.
+     * @param {object} instanceLayerTarget
+     *   The target element to apply the size and position to.
+     * @param {object} instanceLayerRef
+     *   The reference element to get the size and position from.
+     */
     setInstanceLayerSizeAndPosition(instanceLayerTarget, instanceLayerRef) {
       const instanceLayerRefRect = instanceLayerRef.getBoundingClientRect();
       const top = Math.round(instanceLayerRefRect.top + window.scrollY);
@@ -283,7 +317,11 @@
       instanceLayerTarget.style.left = `${left}px`;
     },
 
-    // Code initialization.
+    /**
+     * Code initialization.
+     * @param {object} context 
+     * @param {object} settings 
+     */
     attach: function (context, settings) {
       const { body } = this;
       const { classNameInitialized } = this.classNames;
@@ -294,6 +332,12 @@
     },
 
     // Main portion of the code.
+    /**
+     * This is the main portion of the code.
+     * @param {object} context
+     * @param {object} settings 
+     * @param {object} body 
+     */
     main: function(context, settings, body) {
 
       // Regular expressions.
@@ -407,7 +451,7 @@
       console.warn(themeDebugNodes);
 
       this.themeDebugNodes = themeDebugNodes;
-      
+
       // Activate observers.
       this.triggerMutationObserver(themeDebugNodes);
       this.triggerResizeObserver(themeDebugNodes);
