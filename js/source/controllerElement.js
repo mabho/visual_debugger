@@ -94,15 +94,32 @@ Drupal.controllerElement = {
     localStorageControllerWidthKey: 'controllerWidth',
   },
 
-  // Getter/Setter for the controller layer.
+  /**
+   * Getter for the controller object.
+   * @returns 
+   */
   getControllerLayer() {
     return this.controllerLayer;
   },
+
+  /**
+   * Setter for the controller object.
+   * @param {object} controllerLayer
+   *   The controller object.
+   */
   setControllerLayer(controllerLayer) {
     this.controllerLayer = controllerLayer;
   },
 
-  // Executed upon initialization.
+  /**
+   * Controller initialization.
+   * 
+   * @param {object} baseLayer
+   *   The base layer object.
+   * @param {object} themeDebugNodes
+   *   Carries relevant information on the instance layers.
+   * @return void
+   */
   init(baseLayer, themeDebugNodes) {
     this.baseLayer = baseLayer;
     this.themeDebugNodes = themeDebugNodes;
@@ -124,7 +141,13 @@ Drupal.controllerElement = {
     });
   },
 
-  // Toggle the debugger activation and update localStorage.
+  // 
+  /**
+   * Toggle the debugger activation and update localStorage.
+   * 
+   * @param {boolean} activated
+   *   The activation status.
+   */
   toggleDebuggerActivated(activated = true) {
     const {
       classNameBaseLayerActivated,
@@ -156,7 +179,16 @@ Drupal.controllerElement = {
     }
   },
 
-  prepareContentCopyData(itemLabel, itemLabelClass, itemContent) {
+  /**
+   * Generates a structure with copy-to-clipboard capability.
+   * 
+   * @param {*} itemLabel 
+   * @param {*} itemLabelClass 
+   * @param {*} itemContent 
+   * @returns {object}
+   *   The copy-to-clipboard object.
+   */
+  generateContentCopyData(itemLabel, itemLabelClass, itemContent) {
 
     // Configuration
     const { body } = this;
@@ -217,7 +249,12 @@ Drupal.controllerElement = {
     }
   },
 
-  // Generate the controller layer; this is the main component structure.
+  /**
+   * Generates the controller layer with all its components.
+   * 
+   * @returns {object}
+   *   The controller layer with all its components. 
+   */
   generateControllerLayer() {
     const {
       classNameVisualDebugger,
@@ -328,6 +365,12 @@ Drupal.controllerElement = {
     return controllerLayer;
   },
 
+  /**
+   * Generates the selected element layer with all its components.
+   * 
+   * @returns {object}
+   *   The selected element layer. 
+   */
   generateSelectedElementLayer() {
     const selectedElementLayer = document.createElement('div');
     const selectedElementLayerTitle = document.createElement('h3');
@@ -406,7 +449,9 @@ Drupal.controllerElement = {
     return selectedElementLayer;
   },
 
-  // Update the controller position depending on its activation status.
+  /**
+   * Update the controller position depending on its activation status.
+   */
   checkControllerActivation() {
     const { controllerDeactivatedGap } = this.constants;
     const controllerActivated = this.getControllerActivationStatus();
@@ -423,13 +468,17 @@ Drupal.controllerElement = {
     this.controllerLayer.style.right = `${newControllerPosition}px`;
   },
 
-  // This method needs to be requested after controller is activated.
+  /**
+   * Execute post activation tasks.
+   */
   executePostActivation() {
     this.generateSliderButton();
     this.checkControllerActivation();
   },
 
-  // Create a slider button.
+  /**
+   * Generate a slider button.
+   */
   generateSliderButton() {
     const self = this;
     const {
@@ -487,7 +536,12 @@ Drupal.controllerElement = {
     controllerLayer.appendChild(sliderButton);
   },
 
-  // Get an updated status on controller activation
+  /**
+   * Raises information on controller component activation status.
+   * 
+   * @returns {boolean}
+   *   The activation status of the controller component.
+   */
   getControllerActivationStatus() {
     const { controllerActivatedAttributeName } = this.layerAttributes;
     const controllerLayer = this.getControllerLayer();
@@ -499,33 +553,59 @@ Drupal.controllerElement = {
     this.activated = true;
   },
 
+  /**
+   * Retrieves the node where the basic information is displayed.
+   * 
+   * @returns {object}
+   *   The node where the basic information is displayed.
+   */
   getSelectedElementInfoLayer() {
     return this.getControllerLayer().querySelector(
       `#${this.ids.idControllerElementInfo}`
     );
   },
 
+  /**
+   * Retrieves the node where the suggestions are displayed.
+   * 
+   * @returns {object}
+   *   The node where the suggestions are displayed.
+   */
   getSelectedElementSuggestionsLayer() {
     return this.getControllerLayer().querySelector(
       `#${this.ids.idControllerElementSuggestions}`
     );
   },
 
+  /**
+   * Retrieves the node where the file path layer is displayed.
+   * 
+   * @returns {object}
+   *   The node where the file path layer is displayed.
+   */
   getSelectedElementTemplateFilePathLayer() {
     return this.getControllerLayer().querySelector(
       `#${this.ids.idControllerElementTemplateFilePath}`
     );
   },
 
-  // Establishes the element that is currently selected.
-  // Active is priority; default comes right after; null if none.
+  
+  /**
+   * Establishes the element that is currently selected.
+   * Active is priority; default comes right after; null if none.
+   * 
+   * @returns {object}
+   *   The object to be displayed on the controller layer.
+   */
   getSelectedThemeElement() {
     return this.activeThemeElement || 
       this.defaultThemeElement || 
       null;
   },
 
-  // Basic information on the selected element.
+  /**
+   * Set the basic information of the selected element.
+   */
   setSelectedElementInfo() {
     const selectedThemeElement = this.getSelectedThemeElement();
     let objectTypeText = '';
@@ -570,6 +650,9 @@ Drupal.controllerElement = {
     }
   },
 
+  /**
+   * Set the suggestions of the selected element.
+   */
   setSelectedElementSuggestions() {
     const selectedThemeElement = this.getSelectedThemeElement();
     const selectedElementSuggestionsLayer = this.getSelectedElementSuggestionsLayer();
@@ -589,7 +672,7 @@ Drupal.controllerElement = {
     ) {
       const clipboardContent = selectedThemeElement.suggestions;
       clipboardContent.forEach((item) => {
-        const themeSuggestion = this.prepareContentCopyData(
+        const themeSuggestion = this.generateContentCopyData(
           null,
           item.activated
             ? classNameIconSelectedTrue
@@ -601,6 +684,9 @@ Drupal.controllerElement = {
     }
   },
 
+  /**
+   * Set the file path of the selected element.
+   */
   setSelectedElementTemplateFilePath() {
     const selectedThemeElement = this.getSelectedThemeElement();
     const selectedElementTemplateFilePathWrapper = this.getSelectedElementTemplateFilePathLayer();
@@ -620,7 +706,7 @@ Drupal.controllerElement = {
         selectedThemeElement.filePath !== null
     ) {
       const filePath = selectedThemeElement.filePath;
-      const filePathWrapper = this.prepareContentCopyData(
+      const filePathWrapper = this.generateContentCopyData(
         stringFilePath,
         classNameSelectedElementTemplateFilePathLabel,
         filePath,
@@ -630,35 +716,50 @@ Drupal.controllerElement = {
     }
   },
 
+  /**
+   * Update the selected element information.
+   */
   updateSelectedElement() {
     this.setSelectedElementInfo();
     this.setSelectedElementSuggestions();
     this.setSelectedElementTemplateFilePath();
   },
 
-  // Active theme element.
+  /**
+   * Configure the active theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The instance layer being highlighted.
+   */
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
     this.updateSelectedElement();
   },
 
-  resetActiveThemeElement(instanceLayerRef) {
+  /**
+   * Reset the active theme element.
+   */
+  resetActiveThemeElement() {
     this.activeThemeElement = null;
     this.updateSelectedElement();
   },
-  
-  // Default theme element.
+
+  /**
+   * Configure the default theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The instance layer being highlighted.
+   */
   setDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = instanceLayerRef;
     this.updateSelectedElement();
   },
 
+  /**
+   * Reset the default theme element.
+   */
   resetDefaultThemeElement() {
     this.defaultThemeElement = null;
     this.updateSelectedElement();
   },
-
-  displayActiveElement() {
-    return this.activeThemeElement;
-  }
 }

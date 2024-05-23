@@ -138,7 +138,7 @@
      * @returns {object}
      *   The base layer object.
      */
-    getBaseLayer() {
+    generateBaseLayer() {
       const thisLayer = document.createElement('div');
       const {
         classNameVisualDebugger,
@@ -355,7 +355,7 @@
       this.controllerElement = controllerElementInstance;
 
       // Initialize the base element.
-      const baseLayer = this.getBaseLayer();
+      const baseLayer = this.generateBaseLayer();
       body.appendChild(baseLayer);
 
       // Initialize an array to hold comment nodes.
