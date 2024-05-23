@@ -39,7 +39,8 @@
     }
 
     h3 {
-      font-size: var(--#{$prefix}controller--font-size--title);
+      border-bottom: var(--#{$prefix}controller--h3--border-bottom);
+      font-size: var(--#{$prefix}controller--h3--font-size);
     }
 
     label {

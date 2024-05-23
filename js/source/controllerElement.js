@@ -32,6 +32,7 @@ Drupal.controllerElement = {
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
     idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
+    idControllerActiveElementInfo: 'visual-debugger--controller--active-element--info',
     idControllerActivationCheckbox: 'debuggerActivationCheckbox',
   },
 
@@ -43,12 +44,15 @@ Drupal.controllerElement = {
     classNameBaseLayerDeactivated: 'visual-debugger--deactivated',
     classNameForm: 'activation-form',
     classNameFormWrapper: 'activation-form-wrapper',
+    classNameElementInfoTextContent: 'tag',
+    classNameElementInfoEmpty: 'tag--empty',
+    classNameElementInfoObjectType: 'tag--object-type',
+    classNameElementInfoPropertyHook: 'tag--prop-hook',
+    classNameActiveElementLayer: 'active-element',
+    classNameActiveElementInfo: 'active-element__info',
     classNameSelectedElementLayer: 'selected-element',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
     classNameSelectedElementInfo: 'selected-element__info',
-    classNameSelectedElementInfoTextContent: 'tag',
-    classNameSelectedElementInfoObjectType: 'tag--object-type',
-    classNameSelectedElementInfoPropertyHook: 'tag--prop-hook',
     classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
     classNameSelectedElementSuggestions: 'selected-element__suggestions',
     classNameSelectedElementSuggestionsSuggestion: 'suggestion',
@@ -87,6 +91,8 @@ Drupal.controllerElement = {
     stringTemplateFilePath: Drupal.t('Template File Path'),
     stringFolderPath: Drupal.t('Folder path'),
     stringFilePath: Drupal.t('File path'),
+    stringActiveElement: Drupal.t('Active Element'),
+    stringNoInfoAvailable : Drupal.t('No information available')
   },
 
   system: {
@@ -339,6 +345,9 @@ Drupal.controllerElement = {
     formElement.classList.add(classNameForm);
     formElement.appendChild(wrapperDiv);
 
+    // Active element layer.
+    const activeElementLayer = this.generateActiveElementLayer();
+
     // Selected element layer.
     const selectedElementLayer = this.generateSelectedElementLayer();
 
@@ -352,17 +361,55 @@ Drupal.controllerElement = {
     controllerLayer.style.width =
       localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
 
-    // Activation checkbox form.
-    controllerLayer.appendChild(formElement);
-
     // Selected element layer.
-    controllerLayer.appendChild(selectedElementLayer);
+    controllerLayer.append(
+      formElement,
+      activeElementLayer,
+      selectedElementLayer,
+    );
 
     // Load the controller layer just created to the current object.
     this.setControllerLayer(controllerLayer);
 
     // Return
     return controllerLayer;
+  },
+
+  /**
+   * Generates the base container where the hovered element is displayed.
+   */
+  generateActiveElementLayer() {
+    const {
+      classNameActiveElementLayer,
+      classNameActiveElementInfo,
+    } = this.classNames;
+    const {
+      idControllerActiveElementInfo,
+    } = this.ids;
+    const {
+      stringActiveElement,
+    } = this.strings;
+
+    // Active element layer.
+    const activeElementLayer = document.createElement('div');
+    activeElementLayer.classList.add(classNameActiveElementLayer);
+
+    // Active element title.
+    const activeElementLayerTitle = document.createElement('h3');
+    activeElementLayerTitle.textContent = stringActiveElement;
+
+    // Active element basic info.
+    const activeElementLayerBasicInfo = document.createElement('div');
+    activeElementLayerBasicInfo.setAttribute('id', idControllerActiveElementInfo);
+    activeElementLayerBasicInfo.classList.add(classNameActiveElementInfo);
+
+    // Load everything to the active element layer.
+    activeElementLayer.append(
+      activeElementLayerTitle,
+      activeElementLayerBasicInfo,
+    );
+
+    return activeElementLayer;
   },
 
   /**
@@ -396,8 +443,6 @@ Drupal.controllerElement = {
 
     selectedElementLayer.classList.add(classNameSelectedElementLayer);
     selectedElementLayerTitle.textContent = stringSelectedElement;
-    selectedElementLayer.appendChild(selectedElementLayerTitle);
-    selectedElementLayer.appendChild(document.createElement('hr'));
 
     // Selected element basic info.
     const selectedElementBasicInfoWrapper = document.createElement('div');
@@ -440,6 +485,7 @@ Drupal.controllerElement = {
 
     // Append everything to the selected element layer.
     selectedElementLayer.append(
+      selectedElementLayerTitle,
       selectedElementBasicInfoWrapper,
       selectedElementSuggestionsWrapper,
       selectedElementTemplateFilePathWrapper
@@ -553,6 +599,12 @@ Drupal.controllerElement = {
     this.activated = true;
   },
 
+  getActiveElementInfoLayer() {
+    return this.getControllerLayer().querySelector(
+      `#${this.ids.idControllerActiveElementInfo}`
+    );
+  },
+
   /**
    * Retrieves the node where the basic information is displayed.
    * 
@@ -589,7 +641,6 @@ Drupal.controllerElement = {
     );
   },
 
-  
   /**
    * Establishes the element that is currently selected.
    * Active is priority; default comes right after; null if none.
@@ -604,49 +655,68 @@ Drupal.controllerElement = {
   },
 
   /**
-   * Set the basic information of the selected element.
+   * 
+   * @param {object} themeElement 
+   * @param {array} classes 
+   * @returns 
    */
-  setSelectedElementInfo() {
-    const selectedThemeElement = this.getSelectedThemeElement();
-    let objectTypeText = '';
-    const {
-      classNameSelectedElementInfoTextContent,
-      classNameSelectedElementInfoObjectType,
-    } = this.classNames;
+  setElementInfo(themeElement, targetLayer) {
 
     // Clear legacy information showing in the suggestions layer.
-    const selectedElementInfoLayer = this.getSelectedElementInfoLayer();
-    selectedElementInfoLayer.innerHTML = '';
+    targetLayer.innerHTML = '';
+
+    const {
+      classNameElementInfoTextContent,
+      classNameElementInfoEmpty,
+      classNameElementInfoObjectType,
+      classNameElementInfoPropertyHook,
+    } = this.classNames
+
+    // Return early if the theme element is not available.
+    if (themeElement === null) {
+      const { stringNoInfoAvailable } = this.strings;
+      const noInfoWrapper = document.createElement('div');
+      noInfoWrapper.classList.add(
+        classNameElementInfoTextContent,
+        classNameElementInfoEmpty
+      );
+      noInfoWrapper.textContent = stringNoInfoAvailable;
+      targetLayer.append(noInfoWrapper);
+      return;
+    }
+
+    let objectTypeText = '';
 
     // If an object type is available, display it.
     if (
-      selectedThemeElement !== null &&
-      selectedThemeElement.hasOwnProperty('objectType') &&
-      selectedThemeElement.objectType !== null
+      themeElement.hasOwnProperty('objectType') &&
+      themeElement.objectType !== null
     ) {
       const objectTypeWrapper = document.createElement('div');
       objectTypeWrapper.classList.add(
-        classNameSelectedElementInfoTextContent,
-        classNameSelectedElementInfoObjectType,
-        `${classNameSelectedElementInfoObjectType}--${selectedThemeElement.objectType}`,
+        classNameElementInfoTextContent,
+        classNameElementInfoObjectType,
+        `${classNameElementInfoObjectType}--${themeElement.objectType}`
       );
-      objectTypeText = selectedThemeElement.objectType;
+
+      objectTypeText = themeElement.objectType;
       objectTypeWrapper.textContent = objectTypeText;
-      selectedElementInfoLayer.appendChild(objectTypeWrapper);
+      targetLayer.append(objectTypeWrapper);
     }
 
     // If a property hook is available, display it.
     if (
-      selectedThemeElement !== null &&
-      selectedThemeElement.hasOwnProperty('propertyHook') &&
-      selectedThemeElement.propertyHook !== null &&
-      objectTypeText !== selectedThemeElement.propertyHook
+      themeElement.hasOwnProperty('propertyHook') &&
+      themeElement.propertyHook !== null &&
+      objectTypeText !== themeElement.propertyHook
     ) {
-      const elementTypeWrapper = document.createElement('div');
-      elementTypeWrapper.classList.add(
-        classNameSelectedElementInfoTextContent);
-      elementTypeWrapper.textContent = selectedThemeElement.propertyHook;
-      selectedElementInfoLayer.appendChild(elementTypeWrapper)
+      const propertyHookWrapper = document.createElement('div');
+      propertyHookWrapper.classList.add(
+        classNameElementInfoTextContent,
+        classNameElementInfoPropertyHook
+      );
+      propertyHookWrapper.textContent = themeElement.propertyHook;
+      targetLayer.append(propertyHookWrapper);
     }
   },
 
@@ -719,10 +789,9 @@ Drupal.controllerElement = {
   /**
    * Update the selected element information.
    */
-  updateSelectedElement() {
-    this.setSelectedElementInfo();
-    this.setSelectedElementSuggestions();
-    this.setSelectedElementTemplateFilePath();
+  updateActiveElement() {
+    const elementInfoLayer = this.getActiveElementInfoLayer();
+    this.setElementInfo(this.activeThemeElement, elementInfoLayer);
   },
 
   /**
@@ -733,7 +802,7 @@ Drupal.controllerElement = {
    */
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
-    this.updateSelectedElement();
+    this.updateActiveElement();
   },
 
   /**
@@ -741,7 +810,17 @@ Drupal.controllerElement = {
    */
   resetActiveThemeElement() {
     this.activeThemeElement = null;
-    this.updateSelectedElement();
+    this.updateActiveElement();
+  },
+
+  /**
+   * Update the selected element information.
+   */
+  updateSelectedElement() {
+    const elementInfoLayer = this.getSelectedElementInfoLayer();
+    this.setElementInfo(this.defaultThemeElement, elementInfoLayer);
+    this.setSelectedElementSuggestions();
+    this.setSelectedElementTemplateFilePath();
   },
 
   /**
