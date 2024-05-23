@@ -77,6 +77,9 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}z-index--base: 10000;
   --#{$prefix}transition-speed: .25s;
 
+  // Fonts
+  --#{$prefix}font-family--monospace: 'Courier New', monospace;
+
   // Colors.
 
   // Gray colors.
@@ -286,6 +289,7 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--input--border: solid #{to-rem(2px)} var(--#{$prefix}color--gray-40);
   --#{$prefix}controller--input--border--focus: solid #{to-rem(2px)} var(--#{$prefix}--#{$prefix}color--mid-teal);
   --#{$prefix}controller--input--border-radius: #{to-rem(5px)};
+  --#{$prefix}controller--input--font-family: var(--#{$prefix}font-family--monospace);
   --#{$prefix}controller--input--margin: 0;
   --#{$prefix}controller--input--overflow: hidden;
   --#{$prefix}controller--input--padding: calc(var(--#{$prefix}controller--gutter) * .125) calc(var(--#{$prefix}controller--gutter) * .5);

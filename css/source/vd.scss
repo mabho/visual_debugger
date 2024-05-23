@@ -51,6 +51,7 @@
       border: var(--#{$prefix}controller--input--border);
       border-radius: var(--#{$prefix}controller--input--border-radius);
       flex: 1;
+      font-family: var(--#{$prefix}controller--input--font-family);
       margin: var(--#{$prefix}controller--input--margin);
       overflow: var(--#{$prefix}controller--input--overflow);
       padding: var(--#{$prefix}controller--input--padding);
