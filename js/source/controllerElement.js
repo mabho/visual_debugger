@@ -523,6 +523,8 @@ Drupal.controllerElement = {
     this.checkControllerActivation();
     this.updateActiveElement();
     this.updateSelectedElement('selected');
+    this.setSelectedElementSuggestions();
+    this.setSelectedElementTemplateFilePath();
   },
 
   /**
@@ -677,21 +679,8 @@ Drupal.controllerElement = {
 
     // Return early if the theme element is not available.
     if (themeElement === null) {
-      const {
-        stringNoActiveElement,
-        stringNoSelectedElement,
-      } = this.strings;
-      const noInfoWrapper = document.createElement('div');
-      noInfoWrapper.classList.add(
-        classNameElementInfoTextContent,
-        classNameElementInfoEmpty
-      );
-      noInfoWrapper.textContent = (infoType == 'active')
-      ?
-        stringNoActiveElement
-        : stringNoSelectedElement;
-
-      targetLayer.append(noInfoWrapper);
+      const emptyTag = this.generateEmptyTag(infoType);
+      targetLayer.append(emptyTag);
       return;
     }
 
@@ -734,7 +723,7 @@ Drupal.controllerElement = {
    * Set the suggestions of the selected element.
    */
   setSelectedElementSuggestions() {
-    const selectedThemeElement = this.getSelectedThemeElement();
+    const selectedThemeElement = this.defaultThemeElement;
     const selectedElementSuggestionsLayer = this.getSelectedElementSuggestionsLayer();
     const {
       classNameIconSelectedTrue,
@@ -743,6 +732,13 @@ Drupal.controllerElement = {
 
     // Clear legacy information showing in the suggestions layer.
     selectedElementSuggestionsLayer.innerHTML = '';
+
+    // Return early if the theme element is not available.
+    if (selectedThemeElement === null) {
+      const emptyTag = this.generateEmptyTag('selected');
+      selectedElementSuggestionsLayer.append(emptyTag);
+      return;
+    }
 
     // If suggestions are available, display them.
     if (
@@ -768,7 +764,7 @@ Drupal.controllerElement = {
    * Set the file path of the selected element.
    */
   setSelectedElementTemplateFilePath() {
-    const selectedThemeElement = this.getSelectedThemeElement();
+    const selectedThemeElement = this.defaultThemeElement;
     const selectedElementTemplateFilePathWrapper = this.getSelectedElementTemplateFilePathLayer();
     const {
       classNameSelectedElementTemplateFilePath,
@@ -778,6 +774,13 @@ Drupal.controllerElement = {
 
     // Clear legacy information showing in the suggestions layer.
     selectedElementTemplateFilePathWrapper.innerHTML = '';
+
+    // Return early if the theme element is not available.
+    if (selectedThemeElement === null) {
+      const emptyTag = this.generateEmptyTag('selected');
+      selectedElementTemplateFilePathWrapper.append(emptyTag);
+      return;
+    }
 
     // If suggestions are available, display them.
     if (
@@ -794,6 +797,40 @@ Drupal.controllerElement = {
       );
       selectedElementTemplateFilePathWrapper.appendChild(filePathWrapper);
     }
+  },
+
+  /**
+   * An empty tag ready to be appended.
+   * 
+   * @param {string} infoType
+   *   The type of information to be displayed.
+   * @returns {object}
+   *   The empty tag ready to be appended.
+   */
+  generateEmptyTag(infoType) {
+    const {
+      classNameElementInfoTextContent,
+      classNameElementInfoEmpty,
+    } = this.classNames
+
+    const {
+      stringNoActiveElement,
+      stringNoSelectedElement,
+    } = this.strings;
+
+    const noInfoWrapper = document.createElement('div');
+
+    noInfoWrapper.classList.add(
+      classNameElementInfoTextContent,
+      classNameElementInfoEmpty
+    );
+
+    noInfoWrapper.textContent = (infoType == 'active')
+    ?
+      stringNoActiveElement
+      : stringNoSelectedElement;
+
+    return noInfoWrapper;
   },
 
   /**
