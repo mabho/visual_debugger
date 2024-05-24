@@ -100,8 +100,22 @@
       }
     }
 
+    // Active element.
+    .active-element {
+      margin: var(--#{$prefix}active-element--margin);
+
+      // Info.
+      &__info {
+        column-gap: var(--#{$prefix}active-element--info--column-gap);
+        display: flex;
+        flex-direction: var(--#{$prefix}active-element--info--flex-direction);
+      }
+    }
+
     // Selected element.
     .selected-element {
+      background-color: var(--#{$prefix}selected-element--background-color);
+      padding: var(--#{$prefix}selected-element--padding);
 
       // Info.
       &__info {
