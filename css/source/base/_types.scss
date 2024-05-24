@@ -1,17 +1,25 @@
 .visual-debugger {
   .tag {
     background-color: rgb(var(--#{$prefix}color--object-type)...);
-    color: $color--white;
-    display: inline-block;
-    line-height: 1.125;
-    padding: calc(var(--#{$prefix}controller--gutter) * .25);
+    color: var(--#{$prefix}tag--color);
+    display: var(--#{$prefix}tag--display);
+    line-height: var(--#{$prefix}tag--line-height);
+    padding: var(--#{$prefix}tag--padding);
 
+    // Object type.
     &--object-type {
       @each $type, $color in $object-type-colors {
         &--#{$type} {
           --#{$prefix}color--object-type: #{$color};
         }
       }
+    }
+
+    // When the tag is empty.
+    &--empty {
+      background-color: var(--#{$prefix}tag--empty--background-color);
+      color: var(--#{$prefix}tag--empty--color);
+      font-style: var(--#{$prefix}tag--empty--font-style);
     }
   }
 
