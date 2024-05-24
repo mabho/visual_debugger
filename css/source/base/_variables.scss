@@ -168,6 +168,15 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}color--gray: #{$color--gray};
   --#{$prefix}color--gray--rgb: #{hex-to-rgb($color--gray)};
 
+  // Tags
+  --#{$prefix}tag--color: var(--#{$prefix}color--white);
+  --#{$prefix}tag--display: inline-block;
+  --#{$prefix}tag--line-height: 1.125;
+  --#{$prefix}tag--padding: calc(var(--#{$prefix}controller--gutter) * .2) calc(var(--#{$prefix}controller--gutter) * .4);
+  --#{$prefix}tag--empty--background-color: var(--#{$prefix}color--gray-20);
+  --#{$prefix}tag--empty--color: var(--#{$prefix}color--gray-70);
+  --#{$prefix}tag--empty--font-style: italic;
+
   // Color utilities.
   --#{$prefix}color--object-type: var(--#{$prefix}color--gray--rgb);
   --#{$prefix}color--object-type--page: var(--#{$prefix}color--gray--rgb);
@@ -255,6 +264,7 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--bottom: 0;
   --#{$prefix}controller--box-shadow: var(--#{$prefix}shadow--full);
   --#{$prefix}controller--font-size: .875rem;
+  --#{$prefix}controller--font-size--title: 1.25rem;
   --#{$prefix}controller--h3--border-bottom: solid #{to-rem(2px)} var(--#{$prefix}color--gray-30);
   --#{$prefix}controller--h3--font-size: 1.25rem;
   --#{$prefix}controller--max-width: 50%;
@@ -265,7 +275,14 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--transform--on-deactivated: translateX(#{to-rem(-10px)});
   --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);
 
+  // Active Element.
+  --#{$prefix}active-element--margin: 0 0 calc(var(--#{$prefix}controller--gutter));
+  --#{$prefix}active-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}active-element--info--flex-direction: row;
+
   // Selected Element.
+  --#{$prefix}selected-element--background-color: var(--#{$prefix}color--gray-10);
+  --#{$prefix}selected-element--padding: calc(var(--#{$prefix}controller--gutter) * .5);
   --#{$prefix}selected-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
   --#{$prefix}selected-element--info--flex-direction: row;
 
@@ -292,8 +309,8 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--input--padding: calc(var(--#{$prefix}controller--gutter) * .125) calc(var(--#{$prefix}controller--gutter) * .5);
 
   // Titles.
-  --#{$prefix}h--margin-bottom: calc(var(--#{$prefix}controller--gutter) * .25);
-  --#{$prefix}h--margin-top: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}h--margin-bottom: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}h--margin-top: 0;
 
   // Controller Activation form.
   --#{$prefix}controller--activation-form--background-color: var(--#{$prefix}color--white);
