@@ -92,7 +92,8 @@ Drupal.controllerElement = {
     stringFolderPath: Drupal.t('Folder path'),
     stringFilePath: Drupal.t('File path'),
     stringActiveElement: Drupal.t('Active Element'),
-    stringNoInfoAvailable : Drupal.t('No information available')
+    stringNoActiveElement : Drupal.t('No active element.'),
+    stringNoSelectedElement : Drupal.t('No selected element.'),
   },
 
   system: {
@@ -520,6 +521,8 @@ Drupal.controllerElement = {
   executePostActivation() {
     this.generateSliderButton();
     this.checkControllerActivation();
+    this.updateActiveElement();
+    this.updateSelectedElement('selected');
   },
 
   /**
@@ -660,7 +663,7 @@ Drupal.controllerElement = {
    * @param {array} classes 
    * @returns 
    */
-  setElementInfo(themeElement, targetLayer) {
+  setElementInfo(themeElement, targetLayer, infoType = 'active') {
 
     // Clear legacy information showing in the suggestions layer.
     targetLayer.innerHTML = '';
@@ -674,13 +677,20 @@ Drupal.controllerElement = {
 
     // Return early if the theme element is not available.
     if (themeElement === null) {
-      const { stringNoInfoAvailable } = this.strings;
+      const {
+        stringNoActiveElement,
+        stringNoSelectedElement,
+      } = this.strings;
       const noInfoWrapper = document.createElement('div');
       noInfoWrapper.classList.add(
         classNameElementInfoTextContent,
         classNameElementInfoEmpty
       );
-      noInfoWrapper.textContent = stringNoInfoAvailable;
+      noInfoWrapper.textContent = (infoType == 'active')
+      ?
+        stringNoActiveElement
+        : stringNoSelectedElement;
+
       targetLayer.append(noInfoWrapper);
       return;
     }
@@ -818,7 +828,11 @@ Drupal.controllerElement = {
    */
   updateSelectedElement() {
     const elementInfoLayer = this.getSelectedElementInfoLayer();
-    this.setElementInfo(this.defaultThemeElement, elementInfoLayer);
+    this.setElementInfo(
+      this.defaultThemeElement,
+      elementInfoLayer,
+      'selected'
+    );
     this.setSelectedElementSuggestions();
     this.setSelectedElementTemplateFilePath();
   },
