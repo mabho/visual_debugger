@@ -270,7 +270,7 @@ $icomoon-font-path: "../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--max-width: 50%;
   --#{$prefix}controller--min-width: #{to-rem(150px)};
   --#{$prefix}controller--position: fixed;
-  --#{$prefix}controller--right: 0;
+  --#{$prefix}controller--right: calc(var(--#{$prefix}controller--max-width) * -1);
   --#{$prefix}controller--top: 0;
   --#{$prefix}controller--transform--on-deactivated: translateX(#{to-rem(-10px)});
   --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);

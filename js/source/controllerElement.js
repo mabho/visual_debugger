@@ -358,10 +358,6 @@ Drupal.controllerElement = {
       classNameBaseLayer
     );
 
-    // Slider controller.
-    controllerLayer.style.width =
-      localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
-
     // Selected element layer.
     controllerLayer.append(
       formElement,
@@ -374,6 +370,48 @@ Drupal.controllerElement = {
 
     // Return
     return controllerLayer;
+  },
+
+  /**
+   * Calculates an initial width for the controller.
+   * 
+   * @returns {string}
+   *   A string that represents the initial width of the controller.
+   */
+  calculateInitialControllerWidth() {
+    const { initialControllerWidth } = this.constants;
+    const { localStorageControllerWidthKey } = this.system;
+    const { controllerLayer } = this;
+  
+    const initialControllerWidthOnLocalStorage =
+      localStorage.getItem(localStorageControllerWidthKey) || initialControllerWidth;
+    let outputWidth = initialControllerWidthOnLocalStorage;
+
+    // Get max-width assigned to the controller layer.
+    const screenWidth = window.innerWidth;
+    const controllerLayerStyle = window.getComputedStyle(controllerLayer);
+    const maxWidth = controllerLayerStyle.getPropertyValue('max-width');
+  
+    if (maxWidth) {
+      let maxWidthValue = parseFloat(maxWidth);
+      const initialControllerWidthOnLocalStorageValue =
+        parseFloat(initialControllerWidthOnLocalStorage);
+
+      outputWidth =
+        (maxWidth.endsWith('%'))
+          ?
+            Math.min(
+              (maxWidthValue / 100) * screenWidth,
+              initialControllerWidthOnLocalStorageValue
+            )
+          : Math.min(
+              screenWidth,
+              maxWidthValue,
+              initialControllerWidthOnLocalStorageValue
+            );
+    }
+
+    controllerLayer.style.width = `${outputWidth}px`;
   },
 
   /**
@@ -520,6 +558,7 @@ Drupal.controllerElement = {
    */
   executePostActivation() {
     this.generateSliderButton();
+    this.calculateInitialControllerWidth();
     this.checkControllerActivation();
     this.updateActiveElement();
     this.updateSelectedElement('selected');
@@ -562,17 +601,7 @@ Drupal.controllerElement = {
     // Add the mousemove event listener to the document.
     document.addEventListener('mousemove', function(event) {
       if (!isMouseDown) return;
-
-      requestAnimationFrame(() => {
-        // Calculate the new width based on the current mouse position
-        const newWidth =
-          controllerLayerBoundingRectClient.width
-            + controllerLayerBoundingRectClient.left
-            - event.clientX;
-    
-        // Update the width of the controller element
-        controllerLayer.style.width = `${newWidth}px`;
-      });
+      self.resizeControllerLayer(event.clientX);
     });
 
     // Add the mouseup event listener to the document
@@ -585,6 +614,26 @@ Drupal.controllerElement = {
     });
 
     controllerLayer.appendChild(sliderButton);
+  },
+
+  /**
+   * Sets a new width for the controller layer.
+   */
+  resizeControllerLayer(mousePosition = 0) {
+
+    const { controllerLayer } = this;
+    const controllerLayerBoundingRectClient = controllerLayer.getBoundingClientRect();
+
+    // Calculate the new width based on the current mouse position
+    requestAnimationFrame(() => {
+      const newWidth =
+        controllerLayerBoundingRectClient.width
+        + controllerLayerBoundingRectClient.left
+        - mousePosition;
+
+      // Update the width of the controller element
+      controllerLayer.style.width = `${newWidth}px`;
+    });
   },
 
   /**
