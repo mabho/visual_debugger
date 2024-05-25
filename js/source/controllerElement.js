@@ -44,13 +44,14 @@ Drupal.controllerElement = {
     classNameBaseLayerDeactivated: 'visual-debugger--deactivated',
     classNameForm: 'activation-form',
     classNameFormWrapper: 'activation-form-wrapper',
+    classNameContent: 'content-auto-scroll',
     classNameElementInfoTextContent: 'tag',
     classNameElementInfoEmpty: 'tag--empty',
     classNameElementInfoObjectType: 'tag--object-type',
     classNameElementInfoPropertyHook: 'tag--prop-hook',
     classNameActiveElementLayer: 'active-element',
     classNameActiveElementInfo: 'active-element__info',
-    classNameSelectedElementLayer: 'selected-element',
+    classNameSelectedElement: 'selected-element',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
     classNameSelectedElementInfo: 'selected-element__info',
     classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
@@ -275,6 +276,7 @@ Drupal.controllerElement = {
       classNameDeactivated,
       classNameIconEyeBlocked,
       classNameIconControllerDeactivated,
+      classNameContent,
     } = this.classNames
 
     const { idControllerActivationCheckbox } = this.ids;
@@ -283,14 +285,18 @@ Drupal.controllerElement = {
 
     const { stringActivateDebugger } = this.strings;
 
-    const { initialControllerWidth } = this.constants;
-
-    const { localStorageControllerWidthKey } = this.system;
-
     const self = this;
 
     // Create the controller layer.
     const controllerLayer = document.createElement('div');
+    controllerLayer.classList.add(
+      classNameVisualDebugger,
+      classNameBaseLayer
+    );
+
+    // Create the controller content layer.
+    const controllerContentLayer = document.createElement('div');
+    controllerContentLayer.classList.add(classNameContent);
 
     // Create a checkbox input element for debugger activation
     const debuggerActivationCheckbox = document.createElement('input');
@@ -333,13 +339,15 @@ Drupal.controllerElement = {
     debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
     debuggerActivationLabel.textContent = stringActivateDebugger;
 
-    // Create a wrapper div.
+    // Create a wrapper div for the activation elements within the form.
     const wrapperDiv = document.createElement('div');
     wrapperDiv.classList.add(classNameFormWrapper);
-    wrapperDiv.appendChild(debuggerActivationCheckbox);
-    wrapperDiv.appendChild(iconSelectedTrue);
-    wrapperDiv.appendChild(iconSelectedFalse);
-    wrapperDiv.appendChild(debuggerActivationLabel);
+    wrapperDiv.append(
+      debuggerActivationCheckbox,
+      iconSelectedTrue,
+      iconSelectedFalse,
+      debuggerActivationLabel
+    );
 
     // Append the wrapper div to the form.
     const formElement = document.createElement('form');
@@ -352,17 +360,15 @@ Drupal.controllerElement = {
     // Selected element layer.
     const selectedElementLayer = this.generateSelectedElementLayer();
 
-    // Append everything to the controller layer.
-    controllerLayer.classList.add(
-      classNameVisualDebugger,
-      classNameBaseLayer
-    );
-
     // Selected element layer.
-    controllerLayer.append(
-      formElement,
+    controllerContentLayer.append(
       activeElementLayer,
       selectedElementLayer,
+    );
+    
+    controllerLayer.append(
+      formElement,
+      controllerContentLayer
     );
 
     // Load the controller layer just created to the current object.
@@ -461,7 +467,7 @@ Drupal.controllerElement = {
     const selectedElementLayer = document.createElement('div');
     const selectedElementLayerTitle = document.createElement('h3');
     const {
-      classNameSelectedElementLayer,
+      classNameSelectedElement,
       classNameSelectedElementInfoWrapper,
       classNameSelectedElementInfo,
       classNameSelectedElementSuggestionsWrapper,
@@ -480,7 +486,7 @@ Drupal.controllerElement = {
       stringTemplateFilePath,
     } = this.strings;
 
-    selectedElementLayer.classList.add(classNameSelectedElementLayer);
+    selectedElementLayer.classList.add(classNameSelectedElement);
     selectedElementLayerTitle.textContent = stringSelectedElement;
 
     // Selected element basic info.
