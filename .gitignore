@@ -1,11 +1,5 @@
 # npm support files are stored here and don't belong in the project.
 node_modules
 
-# Do not include the dist files in the project.
-css/*
-!css/source
-js/*
-!js/source
-
 # System files
 .DS_Store
