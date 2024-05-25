@@ -8,7 +8,7 @@
     "url": "git+https://github.com/mabho/visual_debugger.git"
   },
   "scripts": {
-    "compile:scss": "sass css/source:css",
+    "compile:scss": "sass css/source:css/dist",
     "watch:scss": "chokidar 'css/source/*.scss' 'css/source/**/*.scss' -c 'npm run compile:scss'",
     "minify:js": "gulp minify",
     "watch:js": "gulp watch",

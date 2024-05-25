@@ -1,10 +1,10 @@
 # Custom module library for general purposes.
 visual_debugger:
   js:
-    js/vd.min.js: { minified: true }
+    js/dist/vd.min.js: { minified: true }
   css:
     component:
-      css/vd.css: {}
+      css/dist/vd.css: {}
   dependencies:
     - core/drupalSettings
     - visual_debugger/controllerElement
@@ -18,7 +18,7 @@ controllerElement:
     url: https://github.com/fntneves/jquery-labelauty/blob/v1.1.0/LICENSE
     gpl-compatible: true
   js:
-    js/controllerElement.min.js: { minified: true }
+    js/dist/controllerElement.min.js: { minified: true }
 
 # Application object activating instances' elements..
 themeElement:
@@ -28,4 +28,4 @@ themeElement:
     url: https://github.com/fntneves/jquery-labelauty/blob/v1.1.0/LICENSE
     gpl-compatible: true
   js:
-    js/themeElement.min.js: { minified: true }
+    js/dist/themeElement.min.js: { minified: true }
