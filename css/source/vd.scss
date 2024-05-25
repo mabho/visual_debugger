@@ -21,10 +21,12 @@
     border-radius: var(--#{$prefix}controller--border-radius);
     bottom: var(--#{$prefix}controller--bottom);
     box-shadow: var(--#{$prefix}controller--box-shadow);
+    display: flex;
+    flex-direction: var(--#{$prefix}controller--flex-direction);
     font-size: var(--#{$prefix}controller--font-size);
     max-width: var(--#{$prefix}controller--max-width);
     min-width: var(--#{$prefix}controller--min-width);
-    padding: var(--#{$prefix}controller--gutter);
+    padding: var(--#{$prefix}controller--padding);
     position: var(--#{$prefix}controller--position);
     right: var(--#{$prefix}controller--right);
     top: var(--#{$prefix}controller--top);
@@ -99,9 +101,17 @@
       }
     }
 
+    .content-auto-scroll {
+      background-color: var(--#{$prefix}controller--content-auto-scroll--background-color);
+      margin: var(--#{$prefix}controller--content-auto-scroll--margin);
+      overflow-y: var(--#{$prefix}controller--content-auto-scroll--overflow-y);
+      padding: var(--#{$prefix}controller--content-auto-scroll--padding);
+    }
+
     // Active element.
     .active-element {
       margin: var(--#{$prefix}active-element--margin);
+      padding: var(--#{$prefix}active-element--padding);
 
       // Info.
       &__info {
