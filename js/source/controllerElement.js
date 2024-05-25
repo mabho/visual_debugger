@@ -672,7 +672,6 @@ Drupal.controllerElement = {
 
     const {
       classNameElementInfoTextContent,
-      classNameElementInfoEmpty,
       classNameElementInfoObjectType,
       classNameElementInfoPropertyHook,
     } = this.classNames
