@@ -1,0 +1,13 @@
+/.gitignore export-ignore
+/gulpfile.js export-ignore
+/package-lock.json export-ignore
+/package.json export-ignore
+/js/source export-ignore
+/css/source export-ignore
+/fonts/visual-debugger-icons/demo-files export-ignore
+/fonts/visual-debugger-icons/demo.html export-ignore
+"/fonts/visual-debugger-icons/Read Me.txt" export-ignore
+/fonts/visual-debugger-icons/selection.json export-ignore
+/fonts/visual-debugger-icons/style.css export-ignore
+/fonts/visual-debugger-icons/style.scss export-ignore
+/fonts/visual-debugger-icons/variables.scss export-ignore
