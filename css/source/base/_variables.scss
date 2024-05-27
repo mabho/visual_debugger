@@ -277,6 +277,22 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}controller--transform--on-deactivated: translateX(#{to-rem(-10px)});
   --#{$prefix}controller--z-index: calc(var(--#{$prefix}z-index--base) + 1000);
 
+  // Tabbed navigation.
+  --#{$prefix}tabbed-navigation--background-color: var(--#{$prefix}color--white);
+  --#{$prefix}tabbed-navigation--border-bottom: solid #{to-rem(2px)} var(--#{$prefix}color--gray-30);
+  --#{$prefix}tabbed-navigation--padding: var(--#{$prefix}controller--gutter) var(--#{$prefix}controller--gutter) 0 var(--#{$prefix}controller--gutter);
+
+  // Tabbed navigation <button>.
+  --#{$prefix}tabbed-navigation--tab--background-color: var(--#{$prefix}color--gray-20);
+  --#{$prefix}tabbed-navigation--tab--border: 0;
+  --#{$prefix}tabbed-navigation--tab--border-radius: #{to-rem(8px)} #{to-rem(8px)} 0 0;
+  --#{$prefix}tabbed-navigation--tab--color: var(--#{$prefix}color--gray-70);
+  --#{$prefix}tabbed-navigation--tab--font-size: 1rem;
+  --#{$prefix}tabbed-navigation--tab--padding: calc(var(--#{$prefix}controller--gutter) * .25) calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}tabbed-navigation--tab--background-color--hover: var(--#{$prefix}color--gray-10);
+  --#{$prefix}tabbed-navigation--tab--transform--hover: scale(1.1);
+  --#{$prefix}tabbed-navigation--tab--background-color--active: var(--#{$prefix}color--gray-10);
+
   // Active Element.
   --#{$prefix}active-element--margin: 0;
   --#{$prefix}active-element--padding: var(--#{$prefix}controller--gutter);
