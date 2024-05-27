@@ -29,8 +29,10 @@ Drupal.controllerElement = {
   // Element IDs.
   ids: {
     idControllerElement: 'visual-debugger--controller-layer',
+    idControllerElementSelected: 'visual-debugger--controller-layer--selected',
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
+    idControllerElementList: 'visual-debugger--controller-layer--list',
     idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
     idControllerActiveElementInfo: 'visual-debugger--controller--active-element--info',
     idControllerActivationCheckbox: 'debuggerActivationCheckbox',
@@ -60,6 +62,9 @@ Drupal.controllerElement = {
     classNameSelectedElementTemplateFilePathWrapper: 'selected-element__template-file-path-wrapper',
     classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
+    classNameTabsNavigation: 'tabbed-navigation',
+    classNameTabsNavigationTab: 'tabbed-navigation__tab',
+    classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
     classNameContentCopyDataLabel: 'content-copy-data__label',
     classNameIconSelectedTrue: 'icon-selected-true',
@@ -86,6 +91,8 @@ Drupal.controllerElement = {
     stringCopyToClipboard: Drupal.t('Copy to clipboard'),
     stringDeactivateDebugger: Drupal.t('Deactivate debugger'),
     stringSelectedElement: Drupal.t('Selected Element'),
+    stringTabLabelSelected: Drupal.t('Selected'),
+    stringTabLabelList: Drupal.t('List'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
     stringClickDragButton: Drupal.t('Click and drag to resize'),
@@ -356,12 +363,16 @@ Drupal.controllerElement = {
     // Active element layer.
     const activeElementLayer = this.generateActiveElementLayer();
 
+    // Create the tabbed navigation layer.
+    const tabbedNavigation = this.generateTabbedNavigation();
+
     // Selected element layer.
     const selectedElementLayer = this.generateSelectedElementLayer();
 
     // Selected element layer.
     controllerContentLayer.append(
       activeElementLayer,
+      tabbedNavigation,
       selectedElementLayer,
     );
     
@@ -457,6 +468,76 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Generates the tabbed navigation structure.
+   * @returns {object}
+   *   The tabbed navigation structure with tabs within.
+   */
+  generateTabbedNavigation() {
+    const {
+      classNameTabsNavigation,
+      classNameTabsNavigationTab,
+    } = this.classNames;
+
+    const {
+      stringTabLabelSelected,
+      stringTabLabelList,
+    } = this.strings;
+
+    const {
+      idControllerElementList,
+      idControllerElementSelected,
+    } = this.ids;
+
+    const tabsNavigation = document.createElement('div');
+    tabsNavigation.classList.add(classNameTabsNavigation);
+
+    // Create the tabs.
+    const tabs = [
+      {
+        label: stringTabLabelSelected,
+        id: idControllerElementSelected,
+      },
+      {
+        label: stringTabLabelList,
+        id: idControllerElementList,
+      },
+    ];
+
+    const switchTab = (tabElement, tabId) => {
+
+      tabElement.classList.add('active');
+
+      // Target layer to be activated.
+      const targetLayer = this.getControllerLayer().querySelector(
+        `#${tabId}`
+      );
+      targetLayer.style.display = 'block';
+      targetLayer.classList.add('active');
+
+      // Target sibling layers.
+      const parent = tabElement.parentNode;
+      const children = Array.from(parent.children);
+      const siblings = children.filter(child => child !== tabElement);
+      siblings.forEach((sibling) => {
+        sibling.classList.remove('active');
+      });
+    }
+
+    tabs.forEach((tab) => {
+      const tabElement = document.createElement('button');
+      tabElement.setAttribute('data-target-tab', tab.id);
+      tabElement.classList.add(classNameTabsNavigationTab);
+      tabElement.textContent = tab.label;
+      tabElement.addEventListener('click', () => {
+        switchTab(tabElement, tab.id);
+      });
+      tabsNavigation.appendChild(tabElement);
+    });
+
+    return tabsNavigation;
+  },
+
+  /**
    * Generates the selected element layer with all its components.
    * 
    * @returns {object}
@@ -473,8 +554,10 @@ Drupal.controllerElement = {
       classNameSelectedElementSuggestions,
       classNameSelectedElementTemplateFilePathWrapper,
       classNameSelectedElementTemplateFilePath,
+      classNameTarget,
     } = this.classNames;
     const {
+      idControllerElementSelected,
       idControllerElementInfo,
       idControllerElementSuggestions,
     } = this.ids;
@@ -485,7 +568,11 @@ Drupal.controllerElement = {
       stringTemplateFilePath,
     } = this.strings;
 
-    selectedElementLayer.classList.add(classNameSelectedElement);
+    selectedElementLayer.classList.add(
+      classNameSelectedElement,
+      classNameTarget
+    );
+    selectedElementLayer.setAttribute('id', idControllerElementSelected);
     selectedElementLayerTitle.textContent = stringSelectedElement;
 
     // Selected element basic info.
