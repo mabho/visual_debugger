@@ -448,24 +448,23 @@
         });
       });
 
-      console.warn(themeDebugNodes);
-
       this.themeDebugNodes = themeDebugNodes;
 
       // Activate observers.
       this.triggerMutationObserver(themeDebugNodes);
       this.triggerResizeObserver(themeDebugNodes);
 
-      // Remove duplicates.
-      let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
-
-      console.log(uniquePropertyHooks); // Logs the array of unique propertyHook values
-
       // Load data into the controller element.
-      console.warn(controllerElementInstance);
       controllerElementInstance.init(baseLayer, themeDebugNodes);
       body.appendChild(controllerElementInstance.generateControllerLayer());
       controllerElementInstance.executePostActivation();
+
+      // These loggers are only valid for module developers.
+      // console.warn('themeDebugNodes', themeDebugNodes);
+
+      // Gets a consolidated array of propertyHook values.
+      // let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
+      // console.warn('uniquePropertyHooks', uniquePropertyHooks);
     },
     detach: function (context, settings, trigger) {
       // Code to be run on page unload and

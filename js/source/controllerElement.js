@@ -248,7 +248,6 @@ Drupal.controllerElement = {
   clipboardCopy(contentRefField) {
     const textToCopy = contentRefField.textContent;
     if (navigator.clipboard) {
-      console.warn(`copied using this method: ${textToCopy}`)
       navigator.clipboard.writeText(textToCopy);
     } else {
       contentRefField.select();
