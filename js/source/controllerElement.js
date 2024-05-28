@@ -84,7 +84,7 @@ Drupal.controllerElement = {
   // Drupal translatable strings for the controller layer.
   strings: {
     stringCopyToClipboard: Drupal.t('Copy to clipboard'),
-    stringActivateDebugger: Drupal.t('Activate debugger'),
+    stringDeactivateDebugger: Drupal.t('Deactivate debugger'),
     stringSelectedElement: Drupal.t('Selected Element'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
@@ -282,7 +282,7 @@ Drupal.controllerElement = {
 
     const { controllerActivatedAttributeName } = this.layerAttributes;
 
-    const { stringActivateDebugger } = this.strings;
+    const { stringDeactivateDebugger } = this.strings;
 
     const self = this;
 
@@ -334,9 +334,9 @@ Drupal.controllerElement = {
     );
 
     // Create a label element for the debugger activation checkbox.
-    const debuggerActivationLabel = document.createElement('label');
-    debuggerActivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
-    debuggerActivationLabel.textContent = stringActivateDebugger;
+    const debuggerDeactivationLabel = document.createElement('label');
+    debuggerDeactivationLabel.setAttribute('for', debuggerActivationCheckbox.id)
+    debuggerDeactivationLabel.textContent = stringDeactivateDebugger;
 
     // Create a wrapper div for the activation elements within the form.
     const wrapperDiv = document.createElement('div');
@@ -345,7 +345,7 @@ Drupal.controllerElement = {
       debuggerActivationCheckbox,
       iconSelectedTrue,
       iconSelectedFalse,
-      debuggerActivationLabel
+      debuggerDeactivationLabel
     );
 
     // Append the wrapper div to the form.
