@@ -305,6 +305,10 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}selected-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
   --#{$prefix}selected-element--info--flex-direction: row;
 
+  // List Element.
+  --#{$prefix}list-element--background-color: var(--#{$prefix}color--gray-10);
+  --#{$prefix}list-element--padding: var(--#{$prefix}controller--gutter);
+
   // Content copy data.
   --#{$prefix}content-copy-data--align-items: center;
   --#{$prefix}content-copy-data--column-gap: calc(var(--#{$prefix}controller--gutter) * .25);

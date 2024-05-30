@@ -12,6 +12,7 @@ Drupal.controllerElement = {
   defaultThemeElement: null,
   controllerLayer: null,
   baseLayer: null,
+  tabs: null,
 
   // This array holds a fundamental structure being passed into the
   // controller component. Its initial value is null:
@@ -53,6 +54,8 @@ Drupal.controllerElement = {
     classNameElementInfoPropertyHook: 'tag--prop-hook',
     classNameActiveElementLayer: 'active-element',
     classNameActiveElementInfo: 'active-element__info',
+    classNameTabsNavigation: 'tabbed-navigation',
+    classNameTabsNavigationTab: 'tabbed-navigation__tab',
     classNameSelectedElement: 'selected-element',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
     classNameSelectedElementInfo: 'selected-element__info',
@@ -62,8 +65,9 @@ Drupal.controllerElement = {
     classNameSelectedElementTemplateFilePathWrapper: 'selected-element__template-file-path-wrapper',
     classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
-    classNameTabsNavigation: 'tabbed-navigation',
-    classNameTabsNavigationTab: 'tabbed-navigation__tab',
+    classNameListElement: 'list',
+    classNameListElementItem: 'list-item',
+    classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
     classNameContentCopyDataLabel: 'content-copy-data__label',
@@ -76,9 +80,11 @@ Drupal.controllerElement = {
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameClickDragButton: 'click-drag-button',
+    classNameCheckboxToggleWrapper: 'checkbox-toggle-wrapper',
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameActivated: 'item-activated',
     classNameDeactivated: 'item-deactivated',
+    classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
   },
 
   // layerAttributes.
@@ -93,6 +99,7 @@ Drupal.controllerElement = {
     stringSelectedElement: Drupal.t('Selected Element'),
     stringTabLabelSelected: Drupal.t('Selected'),
     stringTabLabelList: Drupal.t('List'),
+    stringTabLabelAggregate: Drupal.t('Aggregate'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
     stringClickDragButton: Drupal.t('Click and drag to resize'),
@@ -264,6 +271,86 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Generates an on/off switch with a callback event on 'change'.
+   * @param {string} label
+   *   The label for the switch.
+   * @param {boolean} activated
+   *   Sets the default initial state.
+   * @param {*} changeEventListener 
+   *   The event listener function for the change event.
+   * @param {string} IconOn
+   *   The class name for the icon when activated.
+   * @param {*} IconOff 
+   *   The class name for the icon when deactivated.
+   * @returns 
+   */
+  generateOnOffSwitch(
+    label,
+    activated = true,
+    changeEventListener = null,
+    IconOn = this.clasNames.classNameIconSelectedTrue,
+    IconOff = this.clasNames.classNameIconSelectedFalse,
+    wrapperClassList = [],
+  ) {
+    const {
+      classNameCheckboxToggleWrapper,
+      classNameCheckboxToggle,
+      classNameActivated,
+      classNameDeactivated,
+      classNameIconControllerActivated,
+      classNameIconControllerDeactivated,
+    } = this.classNames;
+
+    const self = this;
+
+    // Create a checkbox input element for debugger activation
+    const itemInput = document.createElement('input');
+    itemInput.type = 'checkbox';
+    // itemInput.id = idControllerActivationCheckbox;
+    itemInput.classList.add(classNameCheckboxToggle);
+
+    // Applies the initial controller state based on localStorage setting.
+    itemInput.checked = activated;
+
+    // Add an event listener to the debugger activation checkbox.
+    itemInput.addEventListener('change', changeEventListener);
+
+    // Create icons for the debugger activation checkbox.
+    const iconSelectedTrue = document.createElement('span');
+    iconSelectedTrue.classList.add(
+      IconOn,
+      classNameActivated,
+      classNameIconControllerActivated
+    );
+    const iconSelectedFalse = document.createElement('span');
+    iconSelectedFalse.classList.add(
+      IconOff,
+      classNameDeactivated,
+      classNameIconControllerDeactivated
+    );
+
+    // Create a label element for the debugger activation checkbox.
+    const itemLabel = document.createElement('label');
+    // itemLabel.setAttribute('for', debuggerActivationCheckbox.id)
+    itemLabel.textContent = label;
+
+    // Create a wrapper div for the activation elements within the form.
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.classList.add(
+      ...wrapperClassList,
+      classNameCheckboxToggleWrapper
+    );
+    wrapperDiv.append(
+      itemInput,
+      iconSelectedTrue,
+      iconSelectedFalse,
+      itemLabel
+    );
+
+    return wrapperDiv;
+  },
+
+  /**
    * Generates the controller layer with all its components.
    * 
    * @returns {object}
@@ -369,11 +456,15 @@ Drupal.controllerElement = {
     // Selected element layer.
     const selectedElementLayer = this.generateSelectedElementLayer();
 
+    // List element layer.
+    const listElementLayer = this.generateListElementLayer();
+
     // Selected element layer.
     controllerContentLayer.append(
       activeElementLayer,
       tabbedNavigation,
       selectedElementLayer,
+      listElementLayer,
     );
     
     controllerLayer.append(
@@ -468,6 +559,53 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Gets all siblings of a given element.
+   * @param {object} element 
+   * @returns {array}
+   *   An array of sibling elements.
+   */
+  getSiblings(element) {
+    const parent = element.parentNode;
+    const children = Array.from(parent.children);
+    return children.filter(child => child !== element);
+  },
+
+  /**
+   * Updates the active tab and deactivates siblings.
+   * @param {*} tabElement 
+   * @param {*} tabId 
+   */
+  switchToTab(tabId) {
+
+    // Button tab.
+    const tabElement = document.querySelector(
+      `[data-target-tab='${tabId}']`
+    );
+
+    // Target layer to be activated.
+    const targetLayer = this.getControllerLayer().querySelector(
+      `#${tabId}`
+    );
+
+    // Halt execution if 
+    if (tabElement === null || targetLayer === null) return;
+
+    // Update tab and target states.
+    tabElement.classList.add('active');
+    targetLayer.classList.add('active');
+
+    // Deactivate siblings.
+    const deactivateSiblings = (refLayer) => {
+      const siblings = this.getSiblings(refLayer);
+      siblings.forEach((sibling) => {
+        sibling.classList.remove('active');
+      });
+    }
+    deactivateSiblings(tabElement);
+    deactivateSiblings(targetLayer);
+  },
+
+  /**
    * Generates the tabbed navigation structure.
    * @returns {object}
    *   The tabbed navigation structure with tabs within.
@@ -484,12 +622,9 @@ Drupal.controllerElement = {
     } = this.strings;
 
     const {
-      idControllerElementList,
       idControllerElementSelected,
+      idControllerElementList,
     } = this.ids;
-
-    const tabsNavigation = document.createElement('div');
-    tabsNavigation.classList.add(classNameTabsNavigation);
 
     // Create the tabs.
     const tabs = [
@@ -503,36 +638,25 @@ Drupal.controllerElement = {
       },
     ];
 
-    const switchTab = (tabElement, tabId) => {
+    // Creates a tabs wrapper.
+    const tabsNavigation = document.createElement('div');
+    tabsNavigation.classList.add(classNameTabsNavigation);
 
-      tabElement.classList.add('active');
-
-      // Target layer to be activated.
-      const targetLayer = this.getControllerLayer().querySelector(
-        `#${tabId}`
-      );
-      targetLayer.style.display = 'block';
-      targetLayer.classList.add('active');
-
-      // Target sibling layers.
-      const parent = tabElement.parentNode;
-      const children = Array.from(parent.children);
-      const siblings = children.filter(child => child !== tabElement);
-      siblings.forEach((sibling) => {
-        sibling.classList.remove('active');
-      });
-    }
-
+    // creates one button per tab.
     tabs.forEach((tab) => {
       const tabElement = document.createElement('button');
       tabElement.setAttribute('data-target-tab', tab.id);
+      tabElement.setAttribute('aria-label', tab.label);
       tabElement.classList.add(classNameTabsNavigationTab);
       tabElement.textContent = tab.label;
       tabElement.addEventListener('click', () => {
-        switchTab(tabElement, tab.id);
+        this.switchToTab(tab.id);
       });
       tabsNavigation.appendChild(tabElement);
     });
+
+    // Fills a variable with the tabs list.
+    this.tabs = tabs;
 
     return tabsNavigation;
   },
@@ -626,6 +750,60 @@ Drupal.controllerElement = {
     return selectedElementLayer;
   },
 
+  generateListElementLayer() {
+    const listElementLayer = document.createElement('div');
+    const listElementLayerTitle = document.createElement('h3');
+    const {
+      classNameListElement,
+      classNameTarget,
+      classNameListElementItem,
+      classNameIconSelectedTrue,
+      classNameIconSelectedFalse,
+    } = this.classNames;
+    const {
+      idControllerElementList,
+    } = this.ids;
+    const {
+      stringTabLabelList,
+    } = this.strings;
+    const themeDebugNodes = this.themeDebugNodes;
+
+    listElementLayer.classList.add(
+      classNameListElement,
+      classNameTarget,
+    );
+    listElementLayer.setAttribute('id', idControllerElementList);
+    listElementLayerTitle.textContent = stringTabLabelList;
+
+    listElementLayer.append(
+      listElementLayerTitle,
+    );
+
+    // Prepare the list of nodes.
+    themeDebugNodes.forEach((node) => {
+
+      // Applies an on/off switcher.
+      const onOffSwitcherElement = this.generateOnOffSwitch(
+        node.instanceActiveElement.propertyHook,
+        false,
+        () => {
+          console.warn('Switcher clicked');
+          // node.instanceActiveElement.activated = !node.instanceActiveElement.activated;
+          // this.updateActiveElement();
+        },
+        classNameIconSelectedTrue,
+        classNameIconSelectedFalse,
+        [
+          classNameListElementItem,
+          this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
+        ]
+      );
+      listElementLayer.appendChild(onOffSwitcherElement);
+    });
+
+    return listElementLayer;
+  },
+
   /**
    * Update the controller position depending on its activation status.
    */
@@ -656,6 +834,7 @@ Drupal.controllerElement = {
     this.updateSelectedElement('selected');
     this.setSelectedElementSuggestions();
     this.setSelectedElementTemplateFilePath();
+    this.switchToTab(this.ids.idControllerElementSelected);
   },
 
   /**
@@ -801,7 +980,7 @@ Drupal.controllerElement = {
   },
 
   /**
-   * 
+   * Set an element info block including object type and property hook.
    * @param {object} themeElement 
    * @param {array} classes 
    * @returns 

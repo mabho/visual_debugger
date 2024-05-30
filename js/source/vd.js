@@ -163,9 +163,9 @@
     /**
      * Generates an instance layer from scratch; applies all the attributes,
      * classes and event observers.
-     * @param {*} thisThemeElement 
-     * @param {*} instanceLayerRef 
-     * @param {*} instanceLayerId 
+     * @param {object} thisThemeElement 
+     * @param {object} instanceLayerRef 
+     * @param {object} instanceLayerId 
      * @returns 
      */
     generateInstanceLayer(thisThemeElement, instanceLayerRef, instanceLayerId) {
@@ -460,7 +460,7 @@
       controllerElementInstance.executePostActivation();
 
       // These loggers are only valid for module developers.
-      // console.warn('themeDebugNodes', themeDebugNodes);
+      console.warn('themeDebugNodes', themeDebugNodes);
 
       // Gets a consolidated array of propertyHook values.
       // let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);

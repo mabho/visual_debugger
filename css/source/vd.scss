@@ -190,6 +190,22 @@
         }
       }
     }
+
+    .list {
+      background-color: var(--#{$prefix}list-element--background-color);
+      padding: var(--#{$prefix}list-element--padding);
+      display: flex;
+      flex-direction: column;
+      row-gap: var(--#{$prefix}list-element--row-gap);
+
+      &-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        column-gap: .25rem;
+      }
+    }
   }
 
   // Base layer.
