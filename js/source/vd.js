@@ -1,7 +1,11 @@
 (function (Drupal) {
   Drupal.behaviors.visualDebugger = {
 
+    // Body element.
     body: document.body,
+
+    // Utilities.
+    utilities: Drupal.vdUtilities,
 
     // App constants.
     constants: {
@@ -431,7 +435,7 @@
             ) {
               activeElement.setDataNode(dataNode);
               const instanceActiveElement = Object.assign({}, activeElement);
-              const instanceLayerId = `element-${Math.random().toString(36).substring(7)}`;
+              const instanceLayerId = this.utilities.generateUniqueIdentifier();
               const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
               const themeDebugNode = {
                 'instanceActiveElement': instanceActiveElement,

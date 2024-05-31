@@ -4,7 +4,11 @@
  */
 Drupal.controllerElement = {
 
+  // Body
   body: document.body,
+
+  // Utilities
+  utilities: Drupal.vdUtilities,
 
   // The object properties.
   activated: false,
@@ -57,6 +61,7 @@ Drupal.controllerElement = {
     classNameTabsNavigation: 'tabbed-navigation',
     classNameTabsNavigationTab: 'tabbed-navigation__tab',
     classNameSelectedElement: 'selected-element',
+    classNameSelectedElementContent: 'selected-element__content',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
     classNameSelectedElementInfo: 'selected-element__info',
     classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
@@ -66,6 +71,7 @@ Drupal.controllerElement = {
     classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
     classNameListElement: 'list',
+    classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
@@ -80,7 +86,6 @@ Drupal.controllerElement = {
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameClickDragButton: 'click-drag-button',
-    classNameCheckboxToggleWrapper: 'checkbox-toggle-wrapper',
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameActivated: 'item-activated',
     classNameDeactivated: 'item-deactivated',
@@ -268,86 +273,6 @@ Drupal.controllerElement = {
       document.execCommand('copy');
       contentRefField.focus();
     }
-  },
-
-  /**
-   * Generates an on/off switch with a callback event on 'change'.
-   * @param {string} label
-   *   The label for the switch.
-   * @param {boolean} activated
-   *   Sets the default initial state.
-   * @param {*} changeEventListener 
-   *   The event listener function for the change event.
-   * @param {string} IconOn
-   *   The class name for the icon when activated.
-   * @param {*} IconOff 
-   *   The class name for the icon when deactivated.
-   * @returns 
-   */
-  generateOnOffSwitch(
-    label,
-    activated = true,
-    changeEventListener = null,
-    IconOn = this.clasNames.classNameIconSelectedTrue,
-    IconOff = this.clasNames.classNameIconSelectedFalse,
-    wrapperClassList = [],
-  ) {
-    const {
-      classNameCheckboxToggleWrapper,
-      classNameCheckboxToggle,
-      classNameActivated,
-      classNameDeactivated,
-      classNameIconControllerActivated,
-      classNameIconControllerDeactivated,
-    } = this.classNames;
-
-    const self = this;
-
-    // Create a checkbox input element for debugger activation
-    const itemInput = document.createElement('input');
-    itemInput.type = 'checkbox';
-    // itemInput.id = idControllerActivationCheckbox;
-    itemInput.classList.add(classNameCheckboxToggle);
-
-    // Applies the initial controller state based on localStorage setting.
-    itemInput.checked = activated;
-
-    // Add an event listener to the debugger activation checkbox.
-    itemInput.addEventListener('change', changeEventListener);
-
-    // Create icons for the debugger activation checkbox.
-    const iconSelectedTrue = document.createElement('span');
-    iconSelectedTrue.classList.add(
-      IconOn,
-      classNameActivated,
-      classNameIconControllerActivated
-    );
-    const iconSelectedFalse = document.createElement('span');
-    iconSelectedFalse.classList.add(
-      IconOff,
-      classNameDeactivated,
-      classNameIconControllerDeactivated
-    );
-
-    // Create a label element for the debugger activation checkbox.
-    const itemLabel = document.createElement('label');
-    // itemLabel.setAttribute('for', debuggerActivationCheckbox.id)
-    itemLabel.textContent = label;
-
-    // Create a wrapper div for the activation elements within the form.
-    const wrapperDiv = document.createElement('div');
-    wrapperDiv.classList.add(
-      ...wrapperClassList,
-      classNameCheckboxToggleWrapper
-    );
-    wrapperDiv.append(
-      itemInput,
-      iconSelectedTrue,
-      iconSelectedFalse,
-      itemLabel
-    );
-
-    return wrapperDiv;
   },
 
   /**
@@ -665,13 +590,12 @@ Drupal.controllerElement = {
    * Generates the selected element layer with all its components.
    * 
    * @returns {object}
-   *   The selected element layer. 
+   *   The selected element layer.
    */
   generateSelectedElementLayer() {
-    const selectedElementLayer = document.createElement('div');
-    const selectedElementLayerTitle = document.createElement('h3');
     const {
       classNameSelectedElement,
+      classNameSelectedElementContent,
       classNameSelectedElementInfoWrapper,
       classNameSelectedElementInfo,
       classNameSelectedElementSuggestionsWrapper,
@@ -692,12 +616,16 @@ Drupal.controllerElement = {
       stringTemplateFilePath,
     } = this.strings;
 
+    const selectedElementLayer = document.createElement('div');
+    const selectedElementLayerContent = document.createElement('div');
+    const selectedElementLayerTitle = document.createElement('h3');
     selectedElementLayer.classList.add(
       classNameSelectedElement,
       classNameTarget
     );
     selectedElementLayer.setAttribute('id', idControllerElementSelected);
     selectedElementLayerTitle.textContent = stringSelectedElement;
+    selectedElementLayerContent.classList.add(classNameSelectedElementContent);
 
     // Selected element basic info.
     const selectedElementBasicInfoWrapper = document.createElement('div');
@@ -738,27 +666,34 @@ Drupal.controllerElement = {
       selectedElementTemplateFilePath,
     );
 
-    // Append everything to the selected element layer.
-    selectedElementLayer.append(
-      selectedElementLayerTitle,
+    // Append relevant information to the content layer.
+    selectedElementLayerContent.append(
       selectedElementBasicInfoWrapper,
       selectedElementSuggestionsWrapper,
       selectedElementTemplateFilePathWrapper
+    );
+
+    // Append everything to the selected element layer.
+    selectedElementLayer.append(
+      selectedElementLayerTitle,
+      selectedElementLayerContent,
     );
 
     // Return
     return selectedElementLayer;
   },
 
+  /**
+   * Generates a list of template layers on the current page.
+   * @returns {object}
+   *   The wrapper layer with all the template layers.
+   */
   generateListElementLayer() {
-    const listElementLayer = document.createElement('div');
-    const listElementLayerTitle = document.createElement('h3');
     const {
       classNameListElement,
+      classNameListElementContent,
       classNameTarget,
       classNameListElementItem,
-      classNameIconSelectedTrue,
-      classNameIconSelectedFalse,
     } = this.classNames;
     const {
       idControllerElementList,
@@ -767,6 +702,10 @@ Drupal.controllerElement = {
       stringTabLabelList,
     } = this.strings;
     const themeDebugNodes = this.themeDebugNodes;
+    
+    const listElementLayer = document.createElement('div');
+    const listElementLayerTitle = document.createElement('h3');
+    const listElementLayerContent = document.createElement('div');
 
     listElementLayer.classList.add(
       classNameListElement,
@@ -775,15 +714,18 @@ Drupal.controllerElement = {
     listElementLayer.setAttribute('id', idControllerElementList);
     listElementLayerTitle.textContent = stringTabLabelList;
 
+    listElementLayerContent.classList.add(classNameListElementContent);
+
     listElementLayer.append(
       listElementLayerTitle,
+      listElementLayerContent,
     );
 
     // Prepare the list of nodes.
     themeDebugNodes.forEach((node) => {
 
       // Applies an on/off switcher.
-      const onOffSwitcherElement = this.generateOnOffSwitch(
+      const onOffSwitcherElement = this.utilities.generateOnOffSwitch(
         node.instanceActiveElement.propertyHook,
         false,
         () => {
@@ -791,14 +733,12 @@ Drupal.controllerElement = {
           // node.instanceActiveElement.activated = !node.instanceActiveElement.activated;
           // this.updateActiveElement();
         },
-        classNameIconSelectedTrue,
-        classNameIconSelectedFalse,
         [
           classNameListElementItem,
           this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
         ]
       );
-      listElementLayer.appendChild(onOffSwitcherElement);
+      listElementLayerContent.appendChild(onOffSwitcherElement);
     });
 
     return listElementLayer;

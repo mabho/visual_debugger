@@ -7,8 +7,19 @@ visual_debugger:
       css/dist/vd.css: {}
   dependencies:
     - core/drupalSettings
+    - visual_debugger/utilities
     - visual_debugger/controllerElement
     - visual_debugger/themeElement
+
+# Set of helper functions useful across the application.
+utilities:
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://github.com/fntneves/jquery-labelauty/blob/v1.1.0/LICENSE
+    gpl-compatible: true
+  js:
+    js/dist/utilities.min.js: { minified: true }
 
 # Application object activating the controller window.
 controllerElement:
