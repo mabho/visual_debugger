@@ -12,6 +12,18 @@ Drupal.vdUtilities = {
     classNameDeactivated: 'item-deactivated',
   },
 
+  /**
+   * Gets all siblings of a given element.
+   * @param {object} element 
+   * @returns {array}
+   *   An array of sibling elements.
+   */
+  getSiblings(element) {
+    const parent = element.parentNode;
+    const children = Array.from(parent.children);
+    return children.filter(child => child !== element);
+  },
+
   // Setter methods.
   generateUniqueIdentifier: () => `element-${Math.random().toString(36).substring(7)}`,
 

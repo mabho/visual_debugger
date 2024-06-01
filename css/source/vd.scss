@@ -197,16 +197,16 @@
 
       &__content {
         display: flex;
-        flex-direction: column;
-        row-gap: var(--#{$prefix}list-element--row-gap);
+        flex-direction: var(--#{$prefix}list-element--content--flex-direction);
+        gap: var(--#{$prefix}list-element--content--gap);
       }
 
       &-item {
         display: flex;
-        flex-direction: row;
+        gap: var(--#{$prefix}list-element--list-item--gap);
+        flex-direction: var(--#{$prefix}list-element--list-item--flex-direction);
         align-items: center;
         justify-content: flex-start;
-        column-gap: .25rem;
       }
     }
   }

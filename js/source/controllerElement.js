@@ -484,18 +484,6 @@ Drupal.controllerElement = {
   },
 
   /**
-   * Gets all siblings of a given element.
-   * @param {object} element 
-   * @returns {array}
-   *   An array of sibling elements.
-   */
-  getSiblings(element) {
-    const parent = element.parentNode;
-    const children = Array.from(parent.children);
-    return children.filter(child => child !== element);
-  },
-
-  /**
    * Updates the active tab and deactivates siblings.
    * @param {*} tabElement 
    * @param {*} tabId 
@@ -521,7 +509,7 @@ Drupal.controllerElement = {
 
     // Deactivate siblings.
     const deactivateSiblings = (refLayer) => {
-      const siblings = this.getSiblings(refLayer);
+      const siblings = this.utilities.getSiblings(refLayer);
       siblings.forEach((sibling) => {
         sibling.classList.remove('active');
       });
@@ -724,12 +712,15 @@ Drupal.controllerElement = {
     // Prepare the list of nodes.
     themeDebugNodes.forEach((node) => {
 
+      console.warn('Node:', node);
+
       // Applies an on/off switcher.
       const onOffSwitcherElement = this.utilities.generateOnOffSwitch(
         node.instanceActiveElement.propertyHook,
         false,
         () => {
-          console.warn('Switcher clicked');
+          // const nodeSiblings = this.utilities.getSiblings(node);
+          node.instanceLayer.click();
           // node.instanceActiveElement.activated = !node.instanceActiveElement.activated;
           // this.updateActiveElement();
         },

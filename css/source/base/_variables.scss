@@ -308,6 +308,10 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   // List Element.
   --#{$prefix}list-element--background-color: var(--#{$prefix}color--gray-10);
   --#{$prefix}list-element--padding: var(--#{$prefix}controller--gutter);
+  --#{$prefix}list-element--content--flex-direction: column;
+  --#{$prefix}list-element--content--gap: calc(var(--#{$prefix}controller--gutter) * .125);
+  --#{$prefix}list-element--list-item--gap: calc(var(--#{$prefix}controller--gutter) * .25);
+  --#{$prefix}list-element--list-item--flex-direction: row;
 
   // Content copy data.
   --#{$prefix}content-copy-data--align-items: center;
