@@ -719,8 +719,8 @@ Drupal.controllerElement = {
         node.instanceActiveElement.propertyHook,
         false,
         () => {
-          // const nodeSiblings = this.utilities.getSiblings(node);
           node.instanceLayer.click();
+          // const nodeSiblings = this.utilities.getSiblings(node);
           // node.instanceActiveElement.activated = !node.instanceActiveElement.activated;
           // this.updateActiveElement();
         },
