@@ -115,30 +115,45 @@
 
       &__tab {
         background-color: var(--#{$prefix}tabbed-navigation--tab--background-color);
-        border: var(--#{$prefix}tabbed-navigation--tab--border);
+        border-bottom: var(--#{$prefix}tabbed-navigation--tab--border-bottom);
+        border-left: var(--#{$prefix}tabbed-navigation--tab--border-left);
+        border-top: var(--#{$prefix}tabbed-navigation--tab--border-top);
+        border-right: var(--#{$prefix}tabbed-navigation--tab--border-right);
         border-radius: var(--#{$prefix}tabbed-navigation--tab--border-radius);
         color: var(--#{$prefix}tabbed-navigation--tab--color);
-        cursor: pointer;
+        cursor: var(--#{$prefix}tabbed-navigation--tab--cursor);
         display: inline-block;
         font-size: var(--#{$prefix}tabbed-navigation--tab--font-size);
+        font-weight: var(--#{$prefix}tabbed-navigation--tab--font-weight);
         margin-right: var(--#{$prefix}tabbed-navigation--tab--margin-right);
         padding: var(--#{$prefix}tabbed-navigation--tab--padding);
-        transition: background-color var(--#{$prefix}transition-speed);
-
+        transition: background-color var(--#{$prefix}transition-speed), transform var(--#{$prefix}transition-speed);
+        
         &:hover {
           background-color: var(--#{$prefix}tabbed-navigation--tab--background-color--hover);
         }
-
+        
         &.active {
           background-color: var(--#{$prefix}tabbed-navigation--tab--background-color--active);
           color: var(--#{$prefix}tabbed-navigation--tab--color--active);
+          font-weight: var(--#{$prefix}tabbed-navigation--tab--font-weight--active);
+          position: relative;
+          transform: var(--#{$prefix}tabbed-navigation--tab--transform--active);
+          z-index: var(--#{$prefix}tabbed-navigation--tab--z-index--active);
+        }
+
+        &:not(.active) {
+          transform: var(--#{$prefix}tabbed-navigation--tab--transform--not-active);
         }
       }
     }
 
     // Target for tabbed navigation.
     .nav-target {
+      border-top: var(--#{$prefix}nav-target--border-top);
       display: none;
+      position: relative;
+      z-index: var(--#{$prefix}nav-target--z-index);
 
       &.active {
         display: block;
