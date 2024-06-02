@@ -18,6 +18,7 @@ Drupal.vdUtilities = {
   layerAttributes: {
     layerTargetIdAttributeName: 'data-vd-target-id',
     listItemActivatedAttributeName: 'data-vd-list-item-activated',
+    listItemVisibleAttributeName: 'data-vd-list-item-visible',
     instanceLayerActivatedAttributeName: 'data-vd-instance-layer-activated',
   },
 
@@ -42,21 +43,21 @@ Drupal.vdUtilities = {
    *   The label for the switch.
    * @param {boolean} activated
    *   Sets the default initial state.
-   * @param {*} changeEventListener
-   *   The event listener function for the change event.
+   * @param {array} eventListeners
+   *   An array of object pairs consisting on listeners and callbacks.
    * @param {object} wrapperAttributesList
    *   The attributes to be added to the wrapper div.
    * @param {string} IconOn
    *   The class name for the icon when activated.
-   * @param {*} IconOff 
+   * @param {string} IconOff 
    *   The class name for the icon when deactivated.
-   * @returns 
+   * @returns {object}
+   *   An HTML element containing the on/off input and its parts.
    */
   generateOnOffSwitch(
     label,
     activated = true,
-    clickEventListener = null,
-    changeEventListener = null,
+    eventListeners = null,
     wrapperAttributesList = [],
     wrapperClassList = [],
     IconOn = this.classNames.classNameIconCheckboxChecked,
@@ -97,14 +98,14 @@ Drupal.vdUtilities = {
     itemInput.checked = activated;
 
     // If requested, attach a 'click' event listener on the wrapper div.
-    if (clickEventListener !== null) {
-      wrapperDiv.addEventListener('click', clickEventListener);
-    }
-
-    if (changeEventListener !== null) {
-
-      // Attach custom 'change' event listener to the checkbox.
-      itemInput.addEventListener('change', changeEventListener);
+    if (eventListeners !== null) {
+      eventListeners.forEach((eventListener) => {
+        wrapperDiv.addEventListener(
+          eventListener.eventListener,
+          eventListener.eventCallback
+        );
+      });
+      // wrapperDiv.addEventListener('click', clickEventListener);
     }
 
     // Attach default 'change' event listener to the checkbox.
@@ -114,29 +115,29 @@ Drupal.vdUtilities = {
     });
 
     // Create icons for the debugger activation checkbox.
-    const iconSelectedTrue = document.createElement('span');
-    iconSelectedTrue.classList.add(
-      IconOn,
-      classNameInputActivated,
-    );
-    const iconSelectedFalse = document.createElement('span');
-    iconSelectedFalse.classList.add(
-      IconOff,
-      classNameInputDeactivated,
-    );
-
-    // Create a label element for the debugger activation checkbox.
-    const itemLabel = document.createElement('label');
-    itemLabel.setAttribute('for', checkboxUniqueId);
-    itemLabel.style.pointerEvents = 'none';
-    itemLabel.textContent = label;
+    const createIconElement = (iconClass, activatedClass) => {
+      const iconElement = document.createElement('span');
+      iconElement.style.pointerEvents = 'none';
+      iconElement.classList.add(iconClass, activatedClass);
+      return iconElement;
+    }
+    const iconSelectedTrue = createIconElement(IconOn, classNameInputActivated);
+    const iconSelectedFalse = createIconElement(IconOff, classNameInputDeactivated);
 
     wrapperDiv.append(
       itemInput,
       iconSelectedTrue,
-      iconSelectedFalse,
-      itemLabel
+      iconSelectedFalse
     );
+
+    // Create a label element for the debugger activation checkbox.
+    if (label.length > 0) {
+      const itemLabel = document.createElement('label');
+      itemLabel.setAttribute('for', checkboxUniqueId);
+      itemLabel.style.pointerEvents = 'none';
+      itemLabel.textContent = label;
+      wrapperDiv.appendChild(itemLabel);
+    }
 
     return wrapperDiv;
   },

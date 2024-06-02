@@ -73,7 +73,7 @@ Drupal.controllerElement = {
     classNameListElement: 'list',
     classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
-    classNameListElementItemContent: 'list-item__content',
+    classNameListElementItemVisibility: 'list-item__visibility',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
@@ -719,8 +719,14 @@ Drupal.controllerElement = {
       classNameListElementContent,
       classNameTarget,
       classNameListElementItem,
-      classNameListElementItemContent,
+      classNameListElementItemVisibility,
+      classNameIconEye,
+      classNameIconEyeBlocked,
     } = this.classNames;
+
+    const {
+      classNameCheckboxToggleWrapper
+    } = this.utilities.classNames;
 
     const { idControllerElementList } = this.ids;
 
@@ -728,7 +734,8 @@ Drupal.controllerElement = {
 
     const {
       layerTargetIdAttributeName,
-      listItemActivatedAttributeName
+      listItemActivatedAttributeName,
+      listItemVisibleAttributeName,
     } = this.utilities.layerAttributes;
 
     const themeDebugNodes = this.themeDebugNodes;
@@ -758,7 +765,6 @@ Drupal.controllerElement = {
     // Prepare the list of nodes.
     themeDebugNodes.forEach((node) => {
 
-      const targetIdAttr = node.instanceLayer.getAttribute(layerTargetIdAttributeName);
       const listElementItem = document.createElement('div');
       listElementItem.classList.add(classNameListElementItem);
 
@@ -766,29 +772,69 @@ Drupal.controllerElement = {
       const defaultElementSwitcher = this.utilities.generateOnOffSwitch(
         node.instanceActiveElement.propertyHook,
         false,
-        () => node.instanceLayer.click(),
-        (event) => {
-          // Toggle the checked and unchecked activation attribute.
-          const parentNode = event.target.parentNode;
-          parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
-        },
-
+        [
+          {
+            eventListener: 'click',
+            eventCallback: () => node.instanceLayer.click()
+          },
+          {
+            eventListener: 'change',
+            eventCallback: (event) => {
+              // Toggle the checked and unchecked activation attribute.
+              const parentNode = event.target.parentNode;
+              parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
+            },
+          }
+        ],
         {
           [layerTargetIdAttributeName]: node.instanceLayer.getAttribute(layerTargetIdAttributeName),
           [listItemActivatedAttributeName]: false
         },
         [
-          classNameListElementItemContent,
           this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
         ]
       );
 
+      // Generates an on/off switcher.
+      const elementActivator = this.utilities.generateOnOffSwitch(
+        '',
+        true,
+        [
+          {
+            eventListener: 'click',
+            eventCallback: (event) => {
+              if (!event.target.classList.contains(classNameCheckboxToggleWrapper)) return;
+              event.target.querySelector('input').click();
+            },
+          },
+          {
+            eventListener: 'change',
+            eventCallback: (event) => {
+              console.warn(`This element has been clicked...`);
+              // Toggle the checked and unchecked activation attribute.
+              /*
+              const parentNode = event.target.parentNode;
+              parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
+              */
+            },
+          }
+        ],
+        {
+          [listItemVisibleAttributeName]: true,
+        },
+        [ classNameListElementItemVisibility ],
+        classNameIconEye,
+        classNameIconEyeBlocked
+      );
 
       // Append the switcher element to the instance of themeDebugNodes.
       node.listItemLayer = defaultElementSwitcher;
 
       // Append the switcher to the list item, and then to the list content.
-      listElementItem.appendChild(defaultElementSwitcher);
+      listElementItem.append(
+        defaultElementSwitcher,
+        elementActivator
+      );
       listElementLayerContent.appendChild(listElementItem);
     });
 

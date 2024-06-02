@@ -327,9 +327,7 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}list-element--content--gap: calc(var(--#{$prefix}controller--gutter) * .125);
   --#{$prefix}list-element--list-item--gap: calc(var(--#{$prefix}controller--gutter) * .25);
   --#{$prefix}list-element--list-item--flex-direction: row;
-  --#{$prefix}list-element--list-item--content--align-items: center;
-  --#{$prefix}list-element--list-item--content--flex-direction: row;
-  --#{$prefix}list-element--list-item--content--gap: calc(var(--#{$prefix}controller--gutter) * .25);
+  --#{$prefix}list-element--list-item--visibility--margin-left: auto;
 
   // Content copy data.
   --#{$prefix}content-copy-data--align-items: center;

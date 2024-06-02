@@ -1,6 +1,11 @@
 .visual-debugger {
 
   .checkbox-toggle-wrapper {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
     position: relative;
   }
 
@@ -15,6 +20,7 @@
     + .item-activated,
     ~ .item-deactivated {
       display: none;
+      pointer-events: none;
     }
 
     &:checked + .item-activated,
