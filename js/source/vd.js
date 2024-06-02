@@ -33,7 +33,6 @@
     // layerAttributes.
     layerAttributes: {
       layerIdAttributeName: 'data-vd-id',
-      layerTargetIdAttributeName: 'data-vd-target-id',
     },
 
     // This array holds relevant info about the debug layers, once filled:
@@ -47,8 +46,10 @@
       const { body } = this;
       const {
         layerIdAttributeName,
-        layerTargetIdAttributeName
       } = this.layerAttributes;
+
+      const { layerTargetIdAttributeName } = this.utilities.layerAttributes;
+
       const resizeObserver = new ResizeObserver((entries) => {
         entries.forEach(entry => {
           const affectedLayer = entry.target;
@@ -181,7 +182,7 @@
       const controllerElementInstance = this.controllerElement;
 
       // Layer attributes.
-      const { layerTargetIdAttributeName } = this.layerAttributes;
+      const { layerTargetIdAttributeName } = this.utilities.layerAttributes;
 
       // Set instance classes.
       const {
@@ -198,6 +199,8 @@
         classNameDeactivated,
       } = this.classNames;
 
+      const { instanceLayerActivatedAttributeName } = this.utilities.layerAttributes;
+
       thisLayer.classList.add(
         classNameInstanceLayer,
         classNameObjectType,
@@ -206,6 +209,7 @@
       );
 
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
+      thisLayer.setAttribute(instanceLayerActivatedAttributeName, false);
       thisLayer.style.zIndex =
         this.getCalculatedDomDepth(instanceLayerRef);
 
@@ -252,7 +256,7 @@
         'mouseleave',
         () => {
           checkboxSelector.blur();
-          controllerElementInstance.resetActiveThemeElement(thisThemeElementPropertyHook);
+          controllerElementInstance.resetActiveThemeElement();
         }
       );
 
@@ -278,6 +282,9 @@
       checkboxSelector.addEventListener(
         'change',
         () => {
+
+          // Toggle the checked and unchecked activation attribute.
+          thisLayer.setAttribute(instanceLayerActivatedAttributeName, checkboxSelector.checked);
 
           // Toggle the checked and unchecked classes on the instance layer.
           thisLayer.classList.toggle(classNameInstanceLayerChecked);

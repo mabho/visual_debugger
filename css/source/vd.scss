@@ -207,6 +207,14 @@
         flex-direction: var(--#{$prefix}list-element--list-item--flex-direction);
         align-items: center;
         justify-content: flex-start;
+
+        &__content {
+          align-items: var(--#{$prefix}list-element--list-item--content--align-items);
+          cursor: pointer;
+          display: flex;
+          flex-direction: var(--#{$prefix}list-element--list-item--content--flex-direction);
+          gap: var(--#{$prefix}list-element--list-item--content--gap);
+        }
       }
     }
   }

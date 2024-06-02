@@ -14,6 +14,13 @@ Drupal.vdUtilities = {
     classNameWrapperDeactivated: 'wrapper-deactivated',
   },
 
+  // layerAttributes.
+  layerAttributes: {
+    layerTargetIdAttributeName: 'data-vd-target-id',
+    listItemActivatedAttributeName: 'data-vd-list-item-activated',
+    instanceLayerActivatedAttributeName: 'data-vd-instance-layer-activated',
+  },
+
   /**
    * Gets all siblings of a given element.
    * @param {object} element 
@@ -35,8 +42,10 @@ Drupal.vdUtilities = {
    *   The label for the switch.
    * @param {boolean} activated
    *   Sets the default initial state.
-   * @param {*} changeEventListener 
+   * @param {*} changeEventListener
    *   The event listener function for the change event.
+   * @param {object} wrapperAttributesList
+   *   The attributes to be added to the wrapper div.
    * @param {string} IconOn
    *   The class name for the icon when activated.
    * @param {*} IconOff 
@@ -46,7 +55,9 @@ Drupal.vdUtilities = {
   generateOnOffSwitch(
     label,
     activated = true,
+    clickEventListener = null,
     changeEventListener = null,
+    wrapperAttributesList = [],
     wrapperClassList = [],
     IconOn = this.classNames.classNameIconCheckboxChecked,
     IconOff = this.classNames.classNameIconCheckboxUnchecked,
@@ -66,6 +77,9 @@ Drupal.vdUtilities = {
 
     // Create a wrapper div for the activation elements within the form.
     const wrapperDiv = document.createElement('div');
+    for (let key in wrapperAttributesList) {
+      wrapperDiv.setAttribute(key, wrapperAttributesList[key]);
+    }
     wrapperDiv.classList.add(
       ...wrapperClassList,
       classNameCheckboxToggleWrapper,
@@ -82,35 +96,22 @@ Drupal.vdUtilities = {
     // Applies the initial controller state based on default value received.
     itemInput.checked = activated;
 
+    // If requested, attach a 'click' event listener on the wrapper div.
+    if (clickEventListener !== null) {
+      wrapperDiv.addEventListener('click', clickEventListener);
+    }
+
     if (changeEventListener !== null) {
 
       // Attach custom 'change' event listener to the checkbox.
       itemInput.addEventListener('change', changeEventListener);
-
-      // Attach default 'change' event listener to the checkbox.
-      itemInput.addEventListener('change', () => {
-        // Toggle the checked and unchecked classes on the instance layer.
-        wrapperDiv.classList.toggle(classNameWrapperActivated);
-        wrapperDiv.classList.toggle(classNameWrapperDeactivated);
-      });
-
-      // Attach a 'click' event listener on the wrapper div.
-      wrapperDiv.addEventListener(
-        'click',
-        () => {
-
-          // Uncheck siblings if checked...
-          const siblings = this.getSiblings(wrapperDiv);
-          const activatedCheckboxes = this.getCheckedNodes(siblings);
-          activatedCheckboxes.forEach((node) => {
-            node.click();
-          });
-
-          // Trigger click the checkbox.
-          itemInput.click();
-        }
-      );
     }
+
+    // Attach default 'change' event listener to the checkbox.
+    itemInput.addEventListener('change', () => {
+      wrapperDiv.classList.toggle(classNameWrapperActivated);
+      wrapperDiv.classList.toggle(classNameWrapperDeactivated);
+    });
 
     // Create icons for the debugger activation checkbox.
     const iconSelectedTrue = document.createElement('span');

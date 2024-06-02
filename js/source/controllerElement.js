@@ -73,6 +73,7 @@ Drupal.controllerElement = {
     classNameListElement: 'list',
     classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
+    classNameListElementItemContent: 'list-item__content',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
@@ -94,7 +95,7 @@ Drupal.controllerElement = {
 
   // layerAttributes.
   layerAttributes: {
-    controllerActivatedAttributeName: 'data-controller-activated',
+    controllerActivatedAttributeName: 'data-vd-controller-activated',
   },
 
   // Drupal translatable strings for the controller layer.
@@ -136,6 +137,42 @@ Drupal.controllerElement = {
    */
   setControllerLayer(controllerLayer) {
     this.controllerLayer = controllerLayer;
+  },
+
+  observeInstanceLayerChanges() {
+    const self = this;
+    const { themeDebugNodes } = this;
+    const {
+      layerTargetIdAttributeName,
+      instanceLayerActivatedAttributeName
+    } = this.utilities.layerAttributes;
+
+    // Observer configuration.
+    const observerConfig = {
+      attributes: true,
+      attributeFilter: [instanceLayerActivatedAttributeName],
+    };
+
+    // Observer callback function.
+    const observerCallback = function(mutations) {
+      mutations.forEach((mutation) => {
+        const defaultLayer = mutation.target.getAttribute(instanceLayerActivatedAttributeName) === 'true';
+
+        // Affect only checked elements.
+        if (!defaultLayer) return;
+
+        const targetId = mutation.target.getAttribute(layerTargetIdAttributeName);
+      });
+    };
+
+    // Observer instantiation.
+    const observer = new MutationObserver(observerCallback);
+
+    // Observe each instance layer.
+    themeDebugNodes.forEach((node) => {
+      const instanceLayer = node.instanceLayer;
+      observer.observe(instanceLayer, observerConfig);
+    });
   },
 
   /**
@@ -682,28 +719,37 @@ Drupal.controllerElement = {
       classNameListElementContent,
       classNameTarget,
       classNameListElementItem,
+      classNameListElementItemContent,
     } = this.classNames;
-    const {
-      idControllerElementList,
-    } = this.ids;
-    const {
-      stringTabLabelList,
-    } = this.strings;
-    const themeDebugNodes = this.themeDebugNodes;
-    
-    const listElementLayer = document.createElement('div');
-    const listElementLayerTitle = document.createElement('h3');
-    const listElementLayerContent = document.createElement('div');
 
+    const { idControllerElementList } = this.ids;
+
+    const { stringTabLabelList } = this.strings;
+
+    const {
+      layerTargetIdAttributeName,
+      listItemActivatedAttributeName
+    } = this.utilities.layerAttributes;
+
+    const themeDebugNodes = this.themeDebugNodes;
+
+    // Wrapper
+    const listElementLayer = document.createElement('div');
     listElementLayer.classList.add(
       classNameListElement,
       classNameTarget,
     );
     listElementLayer.setAttribute('id', idControllerElementList);
+
+    // Title
+    const listElementLayerTitle = document.createElement('h3');
     listElementLayerTitle.textContent = stringTabLabelList;
 
+    // Content
+    const listElementLayerContent = document.createElement('div');
     listElementLayerContent.classList.add(classNameListElementContent);
 
+    // Append Title and Content to the wrapper.
     listElementLayer.append(
       listElementLayerTitle,
       listElementLayerContent,
@@ -712,24 +758,38 @@ Drupal.controllerElement = {
     // Prepare the list of nodes.
     themeDebugNodes.forEach((node) => {
 
-      console.warn('Node:', node);
+      const targetIdAttr = node.instanceLayer.getAttribute(layerTargetIdAttributeName);
+      const listElementItem = document.createElement('div');
+      listElementItem.classList.add(classNameListElementItem);
 
-      // Applies an on/off switcher.
-      const onOffSwitcherElement = this.utilities.generateOnOffSwitch(
+      // Generates an on/off switcher.
+      const defaultElementSwitcher = this.utilities.generateOnOffSwitch(
         node.instanceActiveElement.propertyHook,
         false,
-        () => {
-          node.instanceLayer.click();
-          // const nodeSiblings = this.utilities.getSiblings(node);
-          // node.instanceActiveElement.activated = !node.instanceActiveElement.activated;
-          // this.updateActiveElement();
+        () => node.instanceLayer.click(),
+        (event) => {
+          // Toggle the checked and unchecked activation attribute.
+          const parentNode = event.target.parentNode;
+          parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
+        },
+
+        {
+          [layerTargetIdAttributeName]: node.instanceLayer.getAttribute(layerTargetIdAttributeName),
+          [listItemActivatedAttributeName]: false
         },
         [
-          classNameListElementItem,
+          classNameListElementItemContent,
           this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
         ]
       );
-      listElementLayerContent.appendChild(onOffSwitcherElement);
+
+
+      // Append the switcher element to the instance of themeDebugNodes.
+      node.listItemLayer = defaultElementSwitcher;
+
+      // Append the switcher to the list item, and then to the list content.
+      listElementItem.appendChild(defaultElementSwitcher);
+      listElementLayerContent.appendChild(listElementItem);
     });
 
     return listElementLayer;
@@ -1084,6 +1144,34 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Handle the change of the selected list item.
+   * 
+   * @param {object} defaultThemeElement
+   *   The default theme element being changed.
+   * @param {boolean} selected
+   *   True if the item is selected; false otherwise.
+   */
+  handleSelectedListItemChange(defaultThemeElement, selected = true) {
+
+    const {
+      classNameCheckboxToggle,
+    } = this.classNames;
+
+    const defaultThemeDebugNode = this.themeDebugNodes.find((node) => {
+      return node.instanceActiveElement === defaultThemeElement;
+    });
+
+    // Get the checkbox toggle element within.
+    const inputOnOffSwitch = defaultThemeDebugNode.listItemLayer.querySelector(`.${classNameCheckboxToggle}`);
+    inputOnOffSwitch.click();
+
+    // Scroll into view if the item is selected.
+    if (selected) {
+      inputOnOffSwitch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  },
+
+  /**
    * Update the selected element information.
    */
   updateActiveElement() {
@@ -1133,13 +1221,18 @@ Drupal.controllerElement = {
   setDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = instanceLayerRef;
     this.updateSelectedElement();
+    this.handleSelectedListItemChange(instanceLayerRef);
   },
 
   /**
    * Reset the default theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The deactivated layer.
    */
-  resetDefaultThemeElement() {
+  resetDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = null;
     this.updateSelectedElement();
+    this.handleSelectedListItemChange(instanceLayerRef, false);
   },
 }
