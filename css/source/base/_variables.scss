@@ -227,6 +227,10 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}object-type--transparency--selected: .65;
 
   // Buttons.
+  --#{$prefix}checkbox-toggle-wrapper--align-items: center;
+  --#{$prefix}checkbox-toggle-wrapper--cursor: pointer;
+  --#{$prefix}checkbox-toggle-wrapper--flex-direction: row;
+  --#{$prefix}checkbox-toggle-wrapper--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
   --#{$prefix}checkbox-toggle--height: var(--#{$prefix}checkbox-toggle--width);
   --#{$prefix}checkbox-toggle--opacity: 0;
   --#{$prefix}checkbox-toggle--position: absolute;

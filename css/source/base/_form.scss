@@ -1,11 +1,11 @@
 .visual-debugger {
 
   .checkbox-toggle-wrapper {
-    align-items: center;
-    cursor: pointer;
+    align-items: var(--#{$prefix}checkbox-toggle-wrapper--align-items);
+    cursor: var(--#{$prefix}checkbox-toggle-wrapper--cursor);
     display: flex;
-    flex-direction: row;
-    column-gap: 10px;
+    flex-direction: var(--#{$prefix}checkbox-toggle-wrapper--flex-direction);
+    column-gap: var(--#{$prefix}checkbox-toggle-wrapper--column-gap);
     position: relative;
   }
 
