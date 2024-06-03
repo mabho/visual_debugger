@@ -10,16 +10,17 @@ Drupal.vdUtilities = {
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameInputActivated: 'item-activated',
     classNameInputDeactivated: 'item-deactivated',
-    classNameWrapperActivated: 'wrapper-activated',
-    classNameWrapperDeactivated: 'wrapper-deactivated',
+    classNameInputWrapperActivated: 'wrapper-activated',
+    classNameInputWrapperDeactivated: 'wrapper-deactivated',
+    classNameInputWrapperDisabled: 'disabled',
   },
 
   // layerAttributes.
   layerAttributes: {
     layerTargetIdAttributeName: 'data-vd-target-id',
     listItemActivatedAttributeName: 'data-vd-list-item-activated',
-    listItemVisibleAttributeName: 'data-vd-list-item-visible',
     instanceLayerActivatedAttributeName: 'data-vd-instance-layer-activated',
+    layerAttributeIsVisible: 'data-vd-visible',
   },
 
   /**
@@ -68,8 +69,8 @@ Drupal.vdUtilities = {
       classNameCheckboxToggle,
       classNameInputActivated,
       classNameInputDeactivated,
-      classNameWrapperActivated,
-      classNameWrapperDeactivated,
+      classNameInputWrapperActivated,
+      classNameInputWrapperDeactivated,
     } = this.classNames;
 
     const self = this;
@@ -84,7 +85,7 @@ Drupal.vdUtilities = {
     wrapperDiv.classList.add(
       ...wrapperClassList,
       classNameCheckboxToggleWrapper,
-      classNameWrapperDeactivated,
+      classNameInputWrapperDeactivated,
     );
 
     // Create a checkbox input element for debugger activation
@@ -110,8 +111,8 @@ Drupal.vdUtilities = {
 
     // Attach default 'change' event listener to the checkbox.
     itemInput.addEventListener('change', () => {
-      wrapperDiv.classList.toggle(classNameWrapperActivated);
-      wrapperDiv.classList.toggle(classNameWrapperDeactivated);
+      wrapperDiv.classList.toggle(classNameInputWrapperActivated);
+      wrapperDiv.classList.toggle(classNameInputWrapperDeactivated);
     });
 
     // Create icons for the debugger activation checkbox.
@@ -150,8 +151,9 @@ Drupal.vdUtilities = {
     *   An array of nodes.
     */
   getCheckedNodes(nodes) {
+    const { classNameInputWrapperActivated } = this.classNames; 
     return nodes.filter((node) => {
-      return node.classList.contains(this.classNames.classNameWrapperActivated);
+      return node.classList.contains(classNameInputWrapperActivated);
     });
   },
 }

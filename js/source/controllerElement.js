@@ -73,6 +73,7 @@ Drupal.controllerElement = {
     classNameListElement: 'list',
     classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
+    classNameListElementItemActivation: 'list-item__activation',
     classNameListElementItemVisibility: 'list-item__visibility',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
@@ -719,13 +720,15 @@ Drupal.controllerElement = {
       classNameListElementContent,
       classNameTarget,
       classNameListElementItem,
+      classNameListElementItemActivation,
       classNameListElementItemVisibility,
       classNameIconEye,
       classNameIconEyeBlocked,
     } = this.classNames;
 
     const {
-      classNameCheckboxToggleWrapper
+      classNameCheckboxToggleWrapper,
+      classNameInputWrapperDisabled,
     } = this.utilities.classNames;
 
     const { idControllerElementList } = this.ids;
@@ -735,7 +738,7 @@ Drupal.controllerElement = {
     const {
       layerTargetIdAttributeName,
       listItemActivatedAttributeName,
-      listItemVisibleAttributeName,
+      layerAttributeIsVisible,
     } = this.utilities.layerAttributes;
 
     const themeDebugNodes = this.themeDebugNodes;
@@ -775,7 +778,10 @@ Drupal.controllerElement = {
         [
           {
             eventListener: 'click',
-            eventCallback: () => node.instanceLayer.click()
+            eventCallback: () => {
+              if (node.listItemLayer.getAttribute(layerAttributeIsVisible) === 'true')
+                node.instanceLayer.click();
+            }
           },
           {
             eventListener: 'change',
@@ -788,9 +794,11 @@ Drupal.controllerElement = {
         ],
         {
           [layerTargetIdAttributeName]: node.instanceLayer.getAttribute(layerTargetIdAttributeName),
-          [listItemActivatedAttributeName]: false
+          [listItemActivatedAttributeName]: false,
+          [layerAttributeIsVisible]: true
         },
         [
+          classNameListElementItemActivation,
           this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
         ]
       );
@@ -810,17 +818,30 @@ Drupal.controllerElement = {
           {
             eventListener: 'change',
             eventCallback: (event) => {
-              console.warn(`This element has been clicked...`);
-              // Toggle the checked and unchecked activation attribute.
-              /*
-              const parentNode = event.target.parentNode;
-              parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
-              */
+
+              // Toggle activation class.
+              node.listItemLayer.classList.toggle(classNameInputWrapperDisabled);
+              node.listItemLayer.setAttribute(layerAttributeIsVisible, event.target.checked);
+
+              // Get the input inside the parent sibling.
+              const parentSiblingInput = node.listItemLayer.querySelector('input');
+
+              // Hide or show the instance layer depending on the visibility selector.
+              if (event.target.checked) {
+                node.showInstanceLayer();
+              } else {
+
+                // If the instance layer is being hidden, then deactivate it. 
+                if (parentSiblingInput.checked) {
+                  parentSiblingInput.click();
+                }
+                node.hideInstanceLayer();
+              }
             },
           }
         ],
         {
-          [listItemVisibleAttributeName]: true,
+          [layerAttributeIsVisible]: true,
         },
         [ classNameListElementItemVisibility ],
         classNameIconEye,

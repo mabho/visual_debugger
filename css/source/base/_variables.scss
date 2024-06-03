@@ -331,6 +331,8 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}list-element--content--gap: calc(var(--#{$prefix}controller--gutter) * .125);
   --#{$prefix}list-element--list-item--gap: calc(var(--#{$prefix}controller--gutter) * .25);
   --#{$prefix}list-element--list-item--flex-direction: row;
+  --#{$prefix}list-element--list-item--activation--disabled--text-decoration: line-through;
+  --#{$prefix}list-element--list-item--activation--disabled--opacity: .3;
   --#{$prefix}list-element--list-item--visibility--margin-left: auto;
 
   // Content copy data.

@@ -182,7 +182,7 @@
       const controllerElementInstance = this.controllerElement;
 
       // Layer attributes.
-      const { layerTargetIdAttributeName } = this.utilities.layerAttributes;
+      const { layerAttributeIsVisible } = this.layerAttributes;
 
       // Set instance classes.
       const {
@@ -199,7 +199,10 @@
         classNameDeactivated,
       } = this.classNames;
 
-      const { instanceLayerActivatedAttributeName } = this.utilities.layerAttributes;
+      const {
+        layerTargetIdAttributeName,
+        instanceLayerActivatedAttributeName
+      } = this.utilities.layerAttributes;
 
       thisLayer.classList.add(
         classNameInstanceLayer,
@@ -208,7 +211,9 @@
         classNameInstanceLayerUnchecked
       );
 
+      
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
+      thisLayer.setAttribute(layerAttributeIsVisible, true);
       thisLayer.setAttribute(instanceLayerActivatedAttributeName, false);
       thisLayer.style.zIndex =
         this.getCalculatedDomDepth(instanceLayerRef);
@@ -329,6 +334,36 @@
     },
 
     /**
+     * Sets the theme debug node object, which is central for this app.
+     * @param {object} instanceActiveElement
+     *   The actual data for each layer.
+     * @param {object} instanceLayer
+     *   The debug layer generated dynamically.
+     * @param {object} dataNode
+     *   The original referenced layer.
+     * @returns 
+     */
+    setthemeDebugNode(
+      instanceActiveElement,
+      instanceLayer,
+      instanceRefElement,
+    ) {
+      const { layerAttributeIsVisible } = this.utilities.layerAttributes;
+
+      return {
+        instanceActiveElement: instanceActiveElement,
+        instanceLayer: instanceLayer,
+        instanceRefElement: instanceRefElement,
+        showInstanceLayer() {
+          this.instanceLayer.setAttribute(layerAttributeIsVisible, true);
+        },
+        hideInstanceLayer() {
+          this.instanceLayer.setAttribute(layerAttributeIsVisible, false);
+        },
+      }; 
+    },
+
+    /**
      * Code initialization.
      * @param {object} context 
      * @param {object} settings 
@@ -444,14 +479,15 @@
               const instanceActiveElement = Object.assign({}, activeElement);
               const instanceLayerId = this.utilities.generateUniqueIdentifier();
               const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
-              const themeDebugNode = {
-                'instanceActiveElement': instanceActiveElement,
-                'instanceLayer': instanceLayer,
-                'instanceRefElement': dataNode,
-              }
               dataNode.setAttribute(layerIdAttributeName, instanceLayerId);
-              themeDebugNodes.push(themeDebugNode);
               baseLayer.appendChild(instanceLayer);
+              themeDebugNodes.push(
+                this.setthemeDebugNode(
+                  instanceActiveElement,
+                  instanceLayer,
+                  dataNode,
+                )
+              );
             }
 
             activeElement.reset();
