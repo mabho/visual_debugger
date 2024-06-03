@@ -771,7 +771,7 @@ Drupal.controllerElement = {
       const listElementItem = document.createElement('div');
       listElementItem.classList.add(classNameListElementItem);
 
-      // Generates an on/off switcher.
+      // Generates an on/off switcher for item activation.
       const defaultElementSwitcher = this.utilities.generateOnOffSwitch(
         node.instanceActiveElement.propertyHook,
         false,
@@ -803,7 +803,7 @@ Drupal.controllerElement = {
         ]
       );
 
-      // Generates an on/off switcher.
+      // Generates an on/off switcher for item visibility.
       const elementActivator = this.utilities.generateOnOffSwitch(
         '',
         true,
@@ -823,8 +823,8 @@ Drupal.controllerElement = {
               node.listItemLayer.classList.toggle(classNameInputWrapperDisabled);
               node.listItemLayer.setAttribute(layerAttributeIsVisible, event.target.checked);
 
-              // Get the input inside the parent sibling.
-              const parentSiblingInput = node.listItemLayer.querySelector('input');
+              // Get the list item selected input.
+              const inputField = node.listItemLayer.querySelector('input');
 
               // Hide or show the instance layer depending on the visibility selector.
               if (event.target.checked) {

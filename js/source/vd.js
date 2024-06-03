@@ -338,7 +338,7 @@
      *   The actual data for each layer.
      * @param {object} instanceLayer
      *   The debug layer generated dynamically.
-     * @param {object} dataNode
+     * @param {object} instanceRefElement
      *   The original referenced layer.
      * @returns 
      */
