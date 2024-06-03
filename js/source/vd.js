@@ -348,6 +348,7 @@
       instanceRefElement,
     ) {
       const { layerAttributeIsVisible } = this.utilities.layerAttributes;
+      const { instanceLayerActivatedAttributeName } = this.utilities.layerAttributes;
 
       return {
         instanceActiveElement: instanceActiveElement,
@@ -358,6 +359,9 @@
         },
         hideInstanceLayer() {
           this.instanceLayer.setAttribute(layerAttributeIsVisible, false);
+          if (this.instanceLayer.getAttribute(instanceLayerActivatedAttributeName) === 'true'){
+            this.instanceLayer.click();
+          }
         },
       }; 
     },

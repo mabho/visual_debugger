@@ -830,11 +830,6 @@ Drupal.controllerElement = {
               if (event.target.checked) {
                 node.showInstanceLayer();
               } else {
-
-                // If the instance layer is being hidden, then deactivate it. 
-                if (parentSiblingInput.checked) {
-                  parentSiblingInput.click();
-                }
                 node.hideInstanceLayer();
               }
             },
