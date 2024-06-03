@@ -181,9 +181,6 @@
       // Controller element instance.
       const controllerElementInstance = this.controllerElement;
 
-      // Layer attributes.
-      const { layerAttributeIsVisible } = this.layerAttributes;
-
       // Set instance classes.
       const {
         classNameInstanceLayer,
@@ -199,9 +196,11 @@
         classNameDeactivated,
       } = this.classNames;
 
+      // Layer attributes in Utilities.
       const {
         layerTargetIdAttributeName,
-        instanceLayerActivatedAttributeName
+        instanceLayerActivatedAttributeName,
+        layerAttributeIsVisible
       } = this.utilities.layerAttributes;
 
       thisLayer.classList.add(
