@@ -262,7 +262,7 @@
         'mouseleave',
         () => {
           checkboxSelector.blur();
-          controllerElementInstance.resetActiveThemeElement();
+          controllerElementInstance.resetActiveThemeElement(thisThemeElementPropertyHook);
         }
       );
 

@@ -74,6 +74,7 @@ Drupal.controllerElement = {
     classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
     classNameListElementItemActivation: 'list-item__activation',
+    classNameListElementItemActivationHover: 'list-item__activation--hover',
     classNameListElementItemVisibility: 'list-item__visibility',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
@@ -1246,6 +1247,31 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Sets a list item element as hovered by applying a custom class.
+   * 
+   * @param {object} defaultThemeElement
+   *   The default theme element being hovered.
+   * @param {boolean} hover
+   *   True or false depending if the item is hovered.
+   */
+  setHoverElement(defaultThemeElement, hover = true) {
+    const { classNameListElementItemActivationHover } = this.classNames;
+
+    const defaultThemeDebugNode = this.themeDebugNodes.find((node) => {
+      return node.instanceActiveElement === defaultThemeElement;
+    });
+
+    // Is element hovered?
+    hover
+      ? defaultThemeDebugNode.listItemLayer.classList.add(
+        classNameListElementItemActivationHover
+      )
+      : defaultThemeDebugNode.listItemLayer.classList.remove(
+        classNameListElementItemActivationHover
+      );
+  },
+
+  /**
    * Update the selected element information.
    */
   updateActiveElement() {
@@ -1262,14 +1288,19 @@ Drupal.controllerElement = {
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
     this.updateActiveElement();
+    this.setHoverElement(instanceLayerRef);
   },
 
   /**
    * Reset the active theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The instance layer being deactivated.
    */
-  resetActiveThemeElement() {
+  resetActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = null;
     this.updateActiveElement();
+    this.setHoverElement(instanceLayerRef, false);
   },
 
   /**
