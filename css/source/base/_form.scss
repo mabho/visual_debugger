@@ -2,16 +2,19 @@
 
   .checkbox-toggle-wrapper {
     align-items: var(--#{$prefix}checkbox-toggle-wrapper--align-items);
+    column-gap: var(--#{$prefix}checkbox-toggle-wrapper--column-gap);
     cursor: var(--#{$prefix}checkbox-toggle-wrapper--cursor);
     display: flex;
     flex-direction: var(--#{$prefix}checkbox-toggle-wrapper--flex-direction);
-    column-gap: var(--#{$prefix}checkbox-toggle-wrapper--column-gap);
+    flex-grow: 1;
+    overflow-x: var(--#{$prefix}checkbox-toggle-wrapper--overflow-x);
     position: relative;
   }
 
   // Checkbox toggle.
   .checkbox-toggle {
     cursor: pointer;
+    flex: var(--#{$prefix}checkbox-toggle--flex);
     height: var(--#{$prefix}checkbox-toggle--height);
     opacity: var(--#{$prefix}checkbox-toggle--opacity);
     position: var(--#{$prefix}checkbox-toggle--position);

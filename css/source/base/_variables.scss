@@ -223,7 +223,7 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
 
   // Object type.
   --#{$prefix}object-type--transparency: .05;
-  --#{$prefix}object-type--transparency--hover: .2;
+  --#{$prefix}object-type--transparency--hover: .35;
   --#{$prefix}object-type--transparency--selected: .65;
 
   // Buttons.
@@ -231,10 +231,12 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}checkbox-toggle-wrapper--cursor: pointer;
   --#{$prefix}checkbox-toggle-wrapper--flex-direction: row;
   --#{$prefix}checkbox-toggle-wrapper--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
+  --#{$prefix}checkbox-toggle-wrapper--overflow-x: hidden;
+  --#{$prefix}checkbox-toggle--flex: 0 0 var(--#{$prefix}checkbox-toggle--width);
   --#{$prefix}checkbox-toggle--height: var(--#{$prefix}checkbox-toggle--width);
   --#{$prefix}checkbox-toggle--opacity: 0;
   --#{$prefix}checkbox-toggle--position: absolute;
-  --#{$prefix}checkbox-toggle--width: 2rem;
+  --#{$prefix}checkbox-toggle--width: #{to-rem(20px)};
 
   // Shadow.
   --#{$prefix}shadow--transparency: .2;
@@ -333,6 +335,8 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}list-element--list-item--flex-direction: row;
   --#{$prefix}list-element--list-item--activation--disabled--text-decoration: line-through;
   --#{$prefix}list-element--list-item--activation--disabled--opacity: .3;
+  --#{$prefix}list-element--list-item--activation--padding: #{to-rem(2px)} #{to-rem(8px)};
+  --#{$prefix}list-element--list-item--visibility--flex: 0 0 #{to-rem(28px)};
   --#{$prefix}list-element--list-item--visibility--margin-left: auto;
 
   // Content copy data.
