@@ -790,6 +790,18 @@ Drupal.controllerElement = {
               const parentNode = event.target.parentNode;
               parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
             },
+          },
+          {
+            eventListener: 'mouseenter',
+            eventCallback: () => {
+              node.triggerMouseEnter();
+            },
+          },
+          {
+            eventListener: 'mouseleave',
+            eventCallback: () => {
+              node.triggerMouseLeave();
+            },
           }
         ],
         {

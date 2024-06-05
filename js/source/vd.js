@@ -20,7 +20,9 @@
       classNameInstanceLayer: 'instance-element',
       classNameInstanceLayerUnchecked: 'instance-element--unchecked',
       classNameInstanceLayerChecked: 'instance-element--checked',
+      classNameInstanceLayerHover: 'instance-element--hover',
       classNameObjectType: 'object-type',
+      classNameObjectTypeHover: 'object-type--hover',
       classNameIconActivated: 'icon-checkbox-checked',
       classNameIconDectivated: 'icon-checkbox-unchecked',
       classNameCheckboxToggle: 'checkbox-toggle',
@@ -347,22 +349,52 @@
       instanceLayer,
       instanceRefElement,
     ) {
-      const { layerAttributeIsVisible } = this.utilities.layerAttributes;
-      const { instanceLayerActivatedAttributeName } = this.utilities.layerAttributes;
+      const {
+        layerAttributeIsVisible, 
+        instanceLayerActivatedAttributeName
+      } = this.utilities.layerAttributes;
+
+      const {
+        classNameInstanceLayerHover,
+        classNameObjectTypeHover
+      } = this.classNames;
 
       return {
         instanceActiveElement: instanceActiveElement,
         instanceLayer: instanceLayer,
         instanceRefElement: instanceRefElement,
+
+        // Show this layer.
         showInstanceLayer() {
           this.instanceLayer.setAttribute(layerAttributeIsVisible, true);
         },
+
+        // Hide this layer.
         hideInstanceLayer() {
           this.instanceLayer.setAttribute(layerAttributeIsVisible, false);
           if (this.instanceLayer.getAttribute(instanceLayerActivatedAttributeName) === 'true'){
             this.instanceLayer.click();
           }
         },
+
+        // Trigger mouse enter.
+        triggerMouseEnter() {
+          this.instanceLayer.dispatchEvent(new MouseEvent('mouseenter'));
+          this.instanceLayer.classList.add(
+            classNameInstanceLayerHover,
+            classNameObjectTypeHover
+
+          );
+        },
+        
+        // Trigger mouse leave.
+        triggerMouseLeave() {
+          this.instanceLayer.dispatchEvent(new MouseEvent('mouseleave'));
+          this.instanceLayer.classList.remove(
+            classNameInstanceLayerHover,
+            classNameObjectTypeHover
+          );
+        }
       }; 
     },
 
