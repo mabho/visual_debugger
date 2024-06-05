@@ -269,6 +269,7 @@
       opacity: 0;
     }
 
+    &--hover,
     &:hover {
       box-shadow: var(--#{$prefix}shadow--full);
 

@@ -26,6 +26,7 @@
   .object-type {
     background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency));
 
+    &--hover,
     &:hover {
       background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
     }
