@@ -4,7 +4,11 @@
  */
 Drupal.controllerElement = {
 
+  // Body
   body: document.body,
+
+  // Utilities
+  utilities: Drupal.vdUtilities,
 
   // The object properties.
   activated: false,
@@ -12,6 +16,7 @@ Drupal.controllerElement = {
   defaultThemeElement: null,
   controllerLayer: null,
   baseLayer: null,
+  tabs: null,
 
   // This array holds a fundamental structure being passed into the
   // controller component. Its initial value is null:
@@ -29,8 +34,10 @@ Drupal.controllerElement = {
   // Element IDs.
   ids: {
     idControllerElement: 'visual-debugger--controller-layer',
+    idControllerElementSelected: 'visual-debugger--controller-layer--selected',
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
+    idControllerElementList: 'visual-debugger--controller-layer--list',
     idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
     idControllerActiveElementInfo: 'visual-debugger--controller--active-element--info',
     idControllerActivationCheckbox: 'debuggerActivationCheckbox',
@@ -51,7 +58,12 @@ Drupal.controllerElement = {
     classNameElementInfoPropertyHook: 'tag--prop-hook',
     classNameActiveElementLayer: 'active-element',
     classNameActiveElementInfo: 'active-element__info',
+    classNameTabsNavigation: 'tabbed-navigation',
+    classNameTabsNavigationTabs: 'tabbed-navigation__tabs',
+    classNameTabsNavigationTab: 'tabbed-navigation__tab',
+    classNameTabsNavigationSeparator: 'tabbed-navigation__separator',
     classNameSelectedElement: 'selected-element',
+    classNameSelectedElementContent: 'selected-element__content',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
     classNameSelectedElementInfo: 'selected-element__info',
     classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
@@ -60,6 +72,14 @@ Drupal.controllerElement = {
     classNameSelectedElementTemplateFilePathWrapper: 'selected-element__template-file-path-wrapper',
     classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
+    classNameListElement: 'list',
+    classNameListElementContent: 'list__content',
+    classNameListElementItem: 'list-item',
+    classNameListElementItemActivation: 'list-item__activation',
+    classNameListElementItemActivationHover: 'list-item__activation--hover',
+    classNameListElementItemVisibility: 'list-item__visibility',
+    classNameAggregateElement: 'aggregate',
+    classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
     classNameContentCopyDataLabel: 'content-copy-data__label',
     classNameIconSelectedTrue: 'icon-selected-true',
@@ -74,11 +94,12 @@ Drupal.controllerElement = {
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameActivated: 'item-activated',
     classNameDeactivated: 'item-deactivated',
+    classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
   },
 
   // layerAttributes.
   layerAttributes: {
-    controllerActivatedAttributeName: 'data-controller-activated',
+    controllerActivatedAttributeName: 'data-vd-controller-activated',
   },
 
   // Drupal translatable strings for the controller layer.
@@ -86,6 +107,9 @@ Drupal.controllerElement = {
     stringCopyToClipboard: Drupal.t('Copy to clipboard'),
     stringDeactivateDebugger: Drupal.t('Deactivate debugger'),
     stringSelectedElement: Drupal.t('Selected Element'),
+    stringTabLabelSelected: Drupal.t('Selected'),
+    stringTabLabelList: Drupal.t('List'),
+    stringTabLabelAggregate: Drupal.t('Aggregate'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
     stringClickDragButton: Drupal.t('Click and drag to resize'),
@@ -117,6 +141,42 @@ Drupal.controllerElement = {
    */
   setControllerLayer(controllerLayer) {
     this.controllerLayer = controllerLayer;
+  },
+
+  observeInstanceLayerChanges() {
+    const self = this;
+    const { themeDebugNodes } = this;
+    const {
+      layerTargetIdAttributeName,
+      instanceLayerActivatedAttributeName
+    } = this.utilities.layerAttributes;
+
+    // Observer configuration.
+    const observerConfig = {
+      attributes: true,
+      attributeFilter: [instanceLayerActivatedAttributeName],
+    };
+
+    // Observer callback function.
+    const observerCallback = function(mutations) {
+      mutations.forEach((mutation) => {
+        const defaultLayer = mutation.target.getAttribute(instanceLayerActivatedAttributeName) === 'true';
+
+        // Affect only checked elements.
+        if (!defaultLayer) return;
+
+        const targetId = mutation.target.getAttribute(layerTargetIdAttributeName);
+      });
+    };
+
+    // Observer instantiation.
+    const observer = new MutationObserver(observerCallback);
+
+    // Observe each instance layer.
+    themeDebugNodes.forEach((node) => {
+      const instanceLayer = node.instanceLayer;
+      observer.observe(instanceLayer, observerConfig);
+    });
   },
 
   /**
@@ -356,13 +416,21 @@ Drupal.controllerElement = {
     // Active element layer.
     const activeElementLayer = this.generateActiveElementLayer();
 
+    // Create the tabbed navigation layer.
+    const tabbedNavigation = this.generateTabbedNavigation();
+
     // Selected element layer.
     const selectedElementLayer = this.generateSelectedElementLayer();
+
+    // List element layer.
+    const listElementLayer = this.generateListElementLayer();
 
     // Selected element layer.
     controllerContentLayer.append(
       activeElementLayer,
+      tabbedNavigation,
       selectedElementLayer,
+      listElementLayer,
     );
     
     controllerLayer.append(
@@ -457,24 +525,132 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Updates the active tab and deactivates siblings.
+   * @param {*} tabElement 
+   * @param {*} tabId 
+   */
+  switchToTab(tabId) {
+
+    // Button tab.
+    const tabElement = document.querySelector(
+      `[data-target-tab='${tabId}']`
+    );
+
+    // Target layer to be activated.
+    const targetLayer = this.getControllerLayer().querySelector(
+      `#${tabId}`
+    );
+
+    // Halt execution if 
+    if (tabElement === null || targetLayer === null) return;
+
+    // Update tab and target states.
+    tabElement.classList.add('active');
+    targetLayer.classList.add('active');
+
+    // Deactivate siblings.
+    const deactivateSiblings = (refLayer) => {
+      const siblings = this.utilities.getSiblings(refLayer);
+      siblings.forEach((sibling) => {
+        sibling.classList.remove('active');
+      });
+    }
+    deactivateSiblings(tabElement);
+    deactivateSiblings(targetLayer);
+  },
+
+  /**
+   * Generates the tabbed navigation structure.
+   * @returns {object}
+   *   The tabbed navigation structure with tabs within.
+   */
+  generateTabbedNavigation() {
+    const {
+      classNameTabsNavigation,
+      classNameTabsNavigationTabs,
+      classNameTabsNavigationTab,
+      classNameTabsNavigationSeparator,
+    } = this.classNames;
+
+    const {
+      stringTabLabelSelected,
+      stringTabLabelList,
+    } = this.strings;
+
+    const {
+      idControllerElementSelected,
+      idControllerElementList,
+    } = this.ids;
+
+    // Create the tabs.
+    const tabs = [
+      {
+        label: stringTabLabelSelected,
+        id: idControllerElementSelected,
+      },
+      {
+        label: stringTabLabelList,
+        id: idControllerElementList,
+      },
+    ];
+
+    // Creates a tabs wrapper.
+    const tabsNavigation = document.createElement('div');
+    tabsNavigation.classList.add(classNameTabsNavigation);
+
+    // Tabs group
+    const tabsNavigationTabs = document.createElement('div');
+    tabsNavigationTabs.classList.add(classNameTabsNavigationTabs);
+
+    // Tabs separator
+    const tabsNavigationSeparator = document.createElement('div');
+    tabsNavigationSeparator.classList.add(classNameTabsNavigationSeparator);
+
+    // creates one button per tab.
+    tabs.forEach((tab) => {
+      const tabElement = document.createElement('button');
+      tabElement.setAttribute('data-target-tab', tab.id);
+      tabElement.setAttribute('aria-label', tab.label);
+      tabElement.classList.add(classNameTabsNavigationTab);
+      tabElement.textContent = tab.label;
+      tabElement.addEventListener('click', () => {
+        this.switchToTab(tab.id);
+      });
+      tabsNavigationTabs.appendChild(tabElement);
+    });
+
+    // Fills a variable with the tabs list.
+    this.tabs = tabs;
+
+    // Wrap everything in the tabs navigation.
+    tabsNavigation.append(
+      tabsNavigationTabs,
+      tabsNavigationSeparator
+    );
+
+    return tabsNavigation;
+  },
+
+  /**
    * Generates the selected element layer with all its components.
    * 
    * @returns {object}
-   *   The selected element layer. 
+   *   The selected element layer.
    */
   generateSelectedElementLayer() {
-    const selectedElementLayer = document.createElement('div');
-    const selectedElementLayerTitle = document.createElement('h3');
     const {
       classNameSelectedElement,
+      classNameSelectedElementContent,
       classNameSelectedElementInfoWrapper,
       classNameSelectedElementInfo,
       classNameSelectedElementSuggestionsWrapper,
       classNameSelectedElementSuggestions,
       classNameSelectedElementTemplateFilePathWrapper,
       classNameSelectedElementTemplateFilePath,
+      classNameTarget,
     } = this.classNames;
     const {
+      idControllerElementSelected,
       idControllerElementInfo,
       idControllerElementSuggestions,
     } = this.ids;
@@ -485,8 +661,16 @@ Drupal.controllerElement = {
       stringTemplateFilePath,
     } = this.strings;
 
-    selectedElementLayer.classList.add(classNameSelectedElement);
+    const selectedElementLayer = document.createElement('div');
+    const selectedElementLayerContent = document.createElement('div');
+    const selectedElementLayerTitle = document.createElement('h3');
+    selectedElementLayer.classList.add(
+      classNameSelectedElement,
+      classNameTarget
+    );
+    selectedElementLayer.setAttribute('id', idControllerElementSelected);
     selectedElementLayerTitle.textContent = stringSelectedElement;
+    selectedElementLayerContent.classList.add(classNameSelectedElementContent);
 
     // Selected element basic info.
     const selectedElementBasicInfoWrapper = document.createElement('div');
@@ -527,16 +711,181 @@ Drupal.controllerElement = {
       selectedElementTemplateFilePath,
     );
 
-    // Append everything to the selected element layer.
-    selectedElementLayer.append(
-      selectedElementLayerTitle,
+    // Append relevant information to the content layer.
+    selectedElementLayerContent.append(
       selectedElementBasicInfoWrapper,
       selectedElementSuggestionsWrapper,
       selectedElementTemplateFilePathWrapper
     );
 
+    // Append everything to the selected element layer.
+    selectedElementLayer.append(
+      selectedElementLayerTitle,
+      selectedElementLayerContent,
+    );
+
     // Return
     return selectedElementLayer;
+  },
+
+  /**
+   * Generates a list of template layers on the current page.
+   * @returns {object}
+   *   The wrapper layer with all the template layers.
+   */
+  generateListElementLayer() {
+    const {
+      classNameListElement,
+      classNameListElementContent,
+      classNameTarget,
+      classNameListElementItem,
+      classNameListElementItemActivation,
+      classNameListElementItemVisibility,
+      classNameIconEye,
+      classNameIconEyeBlocked,
+    } = this.classNames;
+
+    const {
+      classNameCheckboxToggleWrapper,
+      classNameInputWrapperDisabled,
+    } = this.utilities.classNames;
+
+    const { idControllerElementList } = this.ids;
+
+    const { stringTabLabelList } = this.strings;
+
+    const {
+      layerTargetIdAttributeName,
+      listItemActivatedAttributeName,
+      layerAttributeIsVisible,
+    } = this.utilities.layerAttributes;
+
+    const themeDebugNodes = this.themeDebugNodes;
+
+    // Wrapper
+    const listElementLayer = document.createElement('div');
+    listElementLayer.classList.add(
+      classNameListElement,
+      classNameTarget,
+    );
+    listElementLayer.setAttribute('id', idControllerElementList);
+
+    // Title
+    const listElementLayerTitle = document.createElement('h3');
+    listElementLayerTitle.textContent = stringTabLabelList;
+
+    // Content
+    const listElementLayerContent = document.createElement('div');
+    listElementLayerContent.classList.add(classNameListElementContent);
+
+    // Append Title and Content to the wrapper.
+    listElementLayer.append(
+      listElementLayerTitle,
+      listElementLayerContent,
+    );
+
+    // Prepare the list of nodes.
+    themeDebugNodes.forEach((node) => {
+
+      const listElementItem = document.createElement('div');
+      listElementItem.classList.add(classNameListElementItem);
+
+      // Generates an on/off switcher for item activation.
+      const defaultElementSwitcher = this.utilities.generateOnOffSwitch(
+        node.instanceActiveElement.propertyHook,
+        false,
+        [
+          {
+            eventListener: 'click',
+            eventCallback: () => {
+              if (node.listItemLayer.getAttribute(layerAttributeIsVisible) === 'true')
+                node.instanceLayer.click();
+            }
+          },
+          {
+            eventListener: 'change',
+            eventCallback: (event) => {
+              // Toggle the checked and unchecked activation attribute.
+              const parentNode = event.target.parentNode;
+              parentNode.setAttribute(listItemActivatedAttributeName, event.target.checked);
+            },
+          },
+          {
+            eventListener: 'mouseenter',
+            eventCallback: () => {
+              node.triggerMouseEnter();
+            },
+          },
+          {
+            eventListener: 'mouseleave',
+            eventCallback: () => {
+              node.triggerMouseLeave();
+            },
+          }
+        ],
+        {
+          [layerTargetIdAttributeName]: node.instanceLayer.getAttribute(layerTargetIdAttributeName),
+          [listItemActivatedAttributeName]: false,
+          [layerAttributeIsVisible]: true
+        },
+        [
+          classNameListElementItemActivation,
+          this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
+        ]
+      );
+
+      // Generates an on/off switcher for item visibility.
+      const elementActivator = this.utilities.generateOnOffSwitch(
+        '',
+        true,
+        [
+          {
+            eventListener: 'click',
+            eventCallback: (event) => {
+              if (!event.target.classList.contains(classNameCheckboxToggleWrapper)) return;
+              event.target.querySelector('input').click();
+            },
+          },
+          {
+            eventListener: 'change',
+            eventCallback: (event) => {
+
+              // Toggle activation class.
+              node.listItemLayer.classList.toggle(classNameInputWrapperDisabled);
+              node.listItemLayer.setAttribute(layerAttributeIsVisible, event.target.checked);
+
+              // Get the list item selected input.
+              const inputField = node.listItemLayer.querySelector('input');
+
+              // Hide or show the instance layer depending on the visibility selector.
+              if (event.target.checked) {
+                node.showInstanceLayer();
+              } else {
+                node.hideInstanceLayer();
+              }
+            },
+          }
+        ],
+        {
+          [layerAttributeIsVisible]: true,
+        },
+        [ classNameListElementItemVisibility ],
+        classNameIconEye,
+        classNameIconEyeBlocked
+      );
+
+      // Append the switcher element to the instance of themeDebugNodes.
+      node.listItemLayer = defaultElementSwitcher;
+
+      // Append the switcher to the list item, and then to the list content.
+      listElementItem.append(
+        defaultElementSwitcher,
+        elementActivator
+      );
+      listElementLayerContent.appendChild(listElementItem);
+    });
+
+    return listElementLayer;
   },
 
   /**
@@ -569,6 +918,7 @@ Drupal.controllerElement = {
     this.updateSelectedElement('selected');
     this.setSelectedElementSuggestions();
     this.setSelectedElementTemplateFilePath();
+    this.switchToTab(this.ids.idControllerElementSelected);
   },
 
   /**
@@ -714,7 +1064,7 @@ Drupal.controllerElement = {
   },
 
   /**
-   * 
+   * Set an element info block including object type and property hook.
    * @param {object} themeElement 
    * @param {array} classes 
    * @returns 
@@ -887,6 +1237,59 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Handle the change of the selected list item.
+   * 
+   * @param {object} defaultThemeElement
+   *   The default theme element being changed.
+   * @param {boolean} selected
+   *   True if the item is selected; false otherwise.
+   */
+  handleSelectedListItemChange(defaultThemeElement, selected = true) {
+
+    const {
+      classNameCheckboxToggle,
+    } = this.classNames;
+
+    const defaultThemeDebugNode = this.themeDebugNodes.find((node) => {
+      return node.instanceActiveElement === defaultThemeElement;
+    });
+
+    // Get the checkbox toggle element within.
+    const inputOnOffSwitch = defaultThemeDebugNode.listItemLayer.querySelector(`.${classNameCheckboxToggle}`);
+    inputOnOffSwitch.click();
+
+    // Scroll into view if the item is selected.
+    if (selected) {
+      inputOnOffSwitch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  },
+
+  /**
+   * Sets a list item element as hovered by applying a custom class.
+   * 
+   * @param {object} defaultThemeElement
+   *   The default theme element being hovered.
+   * @param {boolean} hover
+   *   True or false depending if the item is hovered.
+   */
+  setHoverElement(defaultThemeElement, hover = true) {
+    const { classNameListElementItemActivationHover } = this.classNames;
+
+    const defaultThemeDebugNode = this.themeDebugNodes.find((node) => {
+      return node.instanceActiveElement === defaultThemeElement;
+    });
+
+    // Is element hovered?
+    hover
+      ? defaultThemeDebugNode.listItemLayer.classList.add(
+        classNameListElementItemActivationHover
+      )
+      : defaultThemeDebugNode.listItemLayer.classList.remove(
+        classNameListElementItemActivationHover
+      );
+  },
+
+  /**
    * Update the selected element information.
    */
   updateActiveElement() {
@@ -903,14 +1306,19 @@ Drupal.controllerElement = {
   setActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = instanceLayerRef;
     this.updateActiveElement();
+    this.setHoverElement(instanceLayerRef);
   },
 
   /**
    * Reset the active theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The instance layer being deactivated.
    */
-  resetActiveThemeElement() {
+  resetActiveThemeElement(instanceLayerRef) {
     this.activeThemeElement = null;
     this.updateActiveElement();
+    this.setHoverElement(instanceLayerRef, false);
   },
 
   /**
@@ -936,13 +1344,18 @@ Drupal.controllerElement = {
   setDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = instanceLayerRef;
     this.updateSelectedElement();
+    this.handleSelectedListItemChange(instanceLayerRef);
   },
 
   /**
    * Reset the default theme element.
+   * 
+   * @param {object} instanceLayerRef
+   *   The deactivated layer.
    */
-  resetDefaultThemeElement() {
+  resetDefaultThemeElement(instanceLayerRef) {
     this.defaultThemeElement = null;
     this.updateSelectedElement();
+    this.handleSelectedListItemChange(instanceLayerRef, false);
   },
 }

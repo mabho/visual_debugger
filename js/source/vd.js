@@ -1,7 +1,11 @@
 (function (Drupal) {
   Drupal.behaviors.visualDebugger = {
 
+    // Body element.
     body: document.body,
+
+    // Utilities.
+    utilities: Drupal.vdUtilities,
 
     // App constants.
     constants: {
@@ -16,7 +20,9 @@
       classNameInstanceLayer: 'instance-element',
       classNameInstanceLayerUnchecked: 'instance-element--unchecked',
       classNameInstanceLayerChecked: 'instance-element--checked',
+      classNameInstanceLayerHover: 'instance-element--hover',
       classNameObjectType: 'object-type',
+      classNameObjectTypeHover: 'object-type--hover',
       classNameIconActivated: 'icon-checkbox-checked',
       classNameIconDectivated: 'icon-checkbox-unchecked',
       classNameCheckboxToggle: 'checkbox-toggle',
@@ -29,7 +35,6 @@
     // layerAttributes.
     layerAttributes: {
       layerIdAttributeName: 'data-vd-id',
-      layerTargetIdAttributeName: 'data-vd-target-id',
     },
 
     // This array holds relevant info about the debug layers, once filled:
@@ -43,8 +48,10 @@
       const { body } = this;
       const {
         layerIdAttributeName,
-        layerTargetIdAttributeName
       } = this.layerAttributes;
+
+      const { layerTargetIdAttributeName } = this.utilities.layerAttributes;
+
       const resizeObserver = new ResizeObserver((entries) => {
         entries.forEach(entry => {
           const affectedLayer = entry.target;
@@ -163,9 +170,9 @@
     /**
      * Generates an instance layer from scratch; applies all the attributes,
      * classes and event observers.
-     * @param {*} thisThemeElement 
-     * @param {*} instanceLayerRef 
-     * @param {*} instanceLayerId 
+     * @param {object} thisThemeElement 
+     * @param {object} instanceLayerRef 
+     * @param {object} instanceLayerId 
      * @returns 
      */
     generateInstanceLayer(thisThemeElement, instanceLayerRef, instanceLayerId) {
@@ -175,9 +182,6 @@
 
       // Controller element instance.
       const controllerElementInstance = this.controllerElement;
-
-      // Layer attributes.
-      const { layerTargetIdAttributeName } = this.layerAttributes;
 
       // Set instance classes.
       const {
@@ -194,6 +198,13 @@
         classNameDeactivated,
       } = this.classNames;
 
+      // Layer attributes in Utilities.
+      const {
+        layerTargetIdAttributeName,
+        instanceLayerActivatedAttributeName,
+        layerAttributeIsVisible
+      } = this.utilities.layerAttributes;
+
       thisLayer.classList.add(
         classNameInstanceLayer,
         classNameObjectType,
@@ -201,7 +212,10 @@
         classNameInstanceLayerUnchecked
       );
 
+      
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
+      thisLayer.setAttribute(layerAttributeIsVisible, true);
+      thisLayer.setAttribute(instanceLayerActivatedAttributeName, false);
       thisLayer.style.zIndex =
         this.getCalculatedDomDepth(instanceLayerRef);
 
@@ -275,6 +289,9 @@
         'change',
         () => {
 
+          // Toggle the checked and unchecked activation attribute.
+          thisLayer.setAttribute(instanceLayerActivatedAttributeName, checkboxSelector.checked);
+
           // Toggle the checked and unchecked classes on the instance layer.
           thisLayer.classList.toggle(classNameInstanceLayerChecked);
           thisLayer.classList.toggle(classNameInstanceLayerUnchecked);
@@ -315,6 +332,70 @@
       instanceLayerTarget.style.height = `${Math.round(height)}px`;
       instanceLayerTarget.style.top = `${top}px`;
       instanceLayerTarget.style.left = `${left}px`;
+    },
+
+    /**
+     * Sets the theme debug node object, which is central for this app.
+     * @param {object} instanceActiveElement
+     *   The actual data for each layer.
+     * @param {object} instanceLayer
+     *   The debug layer generated dynamically.
+     * @param {object} instanceRefElement
+     *   The original referenced layer.
+     * @returns 
+     */
+    setthemeDebugNode(
+      instanceActiveElement,
+      instanceLayer,
+      instanceRefElement,
+    ) {
+      const {
+        layerAttributeIsVisible, 
+        instanceLayerActivatedAttributeName
+      } = this.utilities.layerAttributes;
+
+      const {
+        classNameInstanceLayerHover,
+        classNameObjectTypeHover
+      } = this.classNames;
+
+      return {
+        instanceActiveElement: instanceActiveElement,
+        instanceLayer: instanceLayer,
+        instanceRefElement: instanceRefElement,
+
+        // Show this layer.
+        showInstanceLayer() {
+          this.instanceLayer.setAttribute(layerAttributeIsVisible, true);
+        },
+
+        // Hide this layer.
+        hideInstanceLayer() {
+          this.instanceLayer.setAttribute(layerAttributeIsVisible, false);
+          if (this.instanceLayer.getAttribute(instanceLayerActivatedAttributeName) === 'true'){
+            this.instanceLayer.click();
+          }
+        },
+
+        // Trigger mouse enter.
+        triggerMouseEnter() {
+          this.instanceLayer.dispatchEvent(new MouseEvent('mouseenter'));
+          this.instanceLayer.classList.add(
+            classNameInstanceLayerHover,
+            classNameObjectTypeHover
+
+          );
+        },
+        
+        // Trigger mouse leave.
+        triggerMouseLeave() {
+          this.instanceLayer.dispatchEvent(new MouseEvent('mouseleave'));
+          this.instanceLayer.classList.remove(
+            classNameInstanceLayerHover,
+            classNameObjectTypeHover
+          );
+        }
+      }; 
     },
 
     /**
@@ -431,16 +512,17 @@
             ) {
               activeElement.setDataNode(dataNode);
               const instanceActiveElement = Object.assign({}, activeElement);
-              const instanceLayerId = `element-${Math.random().toString(36).substring(7)}`;
+              const instanceLayerId = this.utilities.generateUniqueIdentifier();
               const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
-              const themeDebugNode = {
-                'instanceActiveElement': instanceActiveElement,
-                'instanceLayer': instanceLayer,
-                'instanceRefElement': dataNode,
-              }
               dataNode.setAttribute(layerIdAttributeName, instanceLayerId);
-              themeDebugNodes.push(themeDebugNode);
               baseLayer.appendChild(instanceLayer);
+              themeDebugNodes.push(
+                this.setthemeDebugNode(
+                  instanceActiveElement,
+                  instanceLayer,
+                  dataNode,
+                )
+              );
             }
 
             activeElement.reset();

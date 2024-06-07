@@ -54,14 +54,14 @@ This is the roadmap for module improvements:
   - Cache keys
   - Pre-bubbling cache contexts
   - Pre-bubbling cache keys
-- Create view modes to split the display of additional information, and help controller share a lot more valuable information to the user.
-  - Create new tab `Discovery`. Auto-detect information about hovered layers would be displayed inside this tab.
-  - Create new tab `List`. List all the page elements in the order they show up on the page. Selected item can be triggered from the items on this tab.
+- Create tabbed navigation to split the display of additional information, and help controller share a lot more valuable information to the user.
+  - ~~Create new tab `Selected` to display information on the item that is currently selected by the user.~~
+  - ~~Create new tab `List`. List all the page elements in the order they show up on the page. Selected item can be triggered from the items on this tab.~~
   - Create new tab `Aggretate`. Displays an aggregated/consolidated list of page elements by object type. The established color codes should be present here as a visual cue. Display the number of times each object type is present on the page.
     - Beside each object type tag, display a checkbox delivering users the ability to activate/deactivate all the components of a given type at once.
   - Create a new tab `Configuration`. This tab can be represented by a coil icon only. 
 - Add the ability to deactivate/disable individual layers so that users can more easily achieve layers underneath other layers.
-  - On `List`, add the ability to activate/deactivate layers individually.
+  - ~~On `List`, add the ability to activate/deactivate layers individually.~~
   - On `Aggregate`, add the ability to activate/deactivate groups of layers by object type.
 
 ### Development roadmap - Complete tasks.
