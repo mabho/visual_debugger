@@ -542,7 +542,7 @@
       controllerElementInstance.executePostActivation();
 
       // These loggers are only valid for module developers.
-      console.warn('themeDebugNodes', themeDebugNodes);
+      // console.warn('themeDebugNodes', themeDebugNodes);
 
       // Gets a consolidated array of propertyHook values.
       // let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
