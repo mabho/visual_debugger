@@ -112,7 +112,18 @@
     .tabbed-navigation {
       background-color: var(--#{$prefix}tabbed-navigation--background-color);
       padding: var(--#{$prefix}tabbed-navigation--padding);
+      margin-bottom: var(--#{$prefix}tabbed-navigation--margin-bottom);
+      position: sticky;
+      top: 0;
+      z-index: var(--#{$prefix}tabbed-navigation--z-index);
 
+      // Groups all tags within.
+      &__tabs {
+        background-color: var(--#{$prefix}tabbed-navigation--tabs--background-color);
+        padding: var(--#{$prefix}tabbed-navigation--tabs--padding);
+      }
+
+      // Individual tab.
       &__tab {
         background-color: var(--#{$prefix}tabbed-navigation--tab--background-color);
         border-bottom: var(--#{$prefix}tabbed-navigation--tab--border-bottom);
@@ -146,11 +157,20 @@
           transform: var(--#{$prefix}tabbed-navigation--tab--transform--not-active);
         }
       }
+
+      &__separator {
+        // background: linear-gradient(to bottom, #ddd, rgba(255, 216, 201, 0.4));
+        background: var(--#{$prefix}tabbed-navigation--separator--background);
+        border-top: solid 1px $color--gray-40;
+        height: var(--#{$prefix}tabbed-navigation--separator--height);
+        position: relative;
+        z-index: 3;
+      }
     }
 
     // Target for tabbed navigation.
+    border-top: var(--#{$prefix}nav-target--border-top);
     .nav-target {
-      border-top: var(--#{$prefix}nav-target--border-top);
       display: none;
       position: relative;
       z-index: var(--#{$prefix}nav-target--z-index);

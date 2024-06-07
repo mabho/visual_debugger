@@ -59,7 +59,9 @@ Drupal.controllerElement = {
     classNameActiveElementLayer: 'active-element',
     classNameActiveElementInfo: 'active-element__info',
     classNameTabsNavigation: 'tabbed-navigation',
+    classNameTabsNavigationTabs: 'tabbed-navigation__tabs',
     classNameTabsNavigationTab: 'tabbed-navigation__tab',
+    classNameTabsNavigationSeparator: 'tabbed-navigation__separator',
     classNameSelectedElement: 'selected-element',
     classNameSelectedElementContent: 'selected-element__content',
     classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
@@ -565,7 +567,9 @@ Drupal.controllerElement = {
   generateTabbedNavigation() {
     const {
       classNameTabsNavigation,
+      classNameTabsNavigationTabs,
       classNameTabsNavigationTab,
+      classNameTabsNavigationSeparator,
     } = this.classNames;
 
     const {
@@ -594,6 +598,14 @@ Drupal.controllerElement = {
     const tabsNavigation = document.createElement('div');
     tabsNavigation.classList.add(classNameTabsNavigation);
 
+    // Tabs group
+    const tabsNavigationTabs = document.createElement('div');
+    tabsNavigationTabs.classList.add(classNameTabsNavigationTabs);
+
+    // Tabs separator
+    const tabsNavigationSeparator = document.createElement('div');
+    tabsNavigationSeparator.classList.add(classNameTabsNavigationSeparator);
+
     // creates one button per tab.
     tabs.forEach((tab) => {
       const tabElement = document.createElement('button');
@@ -604,11 +616,17 @@ Drupal.controllerElement = {
       tabElement.addEventListener('click', () => {
         this.switchToTab(tab.id);
       });
-      tabsNavigation.appendChild(tabElement);
+      tabsNavigationTabs.appendChild(tabElement);
     });
 
     // Fills a variable with the tabs list.
     this.tabs = tabs;
+
+    // Wrap everything in the tabs navigation.
+    tabsNavigation.append(
+      tabsNavigationTabs,
+      tabsNavigationSeparator
+    );
 
     return tabsNavigation;
   },
