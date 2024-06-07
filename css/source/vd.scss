@@ -233,18 +233,7 @@
             flex-grow: 1;
             padding: var(--#{$prefix}list-element--list-item--activation--padding);
             position: relative;
-
-            &::before {
-              content: '';
-              background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
-              height: 100%;
-              left: 0;
-              position: absolute;
-              top: 0;
-              transition: width var(--#{$prefix}transition-speed);
-              width: 0;
-              z-index: 2;
-            }
+            transition: background-color var(--#{$prefix}transition-speed);
           }
 
           &[data-vd-list-item-activated='true'] {
@@ -256,9 +245,7 @@
           &--hover,
           &:hover {
             label {
-              &::before {
-                width: 100%;
-              }
+              background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
             }
           }
         }
