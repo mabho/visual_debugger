@@ -305,6 +305,7 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}tabbed-navigation--separator--height: #{to-rem(35px)};
 
   // Tabbed navigation <button>.
+  --#{$prefix}tabbed-navigation--tab--align-items: center;
   --#{$prefix}tabbed-navigation--tab--background-color: var(--#{$prefix}color--gray-40);
   --#{$prefix}tabbed-navigation--tab--border--reference: solid 1px var(--#{$prefix}color--gray-60);
   --#{$prefix}tabbed-navigation--tab--border-bottom: 0;
@@ -313,11 +314,12 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}tabbed-navigation--tab--border-top: var(--#{$prefix}tabbed-navigation--tab--border--reference);
   --#{$prefix}tabbed-navigation--tab--border-radius: #{to-rem(8px)} #{to-rem(8px)} 0 0;
   --#{$prefix}tabbed-navigation--tab--color: var(--#{$prefix}color--gray-70);
+  --#{$prefix}tabbed-navigation--tab--column-gap: calc(var(--#{$prefix}controller--gutter) * .3);
   --#{$prefix}tabbed-navigation--tab--cursor: pointer;
   --#{$prefix}tabbed-navigation--tab--font-size: 1rem;
   --#{$prefix}tabbed-navigation--tab--font-weight: normal;
   --#{$prefix}tabbed-navigation--tab--margin-right: #{to-rem(-2px)};
-  --#{$prefix}tabbed-navigation--tab--padding: calc(var(--#{$prefix}controller--gutter) * .4) calc(var(--#{$prefix}controller--gutter) * .75);
+  --#{$prefix}tabbed-navigation--tab--padding: calc(var(--#{$prefix}controller--gutter) * .4) calc(var(--#{$prefix}controller--gutter) * .6);
   --#{$prefix}tabbed-navigation--tab--background-color--hover: var(--#{$prefix}color--gray-30);
   --#{$prefix}tabbed-navigation--tab--transform--hover: scale(1.1);
   --#{$prefix}tabbed-navigation--tab--background-color--active: var(--#{$prefix}color--gray-20);
@@ -325,6 +327,9 @@ $icomoon-font-path: "../../fonts/visual-debugger-icons/fonts";
   --#{$prefix}tabbed-navigation--tab--transform--active: translateY(#{to-rem(2px)});
   --#{$prefix}tabbed-navigation--tab--transform--not-active: translateY(#{to-rem(5px)});
   --#{$prefix}tabbed-navigation--tab--z-index--active: 5;
+  --#{$prefix}tabbed-navigation--tab--selected--size: #{to-rem(10px)};
+  --#{$prefix}tabbed-navigation--tab--selected--background-color: var(--#{$prefix}color--white);
+  --#{$prefix}tabbed-navigation--tab--selected--border-radius: #{to-rem(50px)};
 
   // Nav target.
   --#{$prefix}nav-target--border-top: var(--#{$prefix}tabbed-navigation--tab--border--reference);
