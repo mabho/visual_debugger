@@ -1285,10 +1285,11 @@ Drupal.controllerElement = {
     const { idControllerButtonSelected } = this.ids;
     const targetButton = document.getElementById(idControllerButtonSelected);
     const selectedThemeElement = this.defaultThemeElement;
+    const objectTypeEmpty = this.classNames.classNameObjectTypeTyped('');
 
     // Remove legacy object type class name.
     Array.from(targetButton.classList).forEach((className) => {
-      if (className.startsWith('object-type--')) {
+      if (className.startsWith(objectTypeEmpty)) {
         targetButton.classList.remove(className);
       }
     });
