@@ -202,6 +202,7 @@
   --vd-tabbed-navigation--tabs--padding: var(--vd-controller--gutter) var(--vd-controller--gutter) 0 var(--vd-controller--gutter);
   --vd-tabbed-navigation--separator--background: linear-gradient(to bottom, var(--vd-color--gray-20) 0%, rgba(var(--vd-color--gray-20--rgb), 0) 100%);
   --vd-tabbed-navigation--separator--height: 2.1875rem;
+  --vd-tabbed-navigation--tab--align-items: center;
   --vd-tabbed-navigation--tab--background-color: var(--vd-color--gray-40);
   --vd-tabbed-navigation--tab--border--reference: solid 1px var(--vd-color--gray-60);
   --vd-tabbed-navigation--tab--border-bottom: 0;
@@ -210,11 +211,12 @@
   --vd-tabbed-navigation--tab--border-top: var(--vd-tabbed-navigation--tab--border--reference);
   --vd-tabbed-navigation--tab--border-radius: 0.5rem 0.5rem 0 0;
   --vd-tabbed-navigation--tab--color: var(--vd-color--gray-70);
+  --vd-tabbed-navigation--tab--column-gap: calc(var(--vd-controller--gutter) * .3);
   --vd-tabbed-navigation--tab--cursor: pointer;
   --vd-tabbed-navigation--tab--font-size: 1rem;
   --vd-tabbed-navigation--tab--font-weight: normal;
   --vd-tabbed-navigation--tab--margin-right: -0.125rem;
-  --vd-tabbed-navigation--tab--padding: calc(var(--vd-controller--gutter) * .4) calc(var(--vd-controller--gutter) * .75);
+  --vd-tabbed-navigation--tab--padding: calc(var(--vd-controller--gutter) * .4) calc(var(--vd-controller--gutter) * .6);
   --vd-tabbed-navigation--tab--background-color--hover: var(--vd-color--gray-30);
   --vd-tabbed-navigation--tab--transform--hover: scale(1.1);
   --vd-tabbed-navigation--tab--background-color--active: var(--vd-color--gray-20);
@@ -222,6 +224,9 @@
   --vd-tabbed-navigation--tab--transform--active: translateY(0.125rem);
   --vd-tabbed-navigation--tab--transform--not-active: translateY(0.3125rem);
   --vd-tabbed-navigation--tab--z-index--active: 5;
+  --vd-tabbed-navigation--tab--selected--size: 0.625rem;
+  --vd-tabbed-navigation--tab--selected--background-color: var(--vd-color--white);
+  --vd-tabbed-navigation--tab--selected--border-radius: 3.125rem;
   --vd-nav-target--border-top: var(--vd-tabbed-navigation--tab--border--reference);
   --vd-nav-target--z-index: 0;
   --vd-active-element--margin: 0;
@@ -626,6 +631,7 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
   padding: var(--vd-controller--content-auto-scroll--padding);
 }
 .visual-debugger--controller .tabbed-navigation {
+  --vd-color--object-type: var(--vd-color--white--rgb);
   background-color: var(--vd-tabbed-navigation--background-color);
   padding: var(--vd-tabbed-navigation--padding);
   margin-bottom: var(--vd-tabbed-navigation--margin-bottom);
@@ -636,8 +642,11 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
 .visual-debugger--controller .tabbed-navigation__tabs {
   background-color: var(--vd-tabbed-navigation--tabs--background-color);
   padding: var(--vd-tabbed-navigation--tabs--padding);
+  display: flex;
+  flex-direction: row;
 }
 .visual-debugger--controller .tabbed-navigation__tab {
+  align-items: var(--vd-tabbed-navigation--tab--align-items);
   background-color: var(--vd-tabbed-navigation--tab--background-color);
   border-bottom: var(--vd-tabbed-navigation--tab--border-bottom);
   border-left: var(--vd-tabbed-navigation--tab--border-left);
@@ -645,12 +654,14 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
   border-right: var(--vd-tabbed-navigation--tab--border-right);
   border-radius: var(--vd-tabbed-navigation--tab--border-radius);
   color: var(--vd-tabbed-navigation--tab--color);
+  column-gap: var(--vd-tabbed-navigation--tab--column-gap);
   cursor: var(--vd-tabbed-navigation--tab--cursor);
-  display: inline-block;
+  display: flex;
   font-size: var(--vd-tabbed-navigation--tab--font-size);
   font-weight: var(--vd-tabbed-navigation--tab--font-weight);
   margin-right: var(--vd-tabbed-navigation--tab--margin-right);
   padding: var(--vd-tabbed-navigation--tab--padding);
+  position: relative;
   transition: background-color var(--vd-transition-speed), transform var(--vd-transition-speed);
 }
 .visual-debugger--controller .tabbed-navigation__tab:hover {
@@ -666,6 +677,13 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
 }
 .visual-debugger--controller .tabbed-navigation__tab:not(.active) {
   transform: var(--vd-tabbed-navigation--tab--transform--not-active);
+}
+.visual-debugger--controller .tabbed-navigation__tab--selected::before {
+  background-color: rgba(var(--vd-color--object-type), 1);
+  border-radius: var(--vd-tabbed-navigation--tab--selected--border-radius);
+  content: "";
+  width: var(--vd-tabbed-navigation--tab--selected--size);
+  height: var(--vd-tabbed-navigation--tab--selected--size);
 }
 .visual-debugger--controller .tabbed-navigation__separator {
   background: var(--vd-tabbed-navigation--separator--background);
