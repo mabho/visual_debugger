@@ -110,6 +110,7 @@
 
     // Tabbed navigation
     .tabbed-navigation {
+      --#{$prefix}color--object-type: var(--#{$prefix}color--white--rgb);
       background-color: var(--#{$prefix}tabbed-navigation--background-color);
       padding: var(--#{$prefix}tabbed-navigation--padding);
       margin-bottom: var(--#{$prefix}tabbed-navigation--margin-bottom);
@@ -121,10 +122,13 @@
       &__tabs {
         background-color: var(--#{$prefix}tabbed-navigation--tabs--background-color);
         padding: var(--#{$prefix}tabbed-navigation--tabs--padding);
+        display: flex;
+        flex-direction: row;
       }
 
       // Individual tab.
       &__tab {
+        align-items: var(--#{$prefix}tabbed-navigation--tab--align-items);
         background-color: var(--#{$prefix}tabbed-navigation--tab--background-color);
         border-bottom: var(--#{$prefix}tabbed-navigation--tab--border-bottom);
         border-left: var(--#{$prefix}tabbed-navigation--tab--border-left);
@@ -132,12 +136,14 @@
         border-right: var(--#{$prefix}tabbed-navigation--tab--border-right);
         border-radius: var(--#{$prefix}tabbed-navigation--tab--border-radius);
         color: var(--#{$prefix}tabbed-navigation--tab--color);
+        column-gap: var(--#{$prefix}tabbed-navigation--tab--column-gap);
         cursor: var(--#{$prefix}tabbed-navigation--tab--cursor);
-        display: inline-block;
+        display: flex;
         font-size: var(--#{$prefix}tabbed-navigation--tab--font-size);
         font-weight: var(--#{$prefix}tabbed-navigation--tab--font-weight);
         margin-right: var(--#{$prefix}tabbed-navigation--tab--margin-right);
         padding: var(--#{$prefix}tabbed-navigation--tab--padding);
+        position: relative;
         transition: background-color var(--#{$prefix}transition-speed), transform var(--#{$prefix}transition-speed);
         
         &:hover {
@@ -155,6 +161,16 @@
 
         &:not(.active) {
           transform: var(--#{$prefix}tabbed-navigation--tab--transform--not-active);
+        }
+
+        &--selected {
+          &::before {
+            background-color: rgba(var(--#{$prefix}color--object-type), 1);
+            border-radius: var(--#{$prefix}tabbed-navigation--tab--selected--border-radius);
+            content: '';
+            width: var(--#{$prefix}tabbed-navigation--tab--selected--size);
+            height: var(--#{$prefix}tabbed-navigation--tab--selected--size);
+          }
         }
       }
 

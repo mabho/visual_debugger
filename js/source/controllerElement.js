@@ -35,9 +35,11 @@ Drupal.controllerElement = {
   ids: {
     idControllerElement: 'visual-debugger--controller-layer',
     idControllerElementSelected: 'visual-debugger--controller-layer--selected',
+    idControllerButtonSelected: 'visual-debugger--controller-layer--button--selected',
     idControllerElementInfo: 'visual-debugger--controller-layer--info',
     idControllerElementSuggestions: 'visual-debugger--controller-layer--suggestions',
     idControllerElementList: 'visual-debugger--controller-layer--list',
+    idControllerButtonList: 'visual-debugger--controller-layer--button--list',
     idControllerElementTemplateFilePath: 'visual-debugger--controller-layer--template-file-path',
     idControllerActiveElementInfo: 'visual-debugger--controller--active-element--info',
     idControllerActivationCheckbox: 'debuggerActivationCheckbox',
@@ -61,6 +63,7 @@ Drupal.controllerElement = {
     classNameTabsNavigation: 'tabbed-navigation',
     classNameTabsNavigationTabs: 'tabbed-navigation__tabs',
     classNameTabsNavigationTab: 'tabbed-navigation__tab',
+    classNameTabsNavigationTabSelected: 'tabbed-navigation__tab--selected',
     classNameTabsNavigationSeparator: 'tabbed-navigation__separator',
     classNameSelectedElement: 'selected-element',
     classNameSelectedElementContent: 'selected-element__content',
@@ -569,6 +572,7 @@ Drupal.controllerElement = {
       classNameTabsNavigation,
       classNameTabsNavigationTabs,
       classNameTabsNavigationTab,
+      classNameTabsNavigationTabSelected,
       classNameTabsNavigationSeparator,
     } = this.classNames;
 
@@ -579,18 +583,25 @@ Drupal.controllerElement = {
 
     const {
       idControllerElementSelected,
+      idControllerButtonSelected,
       idControllerElementList,
+      idControllerButtonList,
     } = this.ids;
 
     // Create the tabs.
     const tabs = [
       {
+        id: idControllerButtonSelected,
         label: stringTabLabelSelected,
-        id: idControllerElementSelected,
+        targetId: idControllerElementSelected,
+        extraClasses: [
+          classNameTabsNavigationTabSelected,
+        ]
       },
       {
+        id: idControllerButtonList,
         label: stringTabLabelList,
-        id: idControllerElementList,
+        targetId: idControllerElementList,
       },
     ];
 
@@ -609,12 +620,14 @@ Drupal.controllerElement = {
     // creates one button per tab.
     tabs.forEach((tab) => {
       const tabElement = document.createElement('button');
-      tabElement.setAttribute('data-target-tab', tab.id);
+      const classesList = [classNameTabsNavigationTab, ...tab.extraClasses || []];
+      tabElement.setAttribute('data-target-tab', tab.targetId);
+      tabElement.setAttribute('id', tab.id);
       tabElement.setAttribute('aria-label', tab.label);
-      tabElement.classList.add(classNameTabsNavigationTab);
+      tabElement.classList.add(...classesList);
       tabElement.textContent = tab.label;
       tabElement.addEventListener('click', () => {
-        this.switchToTab(tab.id);
+        this.switchToTab(tab.targetId);
       });
       tabsNavigationTabs.appendChild(tabElement);
     });
@@ -1265,6 +1278,32 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Updates the tab's visual cue indicating the selected element.
+   * @returns void
+   */
+  setTabCue() {
+    const { idControllerButtonSelected } = this.ids;
+    const targetButton = document.getElementById(idControllerButtonSelected);
+    const selectedThemeElement = this.defaultThemeElement;
+    const objectTypeEmpty = this.classNames.classNameObjectTypeTyped('');
+
+    // Remove legacy object type class name.
+    Array.from(targetButton.classList).forEach((className) => {
+      if (className.startsWith(objectTypeEmpty)) {
+        targetButton.classList.remove(className);
+      }
+    });
+
+    // Halt if no element is selected.
+    if (selectedThemeElement === null) return;
+
+    // Apply a new class that corresponds to the selected element.
+    const objectType = selectedThemeElement.objectType;
+    const objectTypeClassName = this.classNames.classNameObjectTypeTyped(objectType);
+    targetButton.classList.add(objectTypeClassName);
+  },
+
+  /**
    * Sets a list item element as hovered by applying a custom class.
    * 
    * @param {object} defaultThemeElement
@@ -1333,6 +1372,7 @@ Drupal.controllerElement = {
     );
     this.setSelectedElementSuggestions();
     this.setSelectedElementTemplateFilePath();
+    this.setTabCue();
   },
 
   /**
