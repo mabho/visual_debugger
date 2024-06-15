@@ -10,6 +10,11 @@ Drupal.themeElement = {
   suggestions: null,
   filePath: null,
   dataNode: null,
+  cacheHit: false,
+  cacheMaxAge: 0,
+  preBubblingCacheMaxAge: 0,
+  renderingTime: 0,
+  cacheTags: null,
 
   // Store the initial state.
   initialState: null,
@@ -24,6 +29,11 @@ Drupal.themeElement = {
       suggestions: this.suggestions,
       filePath: this.filePath,
       dataNode: this.dataNode,
+      cacheHit: this.cacheHit,
+      cacheMaxAge: this.cacheMaxAge,
+      preBubblingCacheMaxAge: this.preBubblingCacheMaxAge,
+      renderingTime: this.renderingTime,
+      cacheTags: this.cacheTags,
     };
   },
 
@@ -32,16 +42,28 @@ Drupal.themeElement = {
     this.activated = true;
   },
 
-  getPropertyHook() {
-    return this.propertyHook;
-  },
-
   setPropertyHook(input) {
     this.propertyHook = input;
   },
 
-  getObjectType() {
-    return this.objectType;
+  setCacheHit(input) {
+    this.cacheHit = input;
+  },
+
+  setCacheMaxAge(input) {
+    this.cacheMaxAge = parseInt(input);
+  },
+
+  setCacheTags(input) {
+    this.cacheTags = input;
+  },
+
+  setPreBubblingCacheMaxAge(input) {
+    this.preBubblingCacheMaxAge = parseInt(input);
+  },
+
+  setRenderingTime(input) {
+    this.renderingTime = parseFloat(input);
   },
 
   setObjectType(input) {
@@ -58,6 +80,15 @@ Drupal.themeElement = {
 
   setDataNode(input) {
     this.dataNode = input;
+  },
+
+  // Getter methods
+  getPropertyHook() {
+    return this.propertyHook;
+  },
+
+  getObjectType() {
+    return this.objectType;
   },
 
   // Reset object to its initial state.

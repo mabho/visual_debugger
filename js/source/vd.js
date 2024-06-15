@@ -93,7 +93,7 @@
     regExs: {
 
       // Validate theme DEBUG.
-      regexGetTemplateDebug: () => new RegExp("THEME DEBUG"),
+      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERED)$"),
 
       // Validate template hook.
       regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
@@ -108,6 +108,23 @@
 
       // Validate complete theme analysis.
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
+
+      // Cache-hit.
+      regexGetCacheHit: () => new RegExp("CACHE-HIT: (Yes|No)"),
+
+      // List cache tags.
+      regexGetCacheTags: () => new RegExp(
+        "CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // Cache max-age
+      regexGetCacheMaxAge: () => new RegExp("^\\s?CACHE MAX-AGE: (-?[0-9]*)"),
+
+      // Pre-bubbling cache max-age.
+      regexGetPreBubblingCacheMaxAge: () => new RegExp("PRE-BUBBLING CACHE MAX-AGE: (-?[0-9]*)"),
+
+      // Rendering time.
+      regexGetRenderingTime: () => new RegExp("RENDERING TIME: (-?[0-9]*\.?[0-9]*)"),
     },
 
     // Strores the controller layer.
@@ -427,6 +444,11 @@
         regexGetTemplateHook,
         regexGetTemplateSuggestions,
         regexGetTemplateFilePath,
+        regexGetCacheHit,
+        regexGetCacheMaxAge,
+        regexGetPreBubblingCacheMaxAge,
+        regexGetRenderingTime,
+        regexGetCacheTags,
       } = this.regExs;
 
       const { layerIdAttributeName } = this.layerAttributes;
@@ -460,6 +482,43 @@
           // A THEME instance is found and initiated.
           if (regexGetTemplateDebug().test(child.textContent)) {
             activeElement.setActivated();
+            return;
+          }
+
+          // Test for a cache hit.
+          const cacheHit = child.textContent.match(regexGetCacheHit());
+          if (cacheHit) {
+            activeElement.setCacheHit(cacheHit[1]);
+            return;
+          }
+
+          // Test for cache max-age.
+          const cacheMaxAge = child.textContent.match(regexGetCacheMaxAge());
+          if (cacheMaxAge) {
+            console.warn(`cache max age is ${cacheMaxAge[1]}`);
+            activeElement.setCacheMaxAge(cacheMaxAge[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache max-age.
+          const cachePreBubblingMaxAge = child.textContent.match(regexGetPreBubblingCacheMaxAge());
+          if (cachePreBubblingMaxAge) {
+            console.warn(`pre-bubbling cache max age is ${cachePreBubblingMaxAge[1]}`);
+            activeElement.setPreBubblingCacheMaxAge(cachePreBubblingMaxAge[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache max-age.
+          const renderingTime = child.textContent.match(regexGetRenderingTime());
+          if (renderingTime) {
+            console.warn(`cache rendering time is ${renderingTime[1]}`);
+            activeElement.setRenderingTime(renderingTime[1]);
+            return;
+          }
+
+          const cacheTags = child.textContent.match(regexGetCacheTags());
+          if (cacheTags) {
+            console.warn(`cache tags are ${cacheTags[1]}`);
             return;
           }
 
@@ -542,7 +601,7 @@
       controllerElementInstance.executePostActivation();
 
       // These loggers are only valid for module developers.
-      // console.warn('themeDebugNodes', themeDebugNodes);
+      console.warn('themeDebugNodes', themeDebugNodes);
 
       // Gets a consolidated array of propertyHook values.
       // let uniquePropertyHooks = this.getUniquePropertyHooks(themeDebugNodes);
