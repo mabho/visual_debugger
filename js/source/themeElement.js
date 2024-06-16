@@ -91,6 +91,111 @@ Drupal.themeElement = {
     return this.objectType;
   },
 
+  getDisplayElements() {
+    const {
+      idControllerSelectedElementInfo,
+      idControllerSelectedElementSuggestionsValue,
+      idControllerSelectedElementFilePathValue,
+      idControllerSelectedElementCacheHit,
+      idControllerSelectedElementCacheMaxAge,
+      idControllerSelectedElementPreBubblingCacheMaxAge,
+      idControllerSelectedElementRenderingTime,
+      idControllerSelectedElementCacheTags,
+    } = Drupal.vdUtilities.ids;
+
+    const {
+      classNameSelectedElementInfoWrapper,
+      classNameSelectedElementInfo,
+      classNameSelectedElementSuggestionsWrapper,
+      classNameSelectedElementSuggestions,
+      classNameSelectedElementTemplateFilePathWrapper,
+      classNameSelectedElementTemplateFilePath,
+      classNameSelectedElementTemplateFilePathLabel,
+    } = Drupal.vdUtilities.classNames;
+
+    const {
+      stringThemeElementInfo,
+      stringThemeElementThemeSuggestions,
+      stringThemeElementFilePath,
+      stringThemeElementFilePathInlineLabel,
+      stringThemeElementCacheHit,
+      stringThemeElementCacheMaxAge,
+      stringThemeElementPreBubblingCacheMaxAge,
+      stringThemeElementRenderingTime,
+      stringThemeElementCacheTags,
+    } = Drupal.vdUtilities.strings;
+
+    return [
+      {
+        key: 'propertyHook',
+        label: stringThemeElementInfo,
+        id: idControllerSelectedElementInfo,
+        type: 'info',
+        wrapperClasses: [
+          classNameSelectedElementInfoWrapper
+        ],
+        valueClasses: [
+          classNameSelectedElementInfo
+        ]
+      },
+      {
+        key: 'suggestions',
+        label: stringThemeElementThemeSuggestions,
+        id: idControllerSelectedElementSuggestionsValue,
+        type: 'multipleCopyWithChecked',
+        wrapperClasses: [
+          classNameSelectedElementSuggestionsWrapper
+        ],
+        valueClasses: [
+          classNameSelectedElementSuggestions
+        ]
+      },
+      {
+        key: 'filePath',
+        label: stringThemeElementFilePath,
+        inlineLabel: stringThemeElementFilePathInlineLabel,
+        id: idControllerSelectedElementFilePathValue,
+        type: 'singleCopy',
+        wrapperClasses: [
+          classNameSelectedElementTemplateFilePathWrapper
+        ],
+        valueClasses: [
+          classNameSelectedElementTemplateFilePath,
+        ],
+      },
+      {
+        key: 'cacheHit',
+        label: stringThemeElementCacheHit,
+        id: idControllerSelectedElementCacheHit,
+        type: 'singleInfo',
+      },
+      {
+        key: 'cacheMaxAge',
+        label: stringThemeElementCacheMaxAge,
+        id: idControllerSelectedElementCacheMaxAge,
+        type: 'singleInfo',
+      },
+      {
+        key: 'cacheTags',
+        label: stringThemeElementCacheTags,
+        id: idControllerSelectedElementCacheTags,
+        type: 'multipleCopy',
+      },
+      {
+        key: 'preBubblingCacheMaxAge',
+        label: stringThemeElementPreBubblingCacheMaxAge,
+        id: idControllerSelectedElementPreBubblingCacheMaxAge,
+        type: 'singleInfo',
+      },
+      {
+        key: 'renderingTime',
+        label: stringThemeElementRenderingTime,
+        id: idControllerSelectedElementRenderingTime,
+        type: 'singleInfo',
+      },
+    ];
+  },
+
   // Reset object to its initial state.
   reset: function() {
     Object.assign(this, this.initialState);

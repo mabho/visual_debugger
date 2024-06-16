@@ -120,8 +120,9 @@ Drupal.controllerElement = {
     stringFolderPath: Drupal.t('Folder path'),
     stringFilePath: Drupal.t('File path'),
     stringActiveElement: Drupal.t('Active Element'),
-    stringNoActiveElement : Drupal.t('No active element.'),
-    stringNoSelectedElement : Drupal.t('No selected element.'),
+    stringNoActiveElement: Drupal.t('No active element.'),
+    stringNoSelectedElement: Drupal.t('No selected element.'),
+    stringNotAvailable: Drupal.t('Not available.'),
   },
 
   system: {
@@ -423,7 +424,7 @@ Drupal.controllerElement = {
     const tabbedNavigation = this.generateTabbedNavigation();
 
     // Selected element layer.
-    const selectedElementLayer = this.generateSelectedElementLayer();
+    const selectedElementLayer = this.generateSelectedElement();
 
     // List element layer.
     const listElementLayer = this.generateListElementLayer();
@@ -650,94 +651,46 @@ Drupal.controllerElement = {
    * @returns {object}
    *   The selected element layer.
    */
-  generateSelectedElementLayer() {
+  generateSelectedElement() {
+    const { idControllerElementSelected } = this.ids;
+
     const {
       classNameSelectedElement,
       classNameSelectedElementContent,
-      classNameSelectedElementInfoWrapper,
-      classNameSelectedElementInfo,
-      classNameSelectedElementSuggestionsWrapper,
-      classNameSelectedElementSuggestions,
-      classNameSelectedElementTemplateFilePathWrapper,
-      classNameSelectedElementTemplateFilePath,
-      classNameTarget,
+      classNameTarget
     } = this.classNames;
-    const {
-      idControllerElementSelected,
-      idControllerElementInfo,
-      idControllerElementSuggestions,
-    } = this.ids;
-    const {
-      stringSelectedElement,
-      stringBasicInfo,
-      stringThemeSuggestions,
-      stringTemplateFilePath,
-    } = this.strings;
+
+    const displayElements = Drupal.themeElement.getDisplayElements();
 
     const selectedElementLayer = document.createElement('div');
-    const selectedElementLayerContent = document.createElement('div');
-    const selectedElementLayerTitle = document.createElement('h3');
+    selectedElementLayer.setAttribute('id', idControllerElementSelected);
     selectedElementLayer.classList.add(
       classNameSelectedElement,
       classNameTarget
-    );
-    selectedElementLayer.setAttribute('id', idControllerElementSelected);
-    selectedElementLayerTitle.textContent = stringSelectedElement;
+      );
+    const selectedElementLayerContent = document.createElement('div');
     selectedElementLayerContent.classList.add(classNameSelectedElementContent);
 
-    // Selected element basic info.
-    const selectedElementBasicInfoWrapper = document.createElement('div');
-    const selectedElementBasicInfo = document.createElement('div');
-    const selectedElementBasicInfoTitle = document.createElement('h4');
-    selectedElementBasicInfoWrapper.classList.add(classNameSelectedElementInfoWrapper);
-    selectedElementBasicInfo.setAttribute('id', idControllerElementInfo);
-    selectedElementBasicInfo.classList.add(classNameSelectedElementInfo);
-    selectedElementBasicInfoTitle.textContent = stringBasicInfo;
-    selectedElementBasicInfoWrapper.append(
-      selectedElementBasicInfoTitle,
-      selectedElementBasicInfo
-    );
+    // Iterates over all elements.
+    displayElements.forEach((element) => {
+      const elementWrapper = document.createElement('div');
+      const elementTitle = document.createElement('h4');
+      const elementValue = document.createElement('div');
+      elementWrapper.classList.add(...element.wrapperClasses || []);
 
-    // Theme suggestions layer.
-    const selectedElementSuggestionsWrapper = document.createElement('div');
-    const selectedElementSuggestionsLayer = document.createElement('div');
-    const selectedElementSuggestionsLayerTitle = document.createElement('h4');
-    selectedElementSuggestionsWrapper.classList.add(classNameSelectedElementSuggestionsWrapper);
-    selectedElementSuggestionsLayer.setAttribute('id', idControllerElementSuggestions);
-    selectedElementSuggestionsLayer.classList.add(classNameSelectedElementSuggestions);
-    selectedElementSuggestionsLayerTitle.textContent = stringThemeSuggestions;
-    selectedElementSuggestionsWrapper.append(
-      selectedElementSuggestionsLayerTitle,
-      selectedElementSuggestionsLayer
-    );
+      elementTitle.textContent = element.label;
 
-    // Theme file path.
-    const selectedElementTemplateFilePathWrapper = document.createElement('div');
-    const selectedElementTemplateFilePath = document.createElement('div');
-    const selectedElementTemplateFilePathTitle = document.createElement('h4');
-    selectedElementTemplateFilePathWrapper.classList.add(classNameSelectedElementTemplateFilePathWrapper);
-    selectedElementTemplateFilePath.classList.add(classNameSelectedElementTemplateFilePath);
-    selectedElementTemplateFilePath.setAttribute('id', this.ids.idControllerElementTemplateFilePath);
-    selectedElementTemplateFilePathTitle.textContent = stringTemplateFilePath;
-    selectedElementTemplateFilePathWrapper.append(
-      selectedElementTemplateFilePathTitle,
-      selectedElementTemplateFilePath,
-    );
+      if (element.id) elementValue.setAttribute('id', element.id);
+      elementValue.classList.add(...element.valueClasses || []);
 
-    // Append relevant information to the content layer.
-    selectedElementLayerContent.append(
-      selectedElementBasicInfoWrapper,
-      selectedElementSuggestionsWrapper,
-      selectedElementTemplateFilePathWrapper
-    );
+      elementWrapper.append(
+        elementTitle,
+        elementValue,
+      );
+      selectedElementLayerContent.appendChild(elementWrapper);
+    });
 
-    // Append everything to the selected element layer.
-    selectedElementLayer.append(
-      selectedElementLayerTitle,
-      selectedElementLayerContent,
-    );
-
-    // Return
+    selectedElementLayer.appendChild(selectedElementLayerContent);
     return selectedElementLayer;
   },
 
@@ -929,8 +882,7 @@ Drupal.controllerElement = {
     this.checkControllerActivation();
     this.updateActiveElement();
     this.updateSelectedElement('selected');
-    this.setSelectedElementSuggestions();
-    this.setSelectedElementTemplateFilePath();
+    this.setSelectedElementValues();
     this.switchToTab(this.ids.idControllerElementSelected);
   },
 
@@ -1028,42 +980,6 @@ Drupal.controllerElement = {
   },
 
   /**
-   * Retrieves the node where the basic information is displayed.
-   * 
-   * @returns {object}
-   *   The node where the basic information is displayed.
-   */
-  getSelectedElementInfoLayer() {
-    return this.getControllerLayer().querySelector(
-      `#${this.ids.idControllerElementInfo}`
-    );
-  },
-
-  /**
-   * Retrieves the node where the suggestions are displayed.
-   * 
-   * @returns {object}
-   *   The node where the suggestions are displayed.
-   */
-  getSelectedElementSuggestionsLayer() {
-    return this.getControllerLayer().querySelector(
-      `#${this.ids.idControllerElementSuggestions}`
-    );
-  },
-
-  /**
-   * Retrieves the node where the file path layer is displayed.
-   * 
-   * @returns {object}
-   *   The node where the file path layer is displayed.
-   */
-  getSelectedElementTemplateFilePathLayer() {
-    return this.getControllerLayer().querySelector(
-      `#${this.ids.idControllerElementTemplateFilePath}`
-    );
-  },
-
-  /**
    * Establishes the element that is currently selected.
    * Active is priority; default comes right after; null if none.
    * 
@@ -1136,94 +1052,137 @@ Drupal.controllerElement = {
   },
 
   /**
-   * Set the suggestions of the selected element.
+   * Updates the selected layer values.
    */
-  setSelectedElementSuggestions() {
-    const selectedThemeElement = this.defaultThemeElement;
-    const selectedElementSuggestionsLayer = this.getSelectedElementSuggestionsLayer();
+  setSelectedElementValues() {
+    const { classNameContentCopyDataLabel } = this.classNames;
     const {
-      classNameIconSelectedTrue,
-      classNameIconSelectedFalse
-    } = this.classNames;
+      stringNoSelectedElement,
+      stringNotAvailable
+    } = this.strings;
+    const displayElements = Drupal.themeElement.getDisplayElements();
+    const selectedThemeElement = this.defaultThemeElement;
 
-    // Clear legacy information showing in the suggestions layer.
-    selectedElementSuggestionsLayer.innerHTML = '';
+    // Iterate over all the display elements.
+    displayElements.forEach((element) => {
 
-    // Return early if the theme element is not available.
-    if (selectedThemeElement === null) {
-      const emptyTag = this.generateEmptyTag('selected');
-      selectedElementSuggestionsLayer.append(emptyTag);
-      return;
-    }
+      const elementValue = document.getElementById(element.id);
 
-    // If suggestions are available, display them.
-    if (
-        selectedThemeElement &&
-        selectedThemeElement.hasOwnProperty('suggestions') &&
-        selectedThemeElement.suggestions !== null
-    ) {
-      const clipboardContent = selectedThemeElement.suggestions;
-      clipboardContent.forEach((item) => {
-        const themeSuggestion = this.generateContentCopyData(
-          null,
-          item.activated
-            ? classNameIconSelectedTrue
-            : classNameIconSelectedFalse,
-          item.suggestion,
+      // Halt early if the element is not available.
+      if (elementValue === null) return;
+
+      // Remove default content.
+      elementValue.innerHTML = '';
+
+      // Print an empty tag (no selected element) if no element is selected.
+      if (selectedThemeElement === null) {
+        const emptyTag = this.generateEmptyTag(stringNoSelectedElement);
+        elementValue.appendChild(emptyTag);
+        return;
+      }
+
+      // Print an empty tag (not available) if a value isn't available.
+      if (
+        !selectedThemeElement.hasOwnProperty(element.key)
+        ||
+        !selectedThemeElement[element.key]
+      ) {
+        const emptyTag = this.generateEmptyTag(stringNotAvailable);
+        elementValue.appendChild(emptyTag);
+        return;
+      }
+
+      // Info carries a special component with basic information on the element.
+      if (element.type === 'info') {
+        this.setElementInfo(
+          this.defaultThemeElement,
+          elementValue,
+          stringNoSelectedElement
         );
-        selectedElementSuggestionsLayer.appendChild(themeSuggestion);
-      });
-    }
+      }
+
+      // Single info is the simplest structure being delivered.
+      else if (element.type === 'singleInfo') {
+        elementValue.appendChild(
+          this.generateSingleInfoOutput(
+            selectedThemeElement[element.key]
+          )
+        );
+      }
+
+      // Carries an input field with content that can be copied.
+      else if (element.type === 'singleCopy') {
+        const singleCopyOutput = this.generateContentCopyData(
+          element.inlineLabel,
+          classNameContentCopyDataLabel,
+          selectedThemeElement[element.key],
+        );
+        elementValue.appendChild(singleCopyOutput);
+      }
+
+      // Carries multiple input fields with content that can be copied.
+      else if (element.type === 'multipleCopyWithChecked') {
+        const {
+          classNameIconSelectedTrue,
+          classNameIconSelectedFalse
+        } = this.classNames;
+
+        const templateSuggestions = selectedThemeElement.suggestions;
+        templateSuggestions.forEach((item) => {
+          const themeSuggestion = this.generateContentCopyData(
+            null,
+            item.activated
+              ? classNameIconSelectedTrue
+              : classNameIconSelectedFalse,
+            item.suggestion,
+          );
+          elementValue.appendChild(themeSuggestion);
+        });
+      }
+    });
   },
 
   /**
-   * Set the file path of the selected element.
+   * Generates a simple textual output
+   * @param {string}
+   *   The content being delivered for rendering.
+   * @returns {object}
+   *   The element to be appended.
    */
-  setSelectedElementTemplateFilePath() {
-    const selectedThemeElement = this.defaultThemeElement;
-    const selectedElementTemplateFilePathWrapper = this.getSelectedElementTemplateFilePathLayer();
+  generateSingleInfoOutput: (value) => document.createTextNode(value),
+
+  /**
+   * Generates a single input field delivering content that can be copied to the clipboard.
+   * @param {*} value 
+   */
+  generateSingleCopyOutput(label, value) {
     const {
-      classNameSelectedElementTemplateFilePath,
-      classNameSelectedElementTemplateFilePathLabel
+      classNameContentCopyData,
+      classNameContentCopyDataLabel,
     } = this.classNames;
-    const { stringFilePath } = this.strings;
 
-    // Clear legacy information showing in the suggestions layer.
-    selectedElementTemplateFilePathWrapper.innerHTML = '';
+    const outputElement = document.createElement('div');
+    outputElement.classList.add(classNameContentCopyData);
 
-    // Return early if the theme element is not available.
-    if (selectedThemeElement === null) {
-      const emptyTag = this.generateEmptyTag('selected');
-      selectedElementTemplateFilePathWrapper.append(emptyTag);
-      return;
-    }
+    const singleCopyOutput = this.generateContentCopyData(
+      label,
+      classNameContentCopyDataLabel,
+      value,
+    );
 
-    // If suggestions are available, display them.
-    if (
-        selectedThemeElement &&
-        selectedThemeElement.hasOwnProperty('filePath') &&
-        selectedThemeElement.filePath !== null
-    ) {
-      const filePath = selectedThemeElement.filePath;
-      const filePathWrapper = this.generateContentCopyData(
-        stringFilePath,
-        classNameSelectedElementTemplateFilePathLabel,
-        filePath,
-        classNameSelectedElementTemplateFilePath
-      );
-      selectedElementTemplateFilePathWrapper.appendChild(filePathWrapper);
-    }
+    outputElement.appendChild(singleCopyOutput);
+    return outputElement;
   },
 
   /**
    * An empty tag ready to be appended.
    * 
-   * @param {string} infoType
-   *   The type of information to be displayed.
+   * @param {string} message
+   *   The empty message being rendered.
    * @returns {object}
    *   The empty tag ready to be appended.
    */
-  generateEmptyTag(infoType) {
+  generateEmptyTag(message) {
     const {
       classNameElementInfoTextContent,
       classNameElementInfoEmpty,
@@ -1241,10 +1200,7 @@ Drupal.controllerElement = {
       classNameElementInfoEmpty
     );
 
-    noInfoWrapper.textContent = (infoType == 'active')
-    ?
-      stringNoActiveElement
-      : stringNoSelectedElement;
+    noInfoWrapper.textContent = message;
 
     return noInfoWrapper;
   },
@@ -1332,8 +1288,9 @@ Drupal.controllerElement = {
    * Update the selected element information.
    */
   updateActiveElement() {
+    const { stringNoActiveElement } = this.strings;
     const elementInfoLayer = this.getActiveElementInfoLayer();
-    this.setElementInfo(this.activeThemeElement, elementInfoLayer);
+    this.setElementInfo(this.activeThemeElement, elementInfoLayer, stringNoActiveElement);
   },
 
   /**
@@ -1364,14 +1321,8 @@ Drupal.controllerElement = {
    * Update the selected element information.
    */
   updateSelectedElement() {
-    const elementInfoLayer = this.getSelectedElementInfoLayer();
-    this.setElementInfo(
-      this.defaultThemeElement,
-      elementInfoLayer,
-      'selected'
-    );
-    this.setSelectedElementSuggestions();
-    this.setSelectedElementTemplateFilePath();
+    const { stringNoSelectedElement } = this.strings;
+    this.setSelectedElementValues();
     this.setTabCue();
   },
 

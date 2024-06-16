@@ -3,6 +3,18 @@
  */
 Drupal.vdUtilities = {
 
+  // Element IDs.
+  ids: {
+    idControllerSelectedElementInfo: 'visual-debugger--controller--info',
+    idControllerSelectedElementSuggestionsValue: 'visual-debugger--controller--suggestions',
+    idControllerSelectedElementFilePathValue: 'visual-debugger--controller--file-path',
+    idControllerSelectedElementCacheHit: 'visual-debugger--controller--cache-hit',
+    idControllerSelectedElementCacheMaxAge: 'visual-debugger--controller--cache-max-age',
+    idControllerSelectedElementPreBubblingCacheMaxAge: 'visual-debugger--controller--pre-bubbling-cache-max-age',
+    idControllerSelectedElementRenderingTime: 'visual-debugger--controller--rendering-time',
+    idControllerSelectedElementCacheTags: 'visual-debugger--controller--cache-tags',
+  },
+
   classNames: {
     classNameIconCheckboxChecked: 'icon-checkbox-checked',
     classNameIconCheckboxUnchecked: 'icon-checkbox-unchecked',
@@ -13,6 +25,13 @@ Drupal.vdUtilities = {
     classNameInputWrapperActivated: 'wrapper-activated',
     classNameInputWrapperDeactivated: 'wrapper-deactivated',
     classNameInputWrapperDisabled: 'disabled',
+    classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
+    classNameSelectedElementInfo: 'selected-element__info',
+    classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
+    classNameSelectedElementSuggestions: 'selected-element__suggestions',
+    classNameSelectedElementTemplateFilePathWrapper: 'selected-element__template-file-path-wrapper',
+    classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
+    classNameSelectedElementTemplateFilePathLabel: 'label',
   },
 
   // layerAttributes.
@@ -21,6 +40,18 @@ Drupal.vdUtilities = {
     listItemActivatedAttributeName: 'data-vd-list-item-activated',
     instanceLayerActivatedAttributeName: 'data-vd-instance-layer-activated',
     layerAttributeIsVisible: 'data-vd-visible',
+  },
+
+  strings: {
+    stringThemeElementInfo: Drupal.t('Object Type'),
+    stringThemeElementThemeSuggestions: Drupal.t('Theme Suggestions'),
+    stringThemeElementFilePath: Drupal.t('Template File Path'),
+    stringThemeElementFilePathInlineLabel: Drupal.t('File Path'),
+    stringThemeElementCacheHit: Drupal.t('Cache Hit'),
+    stringThemeElementCacheMaxAge: Drupal.t('Cache Max-Age'),
+    stringThemeElementPreBubblingCacheMaxAge: Drupal.t('Pre-Bubbling Cache Max-Age'),
+    stringThemeElementRenderingTime: Drupal.t('Rendering Time'),
+    stringThemeElementCacheTags: Drupal.t('Cache Tags'),
   },
 
   /**
