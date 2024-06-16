@@ -9,10 +9,6 @@
   opacity: 1;
 }
 
-%selected-item-wrapper {
-  margin-bottom: calc(var(--#{$prefix}controller--gutter) * .75);
-}
-
 .visual-debugger {
 
   // Controller.
@@ -214,31 +210,18 @@
       background-color: var(--#{$prefix}selected-element--background-color);
       padding: var(--#{$prefix}selected-element--padding);
 
+      // Content
+      &__content {
+        display: flex;
+        flex-direction: var(--#{$prefix}selected-element--content--flex-direction);
+        gap: var(--#{$prefix}selected-element--content--gap);
+      }
+
       // Info.
       &__info {
         column-gap: var(--#{$prefix}selected-element--info--column-gap);
         display: flex;
         flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
-
-        &-wrapper {
-          @extend %selected-item-wrapper;
-        }
-      }
-
-      // Suggestions.
-      &__suggestions {
-        &-wrapper {
-          @extend %selected-item-wrapper;
-        }
-      }
-
-      // Tempalte File Path.
-      &__template-file-path {
-        .label {
-          background-color: var(--#{$prefix}color--light-gray);
-          padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
-          white-space: nowrap;
-        }
       }
     }
 
@@ -400,6 +383,12 @@
     display: flex;
     flex-direction: var(--#{$prefix}content-copy-data--flex-direction);
     margin: var(--#{$prefix}content-copy-data--margin);
+
+    &__label {
+      background-color: var(--#{$prefix}color--light-gray);
+      padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
+      white-space: nowrap;
+    }
 
     button {
       background-color: var(--#{$prefix}content-copy-data--button--background-color);
