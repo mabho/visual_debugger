@@ -11,10 +11,12 @@ Drupal.themeElement = {
   filePath: null,
   dataNode: null,
   cacheHit: false,
+  cacheTags: null,
+  cacheContexts: null,
+  cacheKeys: null,
   cacheMaxAge: 0,
   preBubblingCacheMaxAge: 0,
   renderingTime: 0,
-  cacheTags: null,
 
   // Store the initial state.
   initialState: null,
@@ -31,9 +33,11 @@ Drupal.themeElement = {
       dataNode: this.dataNode,
       cacheHit: this.cacheHit,
       cacheMaxAge: this.cacheMaxAge,
+      cacheTags: this.cacheTags,
+      cacheContexts: this.cacheContexts,
+      cacheKeys: this.cacheKeys,
       preBubblingCacheMaxAge: this.preBubblingCacheMaxAge,
       renderingTime: this.renderingTime,
-      cacheTags: this.cacheTags,
     };
   },
 
@@ -55,7 +59,15 @@ Drupal.themeElement = {
   },
 
   setCacheTags(input) {
-    this.cacheTags = input;
+    this.cacheTags = this.parseListRegexpOutput(input);
+  },
+
+  setCacheContexts(input) {
+    this.cacheContexts = this.parseListRegexpOutput(input);
+  },
+
+  setCacheKeys(input) {
+    this.cacheKeys = this.parseListRegexpOutput(input);
   },
 
   setPreBubblingCacheMaxAge(input) {
@@ -75,7 +87,7 @@ Drupal.themeElement = {
   },
 
   setSuggestions(input) {
-    this.suggestions = input;
+    this.suggestions = this.pasreListOnOffRegexpOutput(input);
   },
 
   setDataNode(input) {
@@ -98,9 +110,11 @@ Drupal.themeElement = {
       idControllerSelectedElementFilePathValue,
       idControllerSelectedElementCacheHit,
       idControllerSelectedElementCacheMaxAge,
+      idControllerSelectedElementCacheTags,
+      idControllerSelectedElementCacheContexts,
+      idControllerSelectedElementCacheKeys,
       idControllerSelectedElementPreBubblingCacheMaxAge,
       idControllerSelectedElementRenderingTime,
-      idControllerSelectedElementCacheTags,
     } = Drupal.vdUtilities.ids;
 
     const {
@@ -120,9 +134,11 @@ Drupal.themeElement = {
       stringThemeElementFilePathInlineLabel,
       stringThemeElementCacheHit,
       stringThemeElementCacheMaxAge,
+      stringThemeElementCacheTags,
+      stringThemeElementCacheContexts,
+      stringThemeElementCacheKeys,
       stringThemeElementPreBubblingCacheMaxAge,
       stringThemeElementRenderingTime,
-      stringThemeElementCacheTags,
     } = Drupal.vdUtilities.strings;
 
     return [
@@ -182,6 +198,18 @@ Drupal.themeElement = {
         type: 'multipleCopy',
       },
       {
+        key: 'cacheContexts',
+        label: stringThemeElementCacheContexts,
+        id: idControllerSelectedElementCacheContexts,
+        type: 'multipleCopy',
+      },
+      {
+        key: 'cacheKeys',
+        label: stringThemeElementCacheKeys,
+        id: idControllerSelectedElementCacheKeys,
+        type: 'multipleCopy',
+      },
+      {
         key: 'preBubblingCacheMaxAge',
         label: stringThemeElementPreBubblingCacheMaxAge,
         id: idControllerSelectedElementPreBubblingCacheMaxAge,
@@ -194,6 +222,36 @@ Drupal.themeElement = {
         type: 'singleInfo',
       },
     ];
+  },
+
+  /**
+   * Parses a string with a list of items.
+   * @param {string} regexpOutput
+   *   The outut of the regexp extraction.
+   * @returns {array}
+   *   The array that contains a list of extracted strings.
+   */
+  parseListRegexpOutput(regexpOutput) {
+    return regexpOutput
+      .split('\n')
+      .map((line) => {
+        return line.trim().replace(/^\*\s/, '');
+      })
+      .filter((line) => {
+        return line.length > 0;
+      });
+  },
+
+  pasreListOnOffRegexpOutput(regexpOutput) {
+    return regexpOutput.trim()
+    .split(/\n\s*/)
+    .map((themeSuggestion) => {
+      const splitThemeSuggestion = themeSuggestion.split(' ');
+      return {
+        suggestion: splitThemeSuggestion[1],
+        activated: (splitThemeSuggestion[0] === 'x'),
+      };
+    });
   },
 
   // Reset object to its initial state.

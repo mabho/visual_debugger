@@ -10,9 +10,11 @@ Drupal.vdUtilities = {
     idControllerSelectedElementFilePathValue: 'visual-debugger--controller--file-path',
     idControllerSelectedElementCacheHit: 'visual-debugger--controller--cache-hit',
     idControllerSelectedElementCacheMaxAge: 'visual-debugger--controller--cache-max-age',
+    idControllerSelectedElementCacheTags: 'visual-debugger--controller--cache-tags',
+    idControllerSelectedElementCacheContexts: 'visual-debugger--controller--cache-contexts',
+    idControllerSelectedElementCacheKeys: 'visual-debugger--controller--cache-keys',
     idControllerSelectedElementPreBubblingCacheMaxAge: 'visual-debugger--controller--pre-bubbling-cache-max-age',
     idControllerSelectedElementRenderingTime: 'visual-debugger--controller--rendering-time',
-    idControllerSelectedElementCacheTags: 'visual-debugger--controller--cache-tags',
   },
 
   classNames: {
@@ -49,9 +51,11 @@ Drupal.vdUtilities = {
     stringThemeElementFilePathInlineLabel: Drupal.t('File Path'),
     stringThemeElementCacheHit: Drupal.t('Cache Hit'),
     stringThemeElementCacheMaxAge: Drupal.t('Cache Max-Age'),
+    stringThemeElementCacheTags: Drupal.t('Cache Tags'),
+    stringThemeElementCacheContexts: Drupal.t('Cache Contexts'),
+    stringThemeElementCacheKeys: Drupal.t('Cache Keys'),
     stringThemeElementPreBubblingCacheMaxAge: Drupal.t('Pre-Bubbling Cache Max-Age'),
     stringThemeElementRenderingTime: Drupal.t('Rendering Time'),
-    stringThemeElementCacheTags: Drupal.t('Cache Tags'),
   },
 
   /**

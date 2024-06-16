@@ -93,6 +93,7 @@ Drupal.controllerElement = {
     classNameIconEyeBlocked: 'icon-eye-blocked',
     classNameIconCopyToClipboard: 'icon-copy',
     classNameIconSlideResize: 'icon-slide-resize',
+    classNameIconNavigateNext: 'icon-navigate-next',
     classNameClickDragButton: 'click-drag-button',
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameActivated: 'item-activated',
@@ -1118,6 +1119,22 @@ Drupal.controllerElement = {
           selectedThemeElement[element.key],
         );
         elementValue.appendChild(singleCopyOutput);
+      }
+
+      // Carries multiple input fields with content that can be copied.
+      else if (element.type === 'multipleCopy') {
+        const {
+          classNameIconNavigateNext,
+        } = this.classNames;
+
+        selectedThemeElement[element.key].forEach((item) => {
+          const listItem = this.generateContentCopyData(
+            null,
+            classNameIconNavigateNext,
+            item,
+          );
+          elementValue.appendChild(listItem);
+        });
       }
 
       // Carries multiple input fields with content that can be copied.
