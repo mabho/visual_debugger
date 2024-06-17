@@ -7,7 +7,7 @@ visual_debugger.example:
     _permission: 'access content'
 
 visual_debugger.settings_form:
-  path: '/admin/config/system/visual-debugger'
+  path: '/admin/config/development/visual-debugger'
   defaults:
     _title: 'Visual Debugger settings'
     _form: 'Drupal\visual_debugger\Form\SettingsForm'

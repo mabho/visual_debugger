@@ -1,6 +1,6 @@
 visual_debugger.settings_form:
   title: 'Visual Debugger'
   description: 'Configure Visual Debugger.'
-  parent: system.admin_config_system
+  parent: system.admin_config_development
   route_name: visual_debugger.settings_form
   weight: 10
