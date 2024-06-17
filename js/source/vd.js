@@ -114,21 +114,36 @@
 
       // List cache tags.
       regexGetCacheTags: () => new RegExp(
-        "CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
+        "^\\s?CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
       ),
 
       // List cache contexts.
       regexGetCacheContexts: () => new RegExp(
-        "CACHE CONTEXTS:\s*\n\s*([^']*)\s*\n*\s*"
+        "^\\s?CACHE CONTEXTS:\s*\n\s*([^']*)\s*\n*\s*"
       ),
 
       // List cache keys.
       regexGetCacheKeys: () => new RegExp(
-        "CACHE KEYS:\s*\n\s*([^']*)\s*\n*\s*"
+        "^\\s?CACHE KEYS:\s*\n\s*([^']*)\s*\n*\s*"
       ),
 
       // Cache max-age
       regexGetCacheMaxAge: () => new RegExp("^\\s?CACHE MAX-AGE: (-?[0-9]*)"),
+
+      // List pre-bubbling cache tags.
+      regexGetPreBubblingCacheTags: () => new RegExp(
+        "PRE-BUBBLING CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List pre-bubbling cache contexts.
+      regexGetPreBubblingCacheContexts: () => new RegExp(
+        "PRE-BUBBLING CACHE CONTEXTS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List pre-bubbling cache keys.
+      regexGetPreBubblingCacheKeys: () => new RegExp(
+        "PRE-BUBBLING CACHE KEYS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
 
       // Pre-bubbling cache max-age.
       regexGetPreBubblingCacheMaxAge: () => new RegExp("PRE-BUBBLING CACHE MAX-AGE: (-?[0-9]*)"),
@@ -456,6 +471,9 @@
         regexGetTemplateFilePath,
         regexGetCacheHit,
         regexGetCacheMaxAge,
+        regexGetPreBubblingCacheTags,
+        regexGetPreBubblingCacheContexts,
+        regexGetPreBubblingCacheKeys,
         regexGetPreBubblingCacheMaxAge,
         regexGetRenderingTime,
         regexGetCacheTags,
@@ -533,6 +551,27 @@
           const cacheKeys = child.textContent.match(regexGetCacheKeys());
           if (cacheKeys) {
             activeElement.setCacheKeys(cacheKeys[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache tags.
+          const preBubblingCacheTags = child.textContent.match(regexGetPreBubblingCacheTags());
+          if (preBubblingCacheTags) {
+            activeElement.setPreBubblingCacheTags(preBubblingCacheTags[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache contexts.
+          const preBubblingCacheContexts = child.textContent.match(regexGetPreBubblingCacheContexts());
+          if (preBubblingCacheContexts) {
+            activeElement.setPreBubblingCacheContexts(preBubblingCacheContexts[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache keys.
+          const preBubblingCacheKeys = child.textContent.match(regexGetPreBubblingCacheKeys());
+          if (preBubblingCacheKeys) {
+            activeElement.setPreBubblingCacheKeys(preBubblingCacheKeys[1]);
             return;
           }
 

@@ -15,6 +15,9 @@ Drupal.themeElement = {
   cacheContexts: null,
   cacheKeys: null,
   cacheMaxAge: 0,
+  preBubblingCacheTags: null,
+  preBubblingCacheContexts: null,
+  preBubblingCacheKeys: null,
   preBubblingCacheMaxAge: 0,
   renderingTime: 0,
 
@@ -32,10 +35,13 @@ Drupal.themeElement = {
       filePath: this.filePath,
       dataNode: this.dataNode,
       cacheHit: this.cacheHit,
-      cacheMaxAge: this.cacheMaxAge,
       cacheTags: this.cacheTags,
       cacheContexts: this.cacheContexts,
       cacheKeys: this.cacheKeys,
+      cacheMaxAge: this.cacheMaxAge,
+      preBubblingCacheTags: this.preBubblingCacheTags,
+      preBubblingCacheContexts: this.preBubblingCacheContexts,
+      preBubblingCacheKeys: this.preBubblingCacheKeys,
       preBubblingCacheMaxAge: this.preBubblingCacheMaxAge,
       renderingTime: this.renderingTime,
     };
@@ -54,10 +60,6 @@ Drupal.themeElement = {
     this.cacheHit = input;
   },
 
-  setCacheMaxAge(input) {
-    this.cacheMaxAge = parseInt(input);
-  },
-
   setCacheTags(input) {
     this.cacheTags = this.parseListRegexpOutput(input);
   },
@@ -68,6 +70,22 @@ Drupal.themeElement = {
 
   setCacheKeys(input) {
     this.cacheKeys = this.parseListRegexpOutput(input);
+  },
+
+  setCacheMaxAge(input) {
+    this.cacheMaxAge = parseInt(input);
+  },
+
+  setPreBubblingCacheTags(input) {
+    this.preBubblingCacheTags = this.parseListRegexpOutput(input);
+  },
+
+  setPreBubblingCacheContexts(input) {
+    this.preBubblingCacheContexts = this.parseListRegexpOutput(input);
+  },
+
+  setPreBubblingCacheKeys(input) {
+    this.preBubblingCacheKeys = this.parseListRegexpOutput(input);
   },
 
   setPreBubblingCacheMaxAge(input) {
@@ -113,6 +131,9 @@ Drupal.themeElement = {
       idControllerSelectedElementCacheTags,
       idControllerSelectedElementCacheContexts,
       idControllerSelectedElementCacheKeys,
+      idControllerSelectedElementPreBubblingCacheTags,
+      idControllerSelectedElementPreBubblingCacheContexts,
+      idControllerSelectedElementPreBubblingCacheKeys,
       idControllerSelectedElementPreBubblingCacheMaxAge,
       idControllerSelectedElementRenderingTime,
     } = Drupal.vdUtilities.ids;
@@ -137,6 +158,9 @@ Drupal.themeElement = {
       stringThemeElementCacheTags,
       stringThemeElementCacheContexts,
       stringThemeElementCacheKeys,
+      stringThemeElementPreBubblingCacheTags,
+      stringThemeElementPreBubblingCacheContexts,
+      stringThemeElementPreBubblingCacheKeys,
       stringThemeElementPreBubblingCacheMaxAge,
       stringThemeElementRenderingTime,
     } = Drupal.vdUtilities.strings;
@@ -186,12 +210,6 @@ Drupal.themeElement = {
         type: 'singleInfo',
       },
       {
-        key: 'cacheMaxAge',
-        label: stringThemeElementCacheMaxAge,
-        id: idControllerSelectedElementCacheMaxAge,
-        type: 'singleInfo',
-      },
-      {
         key: 'cacheTags',
         label: stringThemeElementCacheTags,
         id: idControllerSelectedElementCacheTags,
@@ -207,6 +225,30 @@ Drupal.themeElement = {
         key: 'cacheKeys',
         label: stringThemeElementCacheKeys,
         id: idControllerSelectedElementCacheKeys,
+        type: 'multipleCopy',
+      },
+      {
+        key: 'cacheMaxAge',
+        label: stringThemeElementCacheMaxAge,
+        id: idControllerSelectedElementCacheMaxAge,
+        type: 'singleInfo',
+      },
+      {
+        key: 'preBubblingCacheTags',
+        label: stringThemeElementPreBubblingCacheTags,
+        id: idControllerSelectedElementPreBubblingCacheTags,
+        type: 'multipleCopy',
+      },
+      {
+        key: 'preBubblingCacheContexts',
+        label: stringThemeElementPreBubblingCacheContexts,
+        id: idControllerSelectedElementPreBubblingCacheContexts,
+        type: 'multipleCopy',
+      },
+      {
+        key: 'preBubblingCacheKeys',
+        label: stringThemeElementPreBubblingCacheKeys,
+        id: idControllerSelectedElementPreBubblingCacheKeys,
         type: 'multipleCopy',
       },
       {
