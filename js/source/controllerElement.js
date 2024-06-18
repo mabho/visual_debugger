@@ -25,6 +25,10 @@ Drupal.controllerElement = {
   // 2. instanceRefElement: The original referenced layer.
   themeDebugNodes: null,
 
+  // This is a subset of 'themeDebugNodes' including only the nodes carrying
+  // cache data.
+  themeDebugNodesWithCache: null,
+
   constants: {
     initialControllerWidth: '400px',
     controllerDeactivatedGap: 10,
@@ -65,6 +69,8 @@ Drupal.controllerElement = {
     classNameTabsNavigationSeparator: 'tabbed-navigation__separator',
     classNameSelectedElement: 'selected-element',
     classNameSelectedElementContent: 'selected-element__content',
+    classNameSelectedElementContentItem: 'content-item',
+    classNameSelectedElementContentItemCache: 'content-item--cache',
     classNameListElement: 'list',
     classNameListElementContent: 'list__content',
     classNameListElementItem: 'list-item',
@@ -648,17 +654,33 @@ Drupal.controllerElement = {
     const {
       classNameSelectedElement,
       classNameSelectedElementContent,
+      classNameSelectedElementContentItem,
+      classNameSelectedElementContentItemCache,
       classNameTarget
     } = this.classNames;
 
-    const displayElements = Drupal.themeElement.getDisplayElements();
+    // Filter out the nodes with cache.
+    const nodesWithCache = Drupal.vdUtilities.getNodesWithCache(this.themeDebugNodes);
+    this.themeDebugNodesWithCache = nodesWithCache;
 
+    
+    // Sets a base layer.
     const selectedElementLayer = document.createElement('div');
     selectedElementLayer.setAttribute('id', idControllerElementSelected);
     selectedElementLayer.classList.add(
       classNameSelectedElement,
       classNameTarget
-      );
+    );
+
+    // Get the display elements being iterated.
+    // Disable all cache-related elements if no cache is available.
+    let displayElements = Drupal.themeElement.getDisplayElements();
+    if (!nodesWithCache.length) {
+      displayElements = displayElements.filter(
+        (element) => element.type !== 'cache'
+      )
+    }
+
     const selectedElementLayerContent = document.createElement('div');
     selectedElementLayerContent.classList.add(classNameSelectedElementContent);
 
@@ -667,7 +689,14 @@ Drupal.controllerElement = {
       const elementWrapper = document.createElement('div');
       const elementTitle = document.createElement('h4');
       const elementValue = document.createElement('div');
-      elementWrapper.classList.add(...element.wrapperClasses || []);
+      elementWrapper.classList.add(
+        classNameSelectedElementContentItem, 
+        ...element.wrapperClasses || []
+      );
+
+      if (element.type === 'cache') {
+        elementWrapper.classList.add(classNameSelectedElementContentItemCache);
+      }
 
       elementTitle.textContent = element.label;
 
@@ -1084,7 +1113,7 @@ Drupal.controllerElement = {
       }
 
       // Info carries a special component with basic information on the element.
-      if (element.type === 'info') {
+      if (element.displayType === 'info') {
         this.setElementInfo(
           this.defaultThemeElement,
           elementValue,
@@ -1093,7 +1122,7 @@ Drupal.controllerElement = {
       }
 
       // Single info is the simplest structure being delivered.
-      else if (element.type === 'singleInfo') {
+      else if (element.displayType === 'singleInfo') {
         elementValue.appendChild(
           this.generateSingleInfoOutput(
             selectedThemeElement[element.key]
@@ -1102,7 +1131,7 @@ Drupal.controllerElement = {
       }
 
       // Carries an input field with content that can be copied.
-      else if (element.type === 'singleCopy') {
+      else if (element.displayType === 'singleCopy') {
         const singleCopyOutput = this.generateContentCopyData(
           element.inlineLabel,
           classNameContentCopyDataLabel,
@@ -1112,7 +1141,7 @@ Drupal.controllerElement = {
       }
 
       // Carries multiple input fields with content that can be copied.
-      else if (element.type === 'multipleCopy') {
+      else if (element.displayType === 'multipleCopy') {
         const {
           classNameIconNavigateNext,
         } = this.classNames;
@@ -1128,7 +1157,7 @@ Drupal.controllerElement = {
       }
 
       // Carries multiple input fields with content that can be copied.
-      else if (element.type === 'multipleCopyWithChecked') {
+      else if (element.displayType === 'multipleCopyWithChecked') {
         const {
           classNameIconSelectedTrue,
           classNameIconSelectedFalse

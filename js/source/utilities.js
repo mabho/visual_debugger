@@ -20,6 +20,7 @@ Drupal.vdUtilities = {
     idControllerSelectedElementRenderingTime: 'visual-debugger--controller--rendering-time',
   },
 
+  // Class names.
   classNames: {
     classNameIconCheckboxChecked: 'icon-checkbox-checked',
     classNameIconCheckboxUnchecked: 'icon-checkbox-unchecked',
@@ -30,12 +31,12 @@ Drupal.vdUtilities = {
     classNameInputWrapperActivated: 'wrapper-activated',
     classNameInputWrapperDeactivated: 'wrapper-deactivated',
     classNameInputWrapperDisabled: 'disabled',
-    classNameSelectedElementInfoWrapper: 'selected-element__info-wrapper',
-    classNameSelectedElementInfo: 'selected-element__info',
-    classNameSelectedElementSuggestionsWrapper: 'selected-element__suggestions-wrapper',
-    classNameSelectedElementSuggestions: 'selected-element__suggestions',
-    classNameSelectedElementTemplateFilePathWrapper: 'selected-element__template-file-path-wrapper',
-    classNameSelectedElementTemplateFilePath: 'selected-element__template-file-path',
+    classNameSelectedElementInfoWrapper: 'content-item__info-wrapper',
+    classNameSelectedElementInfo: 'content-item__info',
+    classNameSelectedElementSuggestionsWrapper: 'content-item__suggestions-wrapper',
+    classNameSelectedElementSuggestions: 'content-item__suggestions',
+    classNameSelectedElementTemplateFilePathWrapper: 'content-item__template-file-path-wrapper',
+    classNameSelectedElementTemplateFilePath: 'content-item__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
   },
 
@@ -47,6 +48,7 @@ Drupal.vdUtilities = {
     layerAttributeIsVisible: 'data-vd-visible',
   },
 
+  // Strings.
   strings: {
     stringThemeElementInfo: Drupal.t('Object Type'),
     stringThemeElementThemeSuggestions: Drupal.t('Theme Suggestions'),
@@ -197,4 +199,9 @@ Drupal.vdUtilities = {
       return node.classList.contains(classNameInputWrapperActivated);
     });
   },
+
+
+  getNodesWithCache(nodes) {
+    return nodes.filter(node => node.instanceActiveElement.cacheHit);
+  }
 }
