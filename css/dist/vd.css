@@ -281,6 +281,8 @@
   --vd-controller--activation-form-wrapper--justify-content: flex-start;
   --vd-controller--activation-form-wrapper--flex-direction: row;
   --vd-controller--content-auto-scroll--background-color: transparent;
+  --vd-controller--content-auto-scroll--flex-direction: column;
+  --vd-controller--content-auto-scroll--height: 100%;
   --vd-controller--content-auto-scroll--margin: 0;
   --vd-controller--content-auto-scroll--overflow-y: auto;
   --vd-controller--content-auto-scroll--padding: 0;
@@ -628,6 +630,9 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
 }
 .visual-debugger--controller .content-auto-scroll {
   background-color: var(--vd-controller--content-auto-scroll--background-color);
+  display: flex;
+  flex-direction: var(--vd-controller--content-auto-scroll--flex-direction);
+  height: var(--vd-controller--content-auto-scroll--height);
   margin: var(--vd-controller--content-auto-scroll--margin);
   overflow-y: var(--vd-controller--content-auto-scroll--overflow-y);
   padding: var(--vd-controller--content-auto-scroll--padding);
@@ -696,6 +701,7 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
 }
 .visual-debugger--controller .nav-target {
   display: none;
+  flex: 1;
   position: relative;
   z-index: var(--vd-nav-target--z-index);
 }
@@ -720,7 +726,7 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
   flex-direction: var(--vd-selected-element--content--flex-direction);
   gap: var(--vd-selected-element--content--gap);
 }
-.visual-debugger--controller .selected-element__info {
+.visual-debugger--controller .selected-element .content-item__info {
   column-gap: var(--vd-selected-element--info--column-gap);
   display: flex;
   flex-direction: var(--vd-selected-element--info--flex-direction);
