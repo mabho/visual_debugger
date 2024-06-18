@@ -99,6 +99,9 @@
 
     .content-auto-scroll {
       background-color: var(--#{$prefix}controller--content-auto-scroll--background-color);
+      display: flex;
+      flex-direction: var(--#{$prefix}controller--content-auto-scroll--flex-direction);
+      height: var(--#{$prefix}controller--content-auto-scroll--height);
       margin: var(--#{$prefix}controller--content-auto-scroll--margin);
       overflow-y: var(--#{$prefix}controller--content-auto-scroll--overflow-y);
       padding: var(--#{$prefix}controller--content-auto-scroll--padding);
@@ -184,6 +187,7 @@
     border-top: var(--#{$prefix}nav-target--border-top);
     .nav-target {
       display: none;
+      flex: 1;
       position: relative;
       z-index: var(--#{$prefix}nav-target--z-index);
 
@@ -217,11 +221,14 @@
         gap: var(--#{$prefix}selected-element--content--gap);
       }
 
-      // Info.
-      &__info {
-        column-gap: var(--#{$prefix}selected-element--info--column-gap);
-        display: flex;
-        flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
+      .content-item {
+
+        // Info.
+        &__info {
+          column-gap: var(--#{$prefix}selected-element--info--column-gap);
+          display: flex;
+          flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
+        }
       }
     }
 
