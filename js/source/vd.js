@@ -324,12 +324,12 @@
       const top = Math.round(instanceLayerRefRect.top + window.scrollY);
       const left = Math.round(instanceLayerRefRect.left + window.scrollX);      
       let { width, height } = instanceLayerRefRect;
-      height = Math.round(height);
-      width = Math.round(width);
+      height = Math.floor(height);
+      width = Math.floor(width);
 
       // Set the size and position of the instance layer.
-      instanceLayerTarget.style.width = `${Math.round(width)}px`;
-      instanceLayerTarget.style.height = `${Math.round(height)}px`;
+      instanceLayerTarget.style.width = `${width}px`;
+      instanceLayerTarget.style.height = `${height}px`;
       instanceLayerTarget.style.top = `${top}px`;
       instanceLayerTarget.style.left = `${left}px`;
     },
