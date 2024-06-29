@@ -93,7 +93,7 @@
     regExs: {
 
       // Validate theme DEBUG.
-      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERED)$"),
+      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERER)$"),
 
       // Validate template hook.
       regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
