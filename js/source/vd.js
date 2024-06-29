@@ -104,7 +104,7 @@
       ),
 
       // Validate template file path.
-      regexGetTemplateFilePath: () => new RegExp("BEGIN OUTPUT from '([^']*)'"),
+      regexGetTemplateFilePath: () => new RegExp("BEGIN( CUSTOM TEMPLATE)? OUTPUT from '([^']*)'"),
 
       // Validate complete theme analysis.
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
