@@ -304,7 +304,7 @@ Drupal.themeElement = {
       const splitThemeSuggestion = themeSuggestion.split(' ');
       return {
         suggestion: splitThemeSuggestion[1],
-        activated: (splitThemeSuggestion[0] === 'x'),
+        activated: ['x', '✅'].includes(splitThemeSuggestion[0]),
       };
     });
   },
