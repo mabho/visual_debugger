@@ -105,7 +105,7 @@ Drupal.themeElement = {
   },
 
   setSuggestions(input) {
-    this.suggestions = this.pasreListOnOffRegexpOutput(input);
+    this.suggestions = this.parseListOnOffRegexpOutput(input);
   },
 
   setDataNode(input) {
@@ -297,14 +297,14 @@ Drupal.themeElement = {
       });
   },
 
-  pasreListOnOffRegexpOutput(regexpOutput) {
+  parseListOnOffRegexpOutput(regexpOutput) {
     return regexpOutput.trim()
     .split(/\n\s*/)
     .map((themeSuggestion) => {
       const splitThemeSuggestion = themeSuggestion.split(' ');
       return {
         suggestion: splitThemeSuggestion[1],
-        activated: (splitThemeSuggestion[0] === 'x'),
+        activated: ['x', '✅'].includes(splitThemeSuggestion[0]),
       };
     });
   },

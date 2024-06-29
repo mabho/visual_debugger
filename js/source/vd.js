@@ -93,7 +93,7 @@
     regExs: {
 
       // Validate theme DEBUG.
-      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERED)$"),
+      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERER)$"),
 
       // Validate template hook.
       regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
@@ -104,7 +104,7 @@
       ),
 
       // Validate template file path.
-      regexGetTemplateFilePath: () => new RegExp("BEGIN OUTPUT from '([^']*)'"),
+      regexGetTemplateFilePath: () => new RegExp("BEGIN( CUSTOM TEMPLATE)? OUTPUT from '([^']*)'"),
 
       // Validate complete theme analysis.
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
