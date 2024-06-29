@@ -9,10 +9,6 @@
   opacity: 1;
 }
 
-%selected-item-wrapper {
-  margin-bottom: calc(var(--#{$prefix}controller--gutter) * .75);
-}
-
 .visual-debugger {
 
   // Controller.
@@ -103,6 +99,9 @@
 
     .content-auto-scroll {
       background-color: var(--#{$prefix}controller--content-auto-scroll--background-color);
+      display: flex;
+      flex-direction: var(--#{$prefix}controller--content-auto-scroll--flex-direction);
+      height: var(--#{$prefix}controller--content-auto-scroll--height);
       margin: var(--#{$prefix}controller--content-auto-scroll--margin);
       overflow-y: var(--#{$prefix}controller--content-auto-scroll--overflow-y);
       padding: var(--#{$prefix}controller--content-auto-scroll--padding);
@@ -188,6 +187,7 @@
     border-top: var(--#{$prefix}nav-target--border-top);
     .nav-target {
       display: none;
+      flex: 1;
       position: relative;
       z-index: var(--#{$prefix}nav-target--z-index);
 
@@ -214,30 +214,20 @@
       background-color: var(--#{$prefix}selected-element--background-color);
       padding: var(--#{$prefix}selected-element--padding);
 
-      // Info.
-      &__info {
-        column-gap: var(--#{$prefix}selected-element--info--column-gap);
+      // Content
+      &__content {
         display: flex;
-        flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
-
-        &-wrapper {
-          @extend %selected-item-wrapper;
-        }
+        flex-direction: var(--#{$prefix}selected-element--content--flex-direction);
+        gap: var(--#{$prefix}selected-element--content--gap);
       }
 
-      // Suggestions.
-      &__suggestions {
-        &-wrapper {
-          @extend %selected-item-wrapper;
-        }
-      }
+      .content-item {
 
-      // Tempalte File Path.
-      &__template-file-path {
-        .label {
-          background-color: var(--#{$prefix}color--light-gray);
-          padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
-          white-space: nowrap;
+        // Info.
+        &__info {
+          column-gap: var(--#{$prefix}selected-element--info--column-gap);
+          display: flex;
+          flex-direction: var(--#{$prefix}selected-element--info--flex-direction);
         }
       }
     }
@@ -400,6 +390,12 @@
     display: flex;
     flex-direction: var(--#{$prefix}content-copy-data--flex-direction);
     margin: var(--#{$prefix}content-copy-data--margin);
+
+    &__label {
+      background-color: var(--#{$prefix}color--light-gray);
+      padding: 0 calc(var(--#{$prefix}controller--gutter) * .25);
+      white-space: nowrap;
+    }
 
     button {
       background-color: var(--#{$prefix}content-copy-data--button--background-color);

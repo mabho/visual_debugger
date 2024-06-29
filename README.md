@@ -19,7 +19,8 @@ To enable Visual Debugger:
 2. Enable the module.
 3. Make sure Twig debug mode is activated in Drupal (`admin/config/development/settings`); the module won't be able to do its job if debug comments aren't rendered in the source code. 
 3. Go to the admin interface (`admin/config/development/visual-debugger`). Make sure **Use Visual Debugger on frontend theme** is activated for frontend theme debugging. Alternatively, users might also debug the backend by activating **Use Visual Debugger on admin theme**.
-4. Nothing else :-)
+4. [Refer to the Cache debugging section](#cache-debugging) for instructions on how to activate cache debugging on Visual Debugger. 
+5. Nothing else :-)
 
 ### Theme debugging.
 
@@ -36,7 +37,25 @@ For convenience, users might want to deactivate the Visual Debugger, and the deb
 
 Users may also resize the fly-out window to make it wider or narrower by click-dragging the rounded handle at the edge of the fly-out window.
 
-User preferences for fly-out window width and Visual Debugger activation are stored in the browser and recovered every time a new page is loaded. 
+User preferences for fly-out window width and Visual Debugger activation are stored in the browser and recovered every time a new page is loaded.
+
+### Cache debugging
+
+Additionally, users are also able to see cache debug information which is printed to the source code _when render caching is activated_. [Refer to this page in Drupal.org for instructions on how to activate render cache debugging](https://www.drupal.org/docs/develop/development-tools/disabling-and-debugging-caching#s-enable-render-cache-debugging).
+
+When the script identifies cache information is being pumped to the source code, it will activate some additional debug blocks for each of the selected elements on the page:
+- Cach Hit
+- Cache Tags
+- Cache Contexts
+- Cache Keys
+- Cache Max-Age
+- Pre-Bubbling Cache Tags
+- Pre-Bubbling Cache Contexts
+- Pre-Bubbling Cache Keys
+- Pre-Bubbling Cache Max-Age
+- Rendering Time
+
+Elements that do carry cache data will display the corresponding cache information when selected; elements without any associated cache information will display the label "Not available" under each corresponding block.
 
 ### Limmitations.
 
@@ -47,22 +66,14 @@ Visual Debugger was originally developed with desktop screen sizes in mind. It h
 ### Development roadmap.
 
 This is the roadmap for module improvements:
-- Apply extended cache information, when available, on elements carrying that type of information on the source code. This cache data can potentially be pulled to the frontend (still subject to an in-depth analysis for its feasibility):
-  - Cache hit
-  - Cache tags
-  - Cache contexts
-  - Cache keys
-  - Pre-bubbling cache contexts
-  - Pre-bubbling cache keys
-- Create tabbed navigation to split the display of additional information, and help controller share a lot more valuable information to the user.
-  - ~~Create new tab `Selected` to display information on the item that is currently selected by the user.~~
-  - ~~Create new tab `List`. List all the page elements in the order they show up on the page. Selected item can be triggered from the items on this tab.~~
-  - Create new tab `Aggretate`. Displays an aggregated/consolidated list of page elements by object type. The established color codes should be present here as a visual cue. Display the number of times each object type is present on the page.
+- Display wrong theme suggestions: when theme suggestions not properly formatted are aggregated via custom module or theme, the debug parser delivers that information on the source code, so users know a wrong theme suggestion has been provided. This information should also be delivered for selected elements.
+- Use the existing tabbed navigation to display more valuable information to the user:
+  - Create new tab `Aggretate` or `Filter`. Displays an aggregated/consolidated list of page elements by object type. The established color codes should be present here as a visual cue. Display the number of times each object type is present on the page.
     - Beside each object type tag, display a checkbox delivering users the ability to activate/deactivate all the components of a given type at once.
-  - Create a new tab `Configuration`. This tab can be represented by a coil icon only. 
-- Add the ability to deactivate/disable individual layers so that users can more easily achieve layers underneath other layers.
-  - ~~On `List`, add the ability to activate/deactivate layers individually.~~
-  - On `Aggregate`, add the ability to activate/deactivate groups of layers by object type.
+    - Grant users the ability to filter elements carrying cache debug information.
+    - Grant users the ability to filter elements carrying wrong theme suggestions.
+  - Create a new tab `Configuration`. This tab can be represented by a coil icon only.
+- Analyze and fix a problem with an horizontal scrollbar sometimes being displayed on the page because layers within the wrapper element `.visual-debugger visual-debugger--base` maye occupy a space which is wider than the available screen width.
 
 ### Development roadmap - Complete tasks.
 
@@ -73,4 +84,20 @@ These are the complete tasks in the development roadmap.
 - Add the ability to deactivate/disable the `Selected element` from within the controller block.
 - ~~Extend the custom object type colors to the overlay layers, instead of the vanilla, default yellow.~~
 - ~~Change the hover behavior to be more subtle: make the custom object type color less transparent, but avoid excess (current approach seems to be exaggerated).~~
+- ~~Create tabbed navigation to split the display of additional information, and help controller share a lot more valuable information to the user.~~
+  - ~~Create new tab `Selected` to display information on the item that is currently selected by the user.~~
+  - ~~Create new tab `List`. List all the page elements in the order they show up on the page. Selected item can be triggered from the items on this tab.~~
 - ~~Apply a special style to the selected (default) element. Currently, it lacks a custom style. Selected elements should be highlighted all the time. The ideal solution could be one that makes its custom background (object type related) even less transparent.~~
+- ~~Add the ability to deactivate/disable individual layers so that users can more easily achieve layers underneath other layers.~~
+  - ~~On `List`, add the ability to activate/deactivate layers individually.~~
+- ~~Apply extended cache information, when available, on elements carrying that type of information on the source code. This cache data can potentially be pulled to the frontend (still subject to an in-depth analysis for its feasibility):~~
+  - ~~Cach Hit~~
+  - ~~Cache Tags~~
+  - ~~Cache Contexts~~
+  - ~~Cache Keys~~
+  - ~~Cache Max-Age~~
+  - ~~Pre-Bubbling Cache Tags~~
+  - ~~Pre-Bubbling Cache Contexts~~
+  - ~~Pre-Bubbling Cache Keys~~
+  - ~~Pre-Bubbling Cache Max-Age~~
+  - ~~Rendering Time~~

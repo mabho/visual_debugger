@@ -346,6 +346,8 @@
     --#{$prefix}selected-element--padding: var(--#{$prefix}controller--gutter);
     --#{$prefix}selected-element--info--column-gap: calc(var(--#{$prefix}controller--gutter) * .5);
     --#{$prefix}selected-element--info--flex-direction: row;
+    --#{$prefix}selected-element--content--flex-direction: column;
+    --#{$prefix}selected-element--content--gap: calc(var(--#{$prefix}controller--gutter) * 1);
   
     // List Element.
     --#{$prefix}list-element--background-color: var(--#{$prefix}color--gray-10);
@@ -402,6 +404,8 @@
   
     // Content Auto-scroll.
     --#{$prefix}controller--content-auto-scroll--background-color: transparent;
+    --#{$prefix}controller--content-auto-scroll--flex-direction: column;
+    --#{$prefix}controller--content-auto-scroll--height: 100%;
     --#{$prefix}controller--content-auto-scroll--margin: 0;
     --#{$prefix}controller--content-auto-scroll--overflow-y: auto;
     --#{$prefix}controller--content-auto-scroll--padding: 0;

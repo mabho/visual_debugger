@@ -93,7 +93,7 @@
     regExs: {
 
       // Validate theme DEBUG.
-      regexGetTemplateDebug: () => new RegExp("THEME DEBUG"),
+      regexGetTemplateDebug: () => new RegExp("^(THEME DEBUG|START RENDERED)$"),
 
       // Validate template hook.
       regexGetTemplateHook: () => new RegExp("THEME HOOK: '([^']*)'"),
@@ -108,6 +108,48 @@
 
       // Validate complete theme analysis.
       regexGetTemplateEndOutput: () => new RegExp("END OUTPUT from '([^']*)'"),
+
+      // Cache-hit.
+      regexGetCacheHit: () => new RegExp("CACHE-HIT: (Yes|No)"),
+
+      // List cache tags.
+      regexGetCacheTags: () => new RegExp(
+        "^\\s?CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List cache contexts.
+      regexGetCacheContexts: () => new RegExp(
+        "^\\s?CACHE CONTEXTS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List cache keys.
+      regexGetCacheKeys: () => new RegExp(
+        "^\\s?CACHE KEYS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // Cache max-age
+      regexGetCacheMaxAge: () => new RegExp("^\\s?CACHE MAX-AGE: (-?[0-9]*)"),
+
+      // List pre-bubbling cache tags.
+      regexGetPreBubblingCacheTags: () => new RegExp(
+        "PRE-BUBBLING CACHE TAGS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List pre-bubbling cache contexts.
+      regexGetPreBubblingCacheContexts: () => new RegExp(
+        "PRE-BUBBLING CACHE CONTEXTS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // List pre-bubbling cache keys.
+      regexGetPreBubblingCacheKeys: () => new RegExp(
+        "PRE-BUBBLING CACHE KEYS:\s*\n\s*([^']*)\s*\n*\s*"
+      ),
+
+      // Pre-bubbling cache max-age.
+      regexGetPreBubblingCacheMaxAge: () => new RegExp("PRE-BUBBLING CACHE MAX-AGE: (-?[0-9]*)"),
+
+      // Rendering time.
+      regexGetRenderingTime: () => new RegExp("RENDERING TIME: (-?[0-9]*\.?[0-9]*)"),
     },
 
     // Strores the controller layer.
@@ -427,6 +469,16 @@
         regexGetTemplateHook,
         regexGetTemplateSuggestions,
         regexGetTemplateFilePath,
+        regexGetCacheHit,
+        regexGetCacheMaxAge,
+        regexGetPreBubblingCacheTags,
+        regexGetPreBubblingCacheContexts,
+        regexGetPreBubblingCacheKeys,
+        regexGetPreBubblingCacheMaxAge,
+        regexGetRenderingTime,
+        regexGetCacheTags,
+        regexGetCacheContexts,
+        regexGetCacheKeys,
       } = this.regExs;
 
       const { layerIdAttributeName } = this.layerAttributes;
@@ -457,14 +509,85 @@
           // Analyze comment nodes only.
           if (child.nodeType !== Node.COMMENT_NODE) return;
 
+          // If there is no active template, return.
+          // if (activeElement === null) return;
+
+
           // A THEME instance is found and initiated.
           if (regexGetTemplateDebug().test(child.textContent)) {
             activeElement.setActivated();
             return;
           }
 
-          // If there is no active template, return.
-          if (activeElement === null) return;
+          // Test for a cache hit.
+          const cacheHit = child.textContent.match(regexGetCacheHit());
+          if (cacheHit) {
+            activeElement.setCacheHit(cacheHit[1]);
+            return;
+          }
+
+          // Test for cache max-age.
+          const cacheMaxAge = child.textContent.match(regexGetCacheMaxAge());
+          if (cacheMaxAge) {
+            activeElement.setCacheMaxAge(cacheMaxAge[1]);
+            return;
+          }
+
+          // Test for cache tags.
+          const cacheTags = child.textContent.match(regexGetCacheTags());
+          if (cacheTags) {
+            activeElement.setCacheTags(cacheTags[1]);
+            return;
+          }
+
+          // Test for cache contexts.
+          const cacheContexts = child.textContent.match(regexGetCacheContexts());
+          if (cacheContexts) {
+            activeElement.setCacheContexts(cacheContexts[1]);
+            return;
+          }
+
+          // Test for cache contexts.
+          const cacheKeys = child.textContent.match(regexGetCacheKeys());
+          if (cacheKeys) {
+            activeElement.setCacheKeys(cacheKeys[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache tags.
+          const preBubblingCacheTags = child.textContent.match(regexGetPreBubblingCacheTags());
+          if (preBubblingCacheTags) {
+            activeElement.setPreBubblingCacheTags(preBubblingCacheTags[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache contexts.
+          const preBubblingCacheContexts = child.textContent.match(regexGetPreBubblingCacheContexts());
+          if (preBubblingCacheContexts) {
+            activeElement.setPreBubblingCacheContexts(preBubblingCacheContexts[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache keys.
+          const preBubblingCacheKeys = child.textContent.match(regexGetPreBubblingCacheKeys());
+          if (preBubblingCacheKeys) {
+            activeElement.setPreBubblingCacheKeys(preBubblingCacheKeys[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache max-age.
+          const cachePreBubblingMaxAge = child.textContent.match(regexGetPreBubblingCacheMaxAge());
+          if (cachePreBubblingMaxAge) {
+            activeElement.setPreBubblingCacheMaxAge(cachePreBubblingMaxAge[1]);
+            return;
+          }
+
+          // Test for pre-bubbing cache max-age.
+          const renderingTime = child.textContent.match(regexGetRenderingTime());
+          if (renderingTime) {
+            activeElement.setRenderingTime(renderingTime[1]);
+            return;
+          }
 
           // Gets the template hook.
           const templateHookMatch = child.textContent.match(regexGetTemplateHook());
@@ -478,16 +601,9 @@
           const templateSuggestions = child.textContent.match(
             regexGetTemplateSuggestions()
           );
+
           if (templateSuggestions) {
-            const splitSuggestions = templateSuggestions[1].trim().split(/\n\s*/);
-            const splitSuggestionsProcessed = splitSuggestions.map((themeSuggestion) => {
-              const splitThemeSuggestion = themeSuggestion.split(' ');
-              return {
-                suggestion: splitThemeSuggestion[1],
-                activated: (splitThemeSuggestion[0] === 'x'),
-              }
-            });
-            activeElement.setSuggestions(splitSuggestionsProcessed);
+            activeElement.setSuggestions(templateSuggestions[1]);
             return;
           }
 
