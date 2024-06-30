@@ -377,6 +377,39 @@
     },
 
     /**
+     * This function retrieves all nodes of type comment from the root element
+     * being passed into the function. This code was provided by Keith Shaw on
+     * Stack Overflow: https://stackoverflow.com/a/60234525.
+     * 
+     * @param {object} root
+     *   The element being analized and iterated.
+     * @returns {array}
+     *   An array of comment nodes.
+     */
+    getComments(root) {
+      var treeWalker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_COMMENT,
+        {
+          "acceptNode": function acceptNode (node) {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+
+      // skip the first node which is the node specified in the `root`
+      var currentNode = treeWalker.nextNode();
+
+      var nodeList = [];
+      while (currentNode) {
+        nodeList.push(currentNode);
+        currentNode = treeWalker.nextNode();
+      }
+
+      return nodeList;
+    },
+
+    /**
      * Sets the theme debug node object, which is central for this app.
      * @param {object} instanceActiveElement
      *   The actual data for each layer.
@@ -498,152 +531,140 @@
       let activeElement = Drupal.themeElement;
       activeElement.init();
 
-      // Get all nodes in the document and loop through...
-      const allNodes = document.querySelectorAll("*");
-      allNodes.forEach((node) => {
+      // Get all comemnt nodes and loop through...
+      var commentNodes = this.getComments(document);
 
-        // Loop through all child nodes.
-        const childNodes = node.childNodes;
-        Array.from(childNodes).forEach((child) => {
+      commentNodes.forEach((child) => {
+        // A THEME instance is found and initiated.
+        if (regexGetTemplateDebug().test(child.textContent)) {
+          activeElement.setActivated();
+          return;
+        }
 
-          // Analyze comment nodes only.
-          if (child.nodeType !== Node.COMMENT_NODE) return;
+        // Test for a cache hit.
+        const cacheHit = child.textContent.match(regexGetCacheHit());
+        if (cacheHit) {
+          activeElement.setCacheHit(cacheHit[1]);
+          return;
+        }
 
-          // If there is no active template, return.
-          // if (activeElement === null) return;
+        // Test for cache max-age.
+        const cacheMaxAge = child.textContent.match(regexGetCacheMaxAge());
+        if (cacheMaxAge) {
+          activeElement.setCacheMaxAge(cacheMaxAge[1]);
+          return;
+        }
 
+        // Test for cache tags.
+        const cacheTags = child.textContent.match(regexGetCacheTags());
+        if (cacheTags) {
+          activeElement.setCacheTags(cacheTags[1]);
+          return;
+        }
 
-          // A THEME instance is found and initiated.
-          if (regexGetTemplateDebug().test(child.textContent)) {
-            activeElement.setActivated();
-            return;
+        // Test for cache contexts.
+        const cacheContexts = child.textContent.match(regexGetCacheContexts());
+        if (cacheContexts) {
+          activeElement.setCacheContexts(cacheContexts[1]);
+          return;
+        }
+
+        // Test for cache contexts.
+        const cacheKeys = child.textContent.match(regexGetCacheKeys());
+        if (cacheKeys) {
+          activeElement.setCacheKeys(cacheKeys[1]);
+          return;
+        }
+
+        // Test for pre-bubbing cache tags.
+        const preBubblingCacheTags = child.textContent.match(regexGetPreBubblingCacheTags());
+        if (preBubblingCacheTags) {
+          activeElement.setPreBubblingCacheTags(preBubblingCacheTags[1]);
+          return;
+        }
+
+        // Test for pre-bubbing cache contexts.
+        const preBubblingCacheContexts = child.textContent.match(regexGetPreBubblingCacheContexts());
+        if (preBubblingCacheContexts) {
+          activeElement.setPreBubblingCacheContexts(preBubblingCacheContexts[1]);
+          return;
+        }
+
+        // Test for pre-bubbing cache keys.
+        const preBubblingCacheKeys = child.textContent.match(regexGetPreBubblingCacheKeys());
+        if (preBubblingCacheKeys) {
+          activeElement.setPreBubblingCacheKeys(preBubblingCacheKeys[1]);
+          return;
+        }
+
+        // Test for pre-bubbing cache max-age.
+        const cachePreBubblingMaxAge = child.textContent.match(regexGetPreBubblingCacheMaxAge());
+        if (cachePreBubblingMaxAge) {
+          activeElement.setPreBubblingCacheMaxAge(cachePreBubblingMaxAge[1]);
+          return;
+        }
+
+        // Test for pre-bubbing cache max-age.
+        const renderingTime = child.textContent.match(regexGetRenderingTime());
+        if (renderingTime) {
+          activeElement.setRenderingTime(renderingTime[1]);
+          return;
+        }
+
+        // Gets the template hook.
+        const templateHookMatch = child.textContent.match(regexGetTemplateHook());
+        if (templateHookMatch) {
+          activeElement.setPropertyHook(templateHookMatch[1]);
+          activeElement.setObjectType(templateHookMatch[1]);
+          return;
+        }
+
+        // Gets the template suggestions.
+        const templateSuggestions = child.textContent.match(
+          regexGetTemplateSuggestions()
+        );
+
+        if (templateSuggestions) {
+          activeElement.setSuggestions(templateSuggestions[1]);
+          return;
+        }
+
+        // Gets the template file path and fills dataNode.
+        const templateFilePathMatch = child.textContent.match(
+          regexGetTemplateFilePath()
+        );
+        if (templateFilePathMatch) {
+
+          // Set the file path.
+          activeElement.setFilePath(templateFilePathMatch[1]);
+
+          // Get the next element sibling (dataNode).
+          const dataNode = child.nextElementSibling;
+
+          // Confirm it is a DOM element.
+          if (
+            (
+              dataNode &&
+              dataNode.nodeType === Node.ELEMENT_NODE
+            ) && activeElement.dataNode === null
+          ) {
+            activeElement.setDataNode(dataNode);
+            const instanceActiveElement = Object.assign({}, activeElement);
+            const instanceLayerId = this.utilities.generateUniqueIdentifier();
+            const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
+            dataNode.setAttribute(layerIdAttributeName, instanceLayerId);
+            baseLayer.appendChild(instanceLayer);
+            themeDebugNodes.push(
+              this.setthemeDebugNode(
+                instanceActiveElement,
+                instanceLayer,
+                dataNode,
+              )
+            );
           }
 
-          // Test for a cache hit.
-          const cacheHit = child.textContent.match(regexGetCacheHit());
-          if (cacheHit) {
-            activeElement.setCacheHit(cacheHit[1]);
-            return;
-          }
-
-          // Test for cache max-age.
-          const cacheMaxAge = child.textContent.match(regexGetCacheMaxAge());
-          if (cacheMaxAge) {
-            activeElement.setCacheMaxAge(cacheMaxAge[1]);
-            return;
-          }
-
-          // Test for cache tags.
-          const cacheTags = child.textContent.match(regexGetCacheTags());
-          if (cacheTags) {
-            activeElement.setCacheTags(cacheTags[1]);
-            return;
-          }
-
-          // Test for cache contexts.
-          const cacheContexts = child.textContent.match(regexGetCacheContexts());
-          if (cacheContexts) {
-            activeElement.setCacheContexts(cacheContexts[1]);
-            return;
-          }
-
-          // Test for cache contexts.
-          const cacheKeys = child.textContent.match(regexGetCacheKeys());
-          if (cacheKeys) {
-            activeElement.setCacheKeys(cacheKeys[1]);
-            return;
-          }
-
-          // Test for pre-bubbing cache tags.
-          const preBubblingCacheTags = child.textContent.match(regexGetPreBubblingCacheTags());
-          if (preBubblingCacheTags) {
-            activeElement.setPreBubblingCacheTags(preBubblingCacheTags[1]);
-            return;
-          }
-
-          // Test for pre-bubbing cache contexts.
-          const preBubblingCacheContexts = child.textContent.match(regexGetPreBubblingCacheContexts());
-          if (preBubblingCacheContexts) {
-            activeElement.setPreBubblingCacheContexts(preBubblingCacheContexts[1]);
-            return;
-          }
-
-          // Test for pre-bubbing cache keys.
-          const preBubblingCacheKeys = child.textContent.match(regexGetPreBubblingCacheKeys());
-          if (preBubblingCacheKeys) {
-            activeElement.setPreBubblingCacheKeys(preBubblingCacheKeys[1]);
-            return;
-          }
-
-          // Test for pre-bubbing cache max-age.
-          const cachePreBubblingMaxAge = child.textContent.match(regexGetPreBubblingCacheMaxAge());
-          if (cachePreBubblingMaxAge) {
-            activeElement.setPreBubblingCacheMaxAge(cachePreBubblingMaxAge[1]);
-            return;
-          }
-
-          // Test for pre-bubbing cache max-age.
-          const renderingTime = child.textContent.match(regexGetRenderingTime());
-          if (renderingTime) {
-            activeElement.setRenderingTime(renderingTime[1]);
-            return;
-          }
-
-          // Gets the template hook.
-          const templateHookMatch = child.textContent.match(regexGetTemplateHook());
-          if (templateHookMatch) {
-            activeElement.setPropertyHook(templateHookMatch[1]);
-            activeElement.setObjectType(templateHookMatch[1]);
-            return;
-          }
-
-          // Gets the template suggestions.
-          const templateSuggestions = child.textContent.match(
-            regexGetTemplateSuggestions()
-          );
-
-          if (templateSuggestions) {
-            activeElement.setSuggestions(templateSuggestions[1]);
-            return;
-          }
-
-          // Gets the template file path and fills dataNode.
-          const templateFilePathMatch = child.textContent.match(
-            regexGetTemplateFilePath()
-          );
-          if (templateFilePathMatch) {
-
-            // Set the file path.
-            activeElement.setFilePath(templateFilePathMatch[1]);
-
-            // Get the next element sibling (dataNode).
-            const dataNode = child.nextElementSibling;
-
-            // Confirm it is a DOM element.
-            if (
-              (
-                dataNode &&
-                dataNode.nodeType === Node.ELEMENT_NODE
-              ) && activeElement.dataNode === null
-            ) {
-              activeElement.setDataNode(dataNode);
-              const instanceActiveElement = Object.assign({}, activeElement);
-              const instanceLayerId = this.utilities.generateUniqueIdentifier();
-              const instanceLayer = this.generateInstanceLayer(instanceActiveElement, dataNode, instanceLayerId);
-              dataNode.setAttribute(layerIdAttributeName, instanceLayerId);
-              baseLayer.appendChild(instanceLayer);
-              themeDebugNodes.push(
-                this.setthemeDebugNode(
-                  instanceActiveElement,
-                  instanceLayer,
-                  dataNode,
-                )
-              );
-            }
-
-            activeElement.reset();
-          }
-        });
+          activeElement.reset();
+        }
       });
 
       this.themeDebugNodes = themeDebugNodes;
