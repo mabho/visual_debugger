@@ -44,6 +44,8 @@ Drupal.controllerElement = {
     idControllerElementList: 'visual-debugger--controller-layer--list',
     idControllerButtonList: 'visual-debugger--controller-layer--button--list',
     idControllerActiveElementInfo: 'visual-debugger--controller--active-element--info',
+    idControllerButtonFilters: 'visual-debugger--controller-layer--button--filters',
+    idControllerElementFilters: 'visual-debugger--controller-layer--filters',
     idControllerActivationCheckbox: 'debuggerActivationCheckbox',
   },
 
@@ -77,6 +79,9 @@ Drupal.controllerElement = {
     classNameListElementItemActivation: 'list-item__activation',
     classNameListElementItemActivationHover: 'list-item__activation--hover',
     classNameListElementItemVisibility: 'list-item__visibility',
+    classNameFiltersElement: 'filters',
+    classNameFiltersElementContent: 'filters__content',
+    classNameFiltersElementItem: 'filter-item',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
@@ -109,6 +114,7 @@ Drupal.controllerElement = {
     stringSelectedElement: Drupal.t('Selected Element'),
     stringTabLabelSelected: Drupal.t('Selected'),
     stringTabLabelList: Drupal.t('List'),
+    stringTabLabelFilters: Drupal.t('Filters'),
     stringTabLabelAggregate: Drupal.t('Aggregate'),
     stringBasicInfo: Drupal.t('Object Type'),
     stringThemeSuggestions: Drupal.t('Theme Suggestions'),
@@ -426,14 +432,18 @@ Drupal.controllerElement = {
     // List element layer.
     const listElementLayer = this.generateListElementLayer();
 
+    // Filters element layer.
+    const filtersElementLayer = this.generateFiltersTab();
+
     // Selected element layer.
     controllerContentLayer.append(
       activeElementLayer,
       tabbedNavigation,
       selectedElementLayer,
       listElementLayer,
+      filtersElementLayer,
     );
-    
+
     controllerLayer.append(
       formElement,
       controllerContentLayer
@@ -577,6 +587,7 @@ Drupal.controllerElement = {
     const {
       stringTabLabelSelected,
       stringTabLabelList,
+      stringTabLabelFilters,
     } = this.strings;
 
     const {
@@ -584,10 +595,14 @@ Drupal.controllerElement = {
       idControllerButtonSelected,
       idControllerElementList,
       idControllerButtonList,
+      idControllerButtonFilters,
+      idControllerElementFilters,
     } = this.ids;
 
     // Create the tabs.
     const tabs = [
+
+      // Selected
       {
         id: idControllerButtonSelected,
         label: stringTabLabelSelected,
@@ -596,10 +611,19 @@ Drupal.controllerElement = {
           classNameTabsNavigationTabSelected,
         ]
       },
+
+      // List
       {
         id: idControllerButtonList,
         label: stringTabLabelList,
         targetId: idControllerElementList,
+      },
+
+      // Filters
+      {
+        id: idControllerButtonFilters,
+        label: stringTabLabelFilters,
+        targetId: idControllerElementFilters,
       },
     ];
 
@@ -872,6 +896,62 @@ Drupal.controllerElement = {
     });
 
     return listElementLayer;
+  },
+
+  /**
+   * Deliver a Filters tab with a list of filters.
+   */
+  generateFiltersTab() {
+    const {
+      classNameFiltersElement,
+      classNameFiltersElementContent,
+      classNameFiltersElementItem,
+    } = this.classNames;
+
+    const {
+      idControllerElementFilters,
+    } = this.ids;
+
+    const {
+      stringTabLabelFilters,
+    } = this.strings;
+
+    const themeDebugNodes = this.themeDebugNodes;
+    const consolidateObjectTypes = this.utilities.consolidateObjectTypes(
+      themeDebugNodes
+    );
+    console.warn('consolidateObjectTypes', consolidateObjectTypes);
+
+    // Filters group.
+    const filtersElement = document.createElement('div');
+    
+    filtersElement.classList.add(classNameFiltersElement);
+    filtersElement.setAttribute('id', idControllerElementFilters);
+
+    // Filters group title.
+    const filtersElementTitle = document.createElement('h3');
+    filtersElementTitle.textContent = stringTabLabelFilters;
+
+    // Filters content.
+    const filtersElementContent = document.createElement('div');
+    filtersElementContent.classList.add(classNameFiltersElementContent);
+
+    // Iterate over the list of object types.
+    Object.entries(consolidateObjectTypes).forEach(([key, item]) => {
+      console.warn(`the count of ${key} is`, item.count);
+      const objectTypeWrapper = document.createElement('div');
+      objectTypeWrapper.classList.add(classNameFiltersElementItem);
+      objectTypeWrapper.textContent = `${key} - (${item.count})`;
+      filtersElementContent.appendChild(objectTypeWrapper);
+    });
+
+    // Load the list of filters to the wrapper filters element.
+    filtersElement.append(
+      filtersElementTitle,
+      filtersElementContent
+    );
+
+    return filtersElement;
   },
 
   /**
