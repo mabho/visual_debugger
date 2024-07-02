@@ -200,7 +200,14 @@ Drupal.vdUtilities = {
     });
   },
 
-
+  /**
+   * List of nodes with some sort of exposed cache.
+   * 
+   * @param {array} nodes
+   *   The array of node objects. 
+   * @returns {array}
+   *   A reduced array of nodes with cache.
+   */
   getNodesWithCache(nodes) {
     return nodes.filter(node => node.instanceActiveElement.cacheHit);
   }
