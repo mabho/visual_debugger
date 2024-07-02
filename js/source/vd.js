@@ -155,16 +155,6 @@
     // Strores the controller layer.
     controllerElement: null,
 
-    // Gets processed unique property hooks.
-    getUniquePropertyHooks(source) {
-      return source
-        .map(node => node.instanceActiveElement.propertyHook)
-        .filter((value, index, self) => {
-          return self.indexOf(value) === index;
-        })
-        .sort();
-    },
-
     /**
      * Gets the DOM depth of the referenced element.
      * @param {object} element

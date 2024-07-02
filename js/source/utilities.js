@@ -210,5 +210,22 @@ Drupal.vdUtilities = {
    */
   getNodesWithCache(nodes) {
     return nodes.filter(node => node.instanceActiveElement.cacheHit);
-  }
+  },
+
+  /**
+   * Gets a consolidated list of object types.
+   * @param {array} nodes
+   *   The array of node objects. 
+   * @returns {object}
+   *   An object with object types as keys, and the number of occurrences.
+   */
+  consolidateObjectTypes(nodes) {
+    return nodes
+      .map((node) => node.instanceActiveElement.objectType)
+      .reduce((acc, node) => {
+        acc[node] = acc[node] || { count: 0 };
+        acc[node].count += 1;
+        return acc;
+      }, {});
+  },
 }
