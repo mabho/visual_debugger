@@ -82,6 +82,8 @@ Drupal.controllerElement = {
     classNameFiltersElement: 'filters',
     classNameFiltersElementContent: 'filters__content',
     classNameFiltersElementItem: 'filter-item',
+    classNameFiltersElementItemActivation: 'filters-item__activation',
+    classNameFiltersElementItemActivationHover: 'filter-item__activation--hover',
     classNameAggregateElement: 'aggregate',
     classNameTarget: 'nav-target',
     classNameContentCopyData: 'content-copy-data',
@@ -880,6 +882,7 @@ Drupal.controllerElement = {
           [layerAttributeIsVisible]: true,
         },
         [ classNameListElementItemVisibility ],
+        true,
         classNameIconEye,
         classNameIconEyeBlocked
       );
@@ -903,10 +906,19 @@ Drupal.controllerElement = {
    */
   generateFiltersTab() {
     const {
+      classNameTarget,
       classNameFiltersElement,
       classNameFiltersElementContent,
       classNameFiltersElementItem,
+      classNameFiltersElementItemActivation,
+      classNameFiltersElementItemActivationHover,
+      classNameIconEye,
+      classNameIconEyeBlocked,
     } = this.classNames;
+
+    const {
+      classNameCheckboxToggleWrapper,
+    } = this.utilities.classNames;
 
     const {
       idControllerElementFilters,
@@ -915,6 +927,11 @@ Drupal.controllerElement = {
     const {
       stringTabLabelFilters,
     } = this.strings;
+
+    const {
+      layerAttributeIsVisible,
+      filterItemActivatedAttributeName,
+    } = this.utilities.layerAttributes;
 
     const themeDebugNodes = this.themeDebugNodes;
     const consolidateObjectTypes = this.utilities.consolidateObjectTypes(
@@ -925,7 +942,7 @@ Drupal.controllerElement = {
     // Filters group.
     const filtersElement = document.createElement('div');
     
-    filtersElement.classList.add(classNameFiltersElement);
+    filtersElement.classList.add(classNameFiltersElement, classNameTarget);
     filtersElement.setAttribute('id', idControllerElementFilters);
 
     // Filters group title.
@@ -938,11 +955,93 @@ Drupal.controllerElement = {
 
     // Iterate over the list of object types.
     Object.entries(consolidateObjectTypes).forEach(([key, item]) => {
-      console.warn(`the count of ${key} is`, item.count);
-      const objectTypeWrapper = document.createElement('div');
-      objectTypeWrapper.classList.add(classNameFiltersElementItem);
-      objectTypeWrapper.textContent = `${key} - (${item.count})`;
-      filtersElementContent.appendChild(objectTypeWrapper);
+      const filteredByObjectType = this.utilities.getFilteredNodesByObjectType(
+        themeDebugNodes,
+        key
+      );
+
+      const filterElementItem = document.createElement('div');
+      filterElementItem.classList.add(classNameFiltersElementItem);
+
+      // Generates an on/off switcher for item visibility.
+      const elementActivator = this.utilities.generateOnOffSwitch(
+        `${key} - (${item.count})`,
+        true,
+        [
+          {
+            eventListener: 'click',
+            eventCallback: (event) => {
+              if (!event.target.classList.contains(classNameCheckboxToggleWrapper)) return;
+              event.target.querySelector('input').click();
+            },
+          },
+          {
+            eventListener: 'change',
+            eventCallback: (event) => {
+              console.warn('filteredByObjectType', filteredByObjectType);
+
+              filteredByObjectType.forEach((node) => {
+
+                const parentNode = event.target.parentNode;
+                parentNode.setAttribute(
+                  layerAttributeIsVisible,
+                  event.target.checked
+                );
+
+                // Hide or show the instance layer depending on the visibility selector.
+                if (event.target.checked) {
+                  node.showInstanceLayer();
+                } else {
+                  node.hideInstanceLayer();
+                }
+              });
+            },
+          },
+          {
+            eventListener: 'mouseenter',
+            eventCallback: (event) => {
+
+              // Trigger the hover effect.
+              event.target.classList.add(
+                classNameFiltersElementItemActivationHover
+              );
+
+              filteredByObjectType.forEach((node) => {
+                node.triggerMouseEnter();
+              });
+            },
+          },
+          {
+            eventListener: 'mouseleave',
+            eventCallback: (event) => {
+              
+              // Deactivate the hover effect.
+              event.target.classList.remove(
+                classNameFiltersElementItemActivationHover
+              );
+
+              filteredByObjectType.forEach((node) => {
+                node.triggerMouseLeave();
+              });
+            },
+          }
+        ],
+        {
+          [layerAttributeIsVisible]: true,
+        },
+        [
+          classNameFiltersElementItemActivation,
+          this.classNames.classNameObjectTypeTyped(key),
+        ],
+        false,
+        classNameIconEye,
+        classNameIconEyeBlocked
+      );
+
+      filterElementItem.appendChild(elementActivator);
+      filtersElementContent.append(
+        filterElementItem,
+      );
     });
 
     // Load the list of filters to the wrapper filters element.
