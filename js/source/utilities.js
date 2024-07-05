@@ -91,6 +91,8 @@ Drupal.vdUtilities = {
    *   An array of object pairs consisting on listeners and callbacks.
    * @param {object} wrapperAttributesList
    *   The attributes to be added to the wrapper div.
+   * @param {boolean} inputFirst
+   *   If true, the input element will be placed before the label.
    * @param {string} IconOn
    *   The class name for the icon when activated.
    * @param {string} IconOff 
@@ -104,6 +106,7 @@ Drupal.vdUtilities = {
     eventListeners = null,
     wrapperAttributesList = [],
     wrapperClassList = [],
+    inputFirst = true,
     IconOn = this.classNames.classNameIconCheckboxChecked,
     IconOff = this.classNames.classNameIconCheckboxUnchecked,
   ) {
@@ -128,7 +131,7 @@ Drupal.vdUtilities = {
     wrapperDiv.classList.add(
       ...wrapperClassList,
       classNameCheckboxToggleWrapper,
-      classNameInputWrapperDeactivated,
+      (activated) ? classNameInputWrapperActivated : classNameInputWrapperDeactivated,
     );
 
     // Create a checkbox input element for debugger activation
@@ -180,7 +183,15 @@ Drupal.vdUtilities = {
       itemLabel.setAttribute('for', checkboxUniqueId);
       itemLabel.style.pointerEvents = 'none';
       itemLabel.textContent = label;
+
+      if(inputFirst) {
       wrapperDiv.appendChild(itemLabel);
+      } else {
+        wrapperDiv.insertBefore(
+          itemLabel,
+          wrapperDiv.firstChild
+        );
+      }
     }
 
     return wrapperDiv;
