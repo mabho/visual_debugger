@@ -239,4 +239,10 @@ Drupal.vdUtilities = {
         return acc;
       }, {});
   },
+
+  getFilteredNodesByObjectType(nodes, objectType) {
+    return nodes.filter(
+      (node) => node.instanceActiveElement.objectType === objectType
+    );
+  }
 }
