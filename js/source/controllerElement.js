@@ -25,6 +25,10 @@ Drupal.controllerElement = {
   // 2. instanceRefElement: The original referenced layer.
   themeDebugNodes: null,
 
+  themeDebugFilterNodes: {
+    objectTypesFilter: [],
+  },
+
   // This is a subset of 'themeDebugNodes' including only the nodes carrying
   // cache data.
   themeDebugNodesWithCache: null,
@@ -81,7 +85,7 @@ Drupal.controllerElement = {
     classNameListElementItemVisibility: 'list-item__visibility',
     classNameFiltersElement: 'filters',
     classNameFiltersElementContent: 'filters__content',
-    classNameFiltersElementItem: 'filter-item',
+    classNameFiltersElementItem: 'filters-item',
     classNameFiltersElementItemActivation: 'filters-item__activation',
     classNameFiltersElementItemActivationHover: 'filter-item__activation--hover',
     classNameAggregateElement: 'aggregate',
@@ -117,9 +121,7 @@ Drupal.controllerElement = {
     stringTabLabelSelected: Drupal.t('Selected'),
     stringTabLabelList: Drupal.t('List'),
     stringTabLabelFilters: Drupal.t('Filters'),
-    stringTabLabelAggregate: Drupal.t('Aggregate'),
-    stringBasicInfo: Drupal.t('Object Type'),
-    stringThemeSuggestions: Drupal.t('Theme Suggestions'),
+    stringAllElements: Drupal.t('All Elements'),
     stringClickDragButton: Drupal.t('Click and drag to resize'),
     stringTemplateFilePath: Drupal.t('Template File Path'),
     stringFolderPath: Drupal.t('Folder path'),
@@ -866,6 +868,10 @@ Drupal.controllerElement = {
               node.listItemLayer.classList.toggle(classNameInputWrapperDisabled);
               node.listItemLayer.setAttribute(layerAttributeIsVisible, event.target.checked);
 
+              // Update the checkbox parent visibility attribute.
+              const inputParent = event.target.parentNode;
+              inputParent.setAttribute(layerAttributeIsVisible, event.target.checked);
+
               // Hide or show the instance layer depending on the visibility selector.
               if (event.target.checked) {
                 node.showInstanceLayer();
@@ -924,18 +930,17 @@ Drupal.controllerElement = {
 
     const {
       stringTabLabelFilters,
+      stringAllElements,
     } = this.strings;
 
     const {
       layerAttributeIsVisible,
-      filterItemActivatedAttributeName,
     } = this.utilities.layerAttributes;
 
     const themeDebugNodes = this.themeDebugNodes;
     const consolidateObjectTypes = this.utilities.consolidateObjectTypes(
       themeDebugNodes
     );
-    console.warn('consolidateObjectTypes', consolidateObjectTypes);
 
     // Filters group.
     const filtersElement = document.createElement('div');
@@ -950,6 +955,14 @@ Drupal.controllerElement = {
     // Filters content.
     const filtersElementContent = document.createElement('div');
     filtersElementContent.classList.add(classNameFiltersElementContent);
+
+    // Toggle parent item activation
+    const toggleParentItemActivation = (node, checked) => {
+      node.parentNode.setAttribute(
+        layerAttributeIsVisible,
+        checked
+      );
+    }
 
     // Iterate over the list of object types.
     Object.entries(consolidateObjectTypes).forEach(([key, item]) => {
@@ -981,17 +994,15 @@ Drupal.controllerElement = {
             eventCallback: (event) => {
               filteredByObjectType.forEach((node) => {
 
-                // Toggle the checked and unchecked activation attribute oon the parent node.
-                const parentNode = event.target.parentNode;
-                parentNode.setAttribute(
-                  layerAttributeIsVisible,
-                  event.target.checked
-                );
+                // Toggle the checked and unchecked activation attribute on the parent node.
+                toggleParentItemActivation(event.target, event.target.checked);
 
-                // Toggle list item element.
+                // Toggle the list item element.
                 const listItemToggler = node.listItemLayer.nextElementSibling;
-                console.warn('listItemToggler', listItemToggler);
-                if (listItemToggler !== null) {
+                if (
+                  listItemToggler !== null
+                  && listItemToggler.getAttribute(layerAttributeIsVisible) !== String(event.target.checked)
+                ) {
                   listItemToggler.click();
                 }
               });
@@ -1038,11 +1049,53 @@ Drupal.controllerElement = {
         classNameIconEyeBlocked
       );
 
+      this.themeDebugFilterNodes.objectTypesFilter.push(elementActivator);
       filterElementItem.appendChild(elementActivator);
       filtersElementContent.append(
         filterElementItem,
       );
     });
+
+    // Prepares an 'all' selector to select/deselect all filters.
+    const allFilterElementItem = document.createElement('div');
+    allFilterElementItem.classList.add(classNameFiltersElementItem);
+
+    // Prepares an 'all' selector to select/deselect all filters.
+    // Generates an on/off switcher for item visibility.
+    const allElementActivator = this.utilities.generateOnOffSwitch(
+      stringAllElements,
+      true,
+      [
+        {
+          eventListener: 'click',
+          eventCallback: (event) => {
+            if (!event.target.classList.contains(classNameCheckboxToggleWrapper)) return;
+            event.target.querySelector('input').click();
+          },
+        },
+        {
+          eventListener: 'change',
+          eventCallback: (event) => {
+            this.themeDebugFilterNodes.objectTypesFilter.forEach((node) => {
+              if (node.getAttribute(layerAttributeIsVisible) !== String(event.target.checked))
+                node.click();
+            });
+          },
+        },
+      ],
+      {
+        [layerAttributeIsVisible]: true,
+      },
+      [
+        classNameFiltersElementItemActivation,
+      ],
+      false,
+      classNameIconEye,
+      classNameIconEyeBlocked
+    );
+
+    allFilterElementItem.appendChild(allElementActivator);
+    filtersElementContent.prepend(allFilterElementItem);
 
     // Load the list of filters to the wrapper filters element.
     filtersElement.append(
