@@ -866,9 +866,6 @@ Drupal.controllerElement = {
               node.listItemLayer.classList.toggle(classNameInputWrapperDisabled);
               node.listItemLayer.setAttribute(layerAttributeIsVisible, event.target.checked);
 
-              // Get the list item selected input.
-              const inputField = node.listItemLayer.querySelector('input');
-
               // Hide or show the instance layer depending on the visibility selector.
               if (event.target.checked) {
                 node.showInstanceLayer();
@@ -907,6 +904,7 @@ Drupal.controllerElement = {
   generateFiltersTab() {
     const {
       classNameTarget,
+      classNameListElementItemVisibility,
       classNameFiltersElement,
       classNameFiltersElementContent,
       classNameFiltersElementItem,
@@ -955,11 +953,14 @@ Drupal.controllerElement = {
 
     // Iterate over the list of object types.
     Object.entries(consolidateObjectTypes).forEach(([key, item]) => {
+
+      // Checks themeDebugNodes and retrieves nodes of a specific object type.
       const filteredByObjectType = this.utilities.getFilteredNodesByObjectType(
         themeDebugNodes,
         key
       );
 
+      // Create a filter wrapper element.
       const filterElementItem = document.createElement('div');
       filterElementItem.classList.add(classNameFiltersElementItem);
 
@@ -978,21 +979,20 @@ Drupal.controllerElement = {
           {
             eventListener: 'change',
             eventCallback: (event) => {
-              console.warn('filteredByObjectType', filteredByObjectType);
-
               filteredByObjectType.forEach((node) => {
 
+                // Toggle the checked and unchecked activation attribute oon the parent node.
                 const parentNode = event.target.parentNode;
                 parentNode.setAttribute(
                   layerAttributeIsVisible,
                   event.target.checked
                 );
 
-                // Hide or show the instance layer depending on the visibility selector.
-                if (event.target.checked) {
-                  node.showInstanceLayer();
-                } else {
-                  node.hideInstanceLayer();
+                // Toggle list item element.
+                const listItemToggler = node.listItemLayer.nextElementSibling;
+                console.warn('listItemToggler', listItemToggler);
+                if (listItemToggler !== null) {
+                  listItemToggler.click();
                 }
               });
             },
