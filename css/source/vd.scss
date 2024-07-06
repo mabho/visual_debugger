@@ -306,8 +306,8 @@
           justify-content: var(--#{$prefix}filters-element--filter-item--activation--justify-content);
 
           &[data-vd-visible='false'] {
-            text-decoration: var(--#{$prefix}list-element--list-item--activation--disabled--text-decoration);
             opacity: var(--#{$prefix}list-element--list-item--activation--disabled--opacity);
+            text-decoration: var(--#{$prefix}list-element--list-item--activation--disabled--text-decoration);
           }
 
           label {
@@ -319,8 +319,10 @@
 
           &--hover,
           &:hover {
-            label {
-              background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
+            &[data-vd-visible='true'] {
+              label {
+                background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
+              }
             }
           }
         }
