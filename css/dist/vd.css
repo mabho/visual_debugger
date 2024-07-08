@@ -250,6 +250,15 @@
   --vd-list-element--list-item--activation--padding: 0.125rem 0.5rem;
   --vd-list-element--list-item--visibility--flex: 0 0 1.75rem;
   --vd-list-element--list-item--visibility--margin-left: auto;
+  --vd-filters-element--background-color: var(--vd-color--gray-10);
+  --vd-filters-element--padding: var(--vd-controller--gutter);
+  --vd-filters-element--content--flex-direction: column;
+  --vd-filters-element--content--gap: calc(var(--vd-controller--gutter) * .125);
+  --vd-filters-element--filter-item--align-items: center;
+  --vd-filters-element--filter-item--flex-direction: row;
+  --vd-filters-element--filter-item--gap: calc(var(--vd-controller--gutter) * .25);
+  --vd-filters-element--filter-item--justify-content: flex-start;
+  --vd-filters-element--filter-item--activation--justify-content: space-between;
   --vd-content-copy-data--align-items: center;
   --vd-content-copy-data--column-gap: calc(var(--vd-controller--gutter) * .25);
   --vd-content-copy-data--flex-direction: row;
@@ -766,6 +775,38 @@ body.visual-debugger--deactivated .visual-debugger--controller .activation-form 
 .visual-debugger--controller .list-item__visibility {
   margin-left: var(--vd-list-element--list-item--visibility--margin-left);
   flex: 0 0 28px;
+}
+.visual-debugger--controller .filters {
+  background-color: var(--vd-filters-element--background-color);
+  padding: var(--vd-filters-element--padding);
+}
+.visual-debugger--controller .filters__content {
+  display: flex;
+  flex-direction: var(--vd-filters-element--content--flex-direction);
+  gap: var(--vd-filters-element--content--gap);
+}
+.visual-debugger--controller .filters-item {
+  align-items: var(--vd-filters-element--filter-item--align-items);
+  display: flex;
+  flex-direction: var(--vd-filters-element--filter-item--flex-direction);
+  gap: var(--vd-filters-element--filter-item--gap);
+  justify-content: var(--vd-filters-element--filter-item--justify-content);
+}
+.visual-debugger--controller .filters-item__activation {
+  justify-content: var(--vd-filters-element--filter-item--activation--justify-content);
+}
+.visual-debugger--controller .filters-item__activation[data-vd-visible=false] {
+  opacity: var(--vd-list-element--list-item--activation--disabled--opacity);
+  text-decoration: var(--vd-list-element--list-item--activation--disabled--text-decoration);
+}
+.visual-debugger--controller .filters-item__activation label {
+  flex-grow: 1;
+  padding: var(--vd-list-element--list-item--activation--padding);
+  position: relative;
+  transition: background-color var(--vd-transition-speed);
+}
+.visual-debugger--controller .filters-item__activation--hover[data-vd-visible=true] label, .visual-debugger--controller .filters-item__activation:hover[data-vd-visible=true] label {
+  background-color: rgba(var(--vd-color--object-type), var(--vd-object-type--transparency--hover));
 }
 .visual-debugger--base {
   left: var(--vd-base--left);
