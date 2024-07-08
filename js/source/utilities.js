@@ -185,7 +185,7 @@ Drupal.vdUtilities = {
       itemLabel.textContent = label;
 
       if(inputFirst) {
-      wrapperDiv.appendChild(itemLabel);
+        wrapperDiv.appendChild(itemLabel);
       } else {
         wrapperDiv.insertBefore(
           itemLabel,
