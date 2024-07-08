@@ -636,7 +636,7 @@
         if (templateFilePathMatch) {
 
           // Set the file path.
-          activeElement.setFilePath(templateFilePathMatch[1]);
+          activeElement.setFilePath(templateFilePathMatch[templateFilePathMatch.length - 1]);
 
           // Get the next element sibling (dataNode).
           const dataNode = child.nextElementSibling;
