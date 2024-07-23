@@ -68,8 +68,7 @@ Visual Debugger was originally developed with desktop screen sizes in mind. It h
 This is the roadmap for module improvements:
 - Display wrong theme suggestions: when theme suggestions not properly formatted are aggregated via custom module or theme, the debug parser delivers that information on the source code, so users know a wrong theme suggestion has been provided. This information should also be delivered for selected elements.
 - Use the existing tabbed navigation to display more valuable information to the user:
-  - Create new tab `Aggretate` or `Filter`. Displays an aggregated/consolidated list of page elements by object type. The established color codes should be present here as a visual cue. Display the number of times each object type is present on the page.
-    - Beside each object type tag, display a checkbox delivering users the ability to activate/deactivate all the components of a given type at once.
+  - Create new tab `Filters`:
     - Grant users the ability to filter elements carrying cache debug information.
     - Grant users the ability to filter elements carrying wrong theme suggestions.
   - Create a new tab `Configuration`. This tab can be represented by a coil icon only.
@@ -101,3 +100,6 @@ These are the complete tasks in the development roadmap.
   - ~~Pre-Bubbling Cache Keys~~
   - ~~Pre-Bubbling Cache Max-Age~~
   - ~~Rendering Time~~
+- Use the existing tabbed navigation to display more valuable information to the user:
+  - ~~Create new tab `Filters`:~~
+    - ~~Display an aggregated/consolidated list of page elements by object type with the ability to hide/show elements on the page by object type. The established color codes should be present here as a visual cue. Display the number of times each object type is present on the page.~~
