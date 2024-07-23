@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'visual-debugger-icons';
   src:
-    url('fonts/visual-debugger-icons.ttf?7n1ci9') format('truetype'),
-    url('fonts/visual-debugger-icons.woff?7n1ci9') format('woff'),
-    url('fonts/visual-debugger-icons.svg?7n1ci9#visual-debugger-icons') format('svg');
+    url('fonts/visual-debugger-icons.ttf?s0o66e') format('truetype'),
+    url('fonts/visual-debugger-icons.woff?s0o66e') format('woff'),
+    url('fonts/visual-debugger-icons.svg?s0o66e#visual-debugger-icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-square:before {
+  content: "\e906";
+}
 .icon-toggle-on:before {
   content: "\e903";
 }
