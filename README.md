@@ -73,7 +73,6 @@ This is the roadmap for module improvements:
     - Grant users the ability to filter elements carrying cache debug information.
     - Grant users the ability to filter elements carrying wrong theme suggestions.
   - Create a new tab `Configuration`. This tab can be represented by a coil icon only.
-- Analyze and fix a problem with an horizontal scrollbar sometimes being displayed on the page because layers within the wrapper element `.visual-debugger visual-debugger--base` maye occupy a space which is wider than the available screen width.
 
 ### Development roadmap - Complete tasks.
 
@@ -90,6 +89,7 @@ These are the complete tasks in the development roadmap.
 - ~~Apply a special style to the selected (default) element. Currently, it lacks a custom style. Selected elements should be highlighted all the time. The ideal solution could be one that makes its custom background (object type related) even less transparent.~~
 - ~~Add the ability to deactivate/disable individual layers so that users can more easily achieve layers underneath other layers.~~
   - ~~On `List`, add the ability to activate/deactivate layers individually.~~
+- ~~Analyze and fix a problem with an horizontal scrollbar sometimes being displayed on the page because layers within the wrapper element `.visual-debugger visual-debugger--base` maye occupy a space which is wider than the available screen width.~~
 - ~~Apply extended cache information, when available, on elements carrying that type of information on the source code. This cache data can potentially be pulled to the frontend (still subject to an in-depth analysis for its feasibility):~~
   - ~~Cach Hit~~
   - ~~Cache Tags~~
