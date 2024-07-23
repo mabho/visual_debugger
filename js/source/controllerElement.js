@@ -96,11 +96,12 @@ Drupal.controllerElement = {
     classNameContentCopyDataLabel: 'content-copy-data__label',
     classNameIconSelectedTrue: 'icon-selected-true',
     classNameIconSelectedFalse: 'icon-selected-false',
-    classNameIconEye: 'icon-eye',
     classNameIconControllerActivated: 'icon-controller-activated',
     classNameIconControllerDeactivated: 'icon-controller-deactivated',
-    classNameIconEyeBlocked: 'icon-eye-blocked',
     classNameIconCopyToClipboard: 'icon-copy',
+    classNameIconEye: 'icon-eye',
+    classNameIconEyeBlocked: 'icon-eye-blocked',
+    classNameIconSquare: 'icon-square',
     classNameIconSlideResize: 'icon-slide-resize',
     classNameIconNavigateNext: 'icon-navigate-next',
     classNameClickDragButton: 'click-drag-button',
@@ -959,6 +960,7 @@ Drupal.controllerElement = {
       classNameFiltersElementItemSelectAll,
       classNameIconEye,
       classNameIconEyeBlocked,
+      classNameIconSquare,
     } = this.classNames;
 
     const {
@@ -1092,7 +1094,8 @@ Drupal.controllerElement = {
         ],
         false,
         classNameIconEye,
-        classNameIconEyeBlocked
+        classNameIconEyeBlocked,
+        classNameIconSquare,
       );
 
       this.themeDebugFilterNodes.objectTypesFilter.push(elementActivator);

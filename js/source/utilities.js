@@ -26,6 +26,7 @@ Drupal.vdUtilities = {
     classNameIconCheckboxUnchecked: 'icon-checkbox-unchecked',
     classNameCheckboxToggleWrapper: 'checkbox-toggle-wrapper',
     classNameCheckboxToggle: 'checkbox-toggle',
+    classNameIconWithinContent: 'icon-within-content',
     classNameInputActivated: 'item-activated',
     classNameInputDeactivated: 'item-deactivated',
     classNameInputWrapperActivated: 'wrapper-activated',
@@ -96,10 +97,12 @@ Drupal.vdUtilities = {
    *   The attributes to be added to the wrapper div.
    * @param {boolean} inputFirst
    *   If true, the input element will be placed before the label.
-   * @param {string} IconOn
+   * @param {string} iconOn
    *   The class name for the icon when activated.
-   * @param {string} IconOff 
+   * @param {string} iconOff 
    *   The class name for the icon when deactivated.
+   * @param {string|null} iconBullet
+   *   The class name for a bullet icon using the `icon-*` pattern.
    * @returns {object}
    *   An HTML element containing the on/off input and its parts.
    */
@@ -110,8 +113,9 @@ Drupal.vdUtilities = {
     wrapperAttributesList = [],
     wrapperClassList = [],
     inputFirst = true,
-    IconOn = this.classNames.classNameIconCheckboxChecked,
-    IconOff = this.classNames.classNameIconCheckboxUnchecked,
+    iconOn = this.classNames.classNameIconCheckboxChecked,
+    iconOff = this.classNames.classNameIconCheckboxUnchecked,
+    iconBullet = null,
   ) {
     const {
       classNameCheckboxToggleWrapper,
@@ -120,6 +124,7 @@ Drupal.vdUtilities = {
       classNameInputDeactivated,
       classNameInputWrapperActivated,
       classNameInputWrapperDeactivated,
+      classNameIconWithinContent,
     } = this.classNames;
 
     const self = this;
@@ -165,15 +170,24 @@ Drupal.vdUtilities = {
     });
 
     // Create icons for the debugger activation checkbox.
-    const createIconElement = (iconClass, activatedClass) => {
+    const createIconElement = (iconClasses) => {
       const iconElement = document.createElement('span');
       iconElement.style.pointerEvents = 'none';
-      iconElement.classList.add(iconClass, activatedClass);
+      iconClasses.forEach((iconClass) => {
+        iconElement.classList.add(iconClass);
+      });
       return iconElement;
     }
-    const iconSelectedTrue = createIconElement(IconOn, classNameInputActivated);
-    const iconSelectedFalse = createIconElement(IconOff, classNameInputDeactivated);
+    const iconSelectedTrue = createIconElement([
+      iconOn,
+      classNameInputActivated
+    ]);
+    const iconSelectedFalse = createIconElement([
+      iconOff,
+      classNameInputDeactivated
+    ]);
 
+    // Append the input element, as well as the selected and deselected icons.
     wrapperDiv.append(
       itemInput,
       iconSelectedTrue,
@@ -195,6 +209,15 @@ Drupal.vdUtilities = {
           wrapperDiv.firstChild
         );
       }
+    }
+
+    // Create a bullet icon if requested.
+    if (iconBullet !== null) {
+      const bulletIcon = createIconElement([iconBullet, classNameIconWithinContent]);
+      wrapperDiv.insertBefore(
+        bulletIcon,
+        wrapperDiv.firstChild
+      );
     }
 
     return wrapperDiv;
