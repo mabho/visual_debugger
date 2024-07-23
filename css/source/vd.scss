@@ -72,6 +72,7 @@
       }
     }
 
+    // The controller activation form.
     .activation-form {
       background-color: var(--#{$prefix}controller--activation-form--background-color);
       border-radius: var(--#{$prefix}controller--activation-form--border-radius);
@@ -105,6 +106,14 @@
       margin: var(--#{$prefix}controller--content-auto-scroll--margin);
       overflow-y: var(--#{$prefix}controller--content-auto-scroll--overflow-y);
       padding: var(--#{$prefix}controller--content-auto-scroll--padding);
+    }
+
+    // When the filters are deactivated...
+    &[data-vd-controller-filters-enabled='false'] {
+      .filters-item {
+        opacity: .5;
+        pointer-events: none;
+      }
     }
 
     // Tabbed navigation
@@ -251,9 +260,11 @@
         justify-content: flex-start;
 
         &__activation {
+          font-weight: var(--#{$prefix}list-element--list-item--activation--font-weight);
+
           &[data-vd-visible='false'] {
-            text-decoration: var(--#{$prefix}list-element--list-item--activation--disabled--text-decoration);
             opacity: var(--#{$prefix}list-element--list-item--activation--disabled--opacity);
+            text-decoration: var(--#{$prefix}list-element--list-item--activation--disabled--text-decoration);
           }
 
           label {
@@ -303,7 +314,17 @@
         justify-content: var(--#{$prefix}filters-element--filter-item--justify-content);
 
         &__activation {
+          align-items: var(--#{$prefix}filters-element--filter-item--activation--align-items);
+          font-weight: var(--#{$prefix}filters-element--filter-item--activation--font-weight);
           justify-content: var(--#{$prefix}filters-element--filter-item--activation--justify-content);
+
+          &::before {
+            content: '';
+            display: inline-block;
+            height: var(--#{$prefix}filters-element--filter-item--activation--before--height);
+            margin: var(--#{$prefix}filters-element--filter-item--activation--before--margin);
+            width: var(--#{$prefix}filters-element--filter-item--activation--before--width);
+          }
 
           &[data-vd-visible='false'] {
             opacity: var(--#{$prefix}list-element--list-item--activation--disabled--opacity);

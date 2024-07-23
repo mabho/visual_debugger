@@ -24,15 +24,28 @@
   }
 
   .object-type {
-    background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency));
 
-    &--hover,
-    &:hover {
-      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
+    // Instance element unchecked.
+    &.instance-element {
+      background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency));
+
+      &:hover {
+        background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--hover));
+      }
     }
 
+    // Instance element is checked.
     &.instance-element--checked {
       background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--selected));
+      
+      &:hover {
+        background-color: rgba(var(--#{$prefix}color--object-type), var(--#{$prefix}object-type--transparency--selected));
+      }
+    }
+
+    // Filters item activation.
+    &.filters-item__activation::before {
+      background-color: rgba(var(--#{$prefix}color--object-type), 1);
     }
 
     @each $type, $color in $object-type-colors {

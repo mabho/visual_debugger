@@ -4,6 +4,10 @@
     font-size: var(--#{$prefix}icon--font-size);
   }
 
+  .icon-square {
+    font-size: var(--#{$prefix}icon--font-size--x-small);
+  }
+
   .icon-selected-true,
   .icon-selected-false,
   .icon-slide-resize,
