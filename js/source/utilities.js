@@ -38,6 +38,9 @@ Drupal.vdUtilities = {
     classNameSelectedElementTemplateFilePathWrapper: 'content-item__template-file-path-wrapper',
     classNameSelectedElementTemplateFilePath: 'content-item__template-file-path',
     classNameSelectedElementTemplateFilePathLabel: 'label',
+    classNameObjectType: 'object-type',
+    classNameObjectTypeHover: 'object-type--hover',
+    classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
   },
 
   // layerAttributes.

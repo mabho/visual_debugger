@@ -21,15 +21,12 @@
       classNameInstanceLayerUnchecked: 'instance-element--unchecked',
       classNameInstanceLayerChecked: 'instance-element--checked',
       classNameInstanceLayerHover: 'instance-element--hover',
-      classNameObjectType: 'object-type',
-      classNameObjectTypeHover: 'object-type--hover',
       classNameIconActivated: 'icon-checkbox-checked',
       classNameIconDectivated: 'icon-checkbox-unchecked',
       classNameCheckboxToggle: 'checkbox-toggle',
       classNameSpanToggle: 'span-toggle',
       classNameActivated: 'item-activated',
       classNameDeactivated: 'item-deactivated',
-      classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
     },
 
     // layerAttributes.
@@ -215,13 +212,11 @@
       // Controller element instance.
       const controllerElementInstance = this.controllerElement;
 
-      // Set instance classes.
+      // Set instance class names.
       const {
         classNameInstanceLayer,
         classNameInstanceLayerChecked,
         classNameInstanceLayerUnchecked,
-        classNameObjectType,
-        classNameObjectTypeTyped,
         classNameIconActivated,
         classNameIconDectivated,
         classNameCheckboxToggle,
@@ -229,6 +224,12 @@
         classNameActivated,
         classNameDeactivated,
       } = this.classNames;
+      
+      // Class names in Utilities.
+      const {
+        classNameObjectType,
+        classNameObjectTypeTyped,
+      } = this.utilities.classNames;
 
       // Layer attributes in Utilities.
       const {
@@ -237,6 +238,7 @@
         layerAttributeIsVisible
       } = this.utilities.layerAttributes;
 
+      // Deliver layer classes.
       thisLayer.classList.add(
         classNameInstanceLayer,
         classNameObjectType,
@@ -244,7 +246,7 @@
         classNameInstanceLayerUnchecked
       );
 
-      
+      // Deliver layer attributes.
       thisLayer.setAttribute(layerTargetIdAttributeName, instanceLayerId);
       thisLayer.setAttribute(layerAttributeIsVisible, true);
       thisLayer.setAttribute(instanceLayerActivatedAttributeName, false);
@@ -419,10 +421,9 @@
         instanceLayerActivatedAttributeName
       } = this.utilities.layerAttributes;
 
-      const {
-        classNameInstanceLayerHover,
-        classNameObjectTypeHover
-      } = this.classNames;
+      // Get class names.
+      const { classNameInstanceLayerHover } = this.classNames;
+      const { classNameObjectTypeHover } = this.utilities.classNames;
 
       return {
         instanceActiveElement: instanceActiveElement,
@@ -448,7 +449,6 @@
           this.instanceLayer.classList.add(
             classNameInstanceLayerHover,
             classNameObjectTypeHover
-
           );
         },
         

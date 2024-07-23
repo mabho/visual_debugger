@@ -15,6 +15,7 @@ Drupal.controllerElement = {
   activeThemeElement: null,
   defaultThemeElement: null,
   controllerLayer: null,
+  listContentLayer: null,
   baseLayer: null,
   tabs: null,
 
@@ -86,6 +87,7 @@ Drupal.controllerElement = {
     classNameFiltersElement: 'filters',
     classNameFiltersElementContent: 'filters__content',
     classNameFiltersElementItem: 'filters-item',
+    classNameFiltersElementItemSelectAll: 'filters-item--select-all',
     classNameFiltersElementItemActivation: 'filters-item__activation',
     classNameFiltersElementItemActivationHover: 'filter-item__activation--hover',
     classNameAggregateElement: 'aggregate',
@@ -105,12 +107,13 @@ Drupal.controllerElement = {
     classNameCheckboxToggle: 'checkbox-toggle',
     classNameActivated: 'item-activated',
     classNameDeactivated: 'item-deactivated',
-    classNameObjectTypeTyped: (objectType) => `object-type--${objectType}`,
   },
 
   // layerAttributes.
   layerAttributes: {
     controllerActivatedAttributeName: 'data-vd-controller-activated',
+    controllerFiltersEnabledAttributeName: 'data-vd-controller-filters-enabled',
+    controllerListClickOrigin: 'data-vs-click-origin',
   },
 
   // Drupal translatable strings for the controller layer.
@@ -139,7 +142,9 @@ Drupal.controllerElement = {
 
   /**
    * Getter for the controller object.
-   * @returns 
+   * 
+   * @returns {object}
+   *   The controller layer.
    */
   getControllerLayer() {
     return this.controllerLayer;
@@ -152,6 +157,26 @@ Drupal.controllerElement = {
    */
   setControllerLayer(controllerLayer) {
     this.controllerLayer = controllerLayer;
+  },
+
+  /**
+   * Getter for the list content object.
+   * 
+   * @returns {object}
+   *   The list content layer
+   */
+  getListContentLayer() {
+    return this.listContentLayer;
+  },
+
+  /**
+   * Setter for the list content layer.
+   * 
+   * @param {object} listContentLayer 
+   *   The list content object.
+   */
+  setListContentLayer(listContentLayer) {
+    this.listContentLayer = listContentLayer;
   },
 
   observeInstanceLayerChanges() {
@@ -251,11 +276,12 @@ Drupal.controllerElement = {
     localStorage.setItem(
       this.system.localStorageDebuggerActivatedKey, activated);
 
-    // Activate/deactivate the controller layer.
+    // Activate/deactivate the controller layer and filters.
     if (this.controllerLayer !== null) {
       this.controllerLayer.setAttribute(controllerActivatedAttributeName, activated);
       this.checkControllerActivation();
     }
+
   },
 
   /**
@@ -351,7 +377,10 @@ Drupal.controllerElement = {
 
     const { idControllerActivationCheckbox } = this.ids;
 
-    const { controllerActivatedAttributeName } = this.layerAttributes;
+    const {
+      controllerActivatedAttributeName,
+      controllerFiltersEnabledAttributeName,
+    } = this.layerAttributes;
 
     const { stringDeactivateDebugger } = this.strings;
 
@@ -453,8 +482,9 @@ Drupal.controllerElement = {
       controllerContentLayer
     );
 
-    // Load the controller layer just created to the current object.
+    // Pass relevant layers just created to the current object.
     this.setControllerLayer(controllerLayer);
+    this.setListContentLayer(listElementLayer);
 
     // Return
     return controllerLayer;
@@ -769,6 +799,10 @@ Drupal.controllerElement = {
     const { stringTabLabelList } = this.strings;
 
     const {
+      controllerFiltersEnabledAttributeName
+    } = this.layerAttributes;
+
+    const {
       layerTargetIdAttributeName,
       listItemActivatedAttributeName,
       layerAttributeIsVisible,
@@ -844,7 +878,7 @@ Drupal.controllerElement = {
         },
         [
           classNameListElementItemActivation,
-          this.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
+          this.utilities.classNames.classNameObjectTypeTyped(node.instanceActiveElement.objectType),
         ]
       );
 
@@ -878,6 +912,13 @@ Drupal.controllerElement = {
               } else {
                 node.hideInstanceLayer();
               }
+
+              // Disable the filters if the click didn't originate there.
+              console.warn('clickOrigin is', this.getListClickOrigin());
+              this.updateControllerFiltersActivation(this.getListClickOrigin() === 'filter');
+
+              // Reset the click origin.
+              this.setListClickOrigin(null);
             },
           }
         ],
@@ -910,18 +951,19 @@ Drupal.controllerElement = {
   generateFiltersTab() {
     const {
       classNameTarget,
-      classNameListElementItemVisibility,
       classNameFiltersElement,
       classNameFiltersElementContent,
       classNameFiltersElementItem,
       classNameFiltersElementItemActivation,
       classNameFiltersElementItemActivationHover,
+      classNameFiltersElementItemSelectAll,
       classNameIconEye,
       classNameIconEyeBlocked,
     } = this.classNames;
 
     const {
       classNameCheckboxToggleWrapper,
+      classNameObjectType,
     } = this.utilities.classNames;
 
     const {
@@ -994,6 +1036,9 @@ Drupal.controllerElement = {
             eventCallback: (event) => {
               filteredByObjectType.forEach((node) => {
 
+                // Sets the origin of the click being triggered.
+                this.setListClickOrigin('filter');
+
                 // Toggle the checked and unchecked activation attribute on the parent node.
                 toggleParentItemActivation(event.target, event.target.checked);
 
@@ -1042,7 +1087,8 @@ Drupal.controllerElement = {
         },
         [
           classNameFiltersElementItemActivation,
-          this.classNames.classNameObjectTypeTyped(key),
+          classNameObjectType,
+          this.utilities.classNames.classNameObjectTypeTyped(key),
         ],
         false,
         classNameIconEye,
@@ -1051,14 +1097,12 @@ Drupal.controllerElement = {
 
       this.themeDebugFilterNodes.objectTypesFilter.push(elementActivator);
       filterElementItem.appendChild(elementActivator);
-      filtersElementContent.append(
-        filterElementItem,
-      );
+      filtersElementContent.appendChild(filterElementItem);
     });
 
     // Prepares an 'all' selector to select/deselect all filters.
     const allFilterElementItem = document.createElement('div');
-    allFilterElementItem.classList.add(classNameFiltersElementItem);
+    allFilterElementItem.classList.add(classNameFiltersElementItemSelectAll);
 
     // Prepares an 'all' selector to select/deselect all filters.
     // Generates an on/off switcher for item visibility.
@@ -1077,9 +1121,11 @@ Drupal.controllerElement = {
           eventListener: 'change',
           eventCallback: (event) => {
             this.themeDebugFilterNodes.objectTypesFilter.forEach((node) => {
-              if (node.getAttribute(layerAttributeIsVisible) !== String(event.target.checked))
+              if (node.getAttribute(layerAttributeIsVisible) !== String(event.target.checked)) {
                 node.click();
+              }
             });
+            this.updateControllerFiltersActivation(true);
           },
         },
       ],
@@ -1134,6 +1180,7 @@ Drupal.controllerElement = {
     this.checkControllerActivation();
     this.updateActiveElement();
     this.updateSelectedElement('selected');
+    this.updateControllerFiltersActivation(true);
     this.setSelectedElementValues();
     this.switchToTab(this.ids.idControllerElementSelected);
   },
@@ -1443,6 +1490,23 @@ Drupal.controllerElement = {
   },
 
   /**
+   * Update the activstion status of the controller's filters.
+   *
+   * @param {boolean} newActivationStatus
+   *   The new activation status of the controller's filters.
+   *
+   * @returns void
+   */
+  updateControllerFiltersActivation(newActivationStatus) {
+    const { controllerFiltersEnabledAttributeName } = this.layerAttributes;
+    const controllerLayer = this.getControllerLayer();
+    controllerLayer.setAttribute(
+      controllerFiltersEnabledAttributeName,
+      newActivationStatus
+    );
+  },
+
+  /**
    * An empty tag ready to be appended.
    * 
    * @param {string} message
@@ -1509,7 +1573,7 @@ Drupal.controllerElement = {
     const { idControllerButtonSelected } = this.ids;
     const targetButton = document.getElementById(idControllerButtonSelected);
     const selectedThemeElement = this.defaultThemeElement;
-    const objectTypeEmpty = this.classNames.classNameObjectTypeTyped('');
+    const objectTypeEmpty = this.utilities.classNames.classNameObjectTypeTyped('');
 
     // Remove legacy object type class name.
     Array.from(targetButton.classList).forEach((className) => {
@@ -1523,7 +1587,7 @@ Drupal.controllerElement = {
 
     // Apply a new class that corresponds to the selected element.
     const objectType = selectedThemeElement.objectType;
-    const objectTypeClassName = this.classNames.classNameObjectTypeTyped(objectType);
+    const objectTypeClassName = this.utilities.classNames.classNameObjectTypeTyped(objectType);
     targetButton.classList.add(objectTypeClassName);
   },
 
@@ -1550,6 +1614,42 @@ Drupal.controllerElement = {
       : defaultThemeDebugNode.listItemLayer.classList.remove(
         classNameListElementItemActivationHover
       );
+  },
+
+  /**
+   * Gets the list click origin parameter. 
+   * 
+   * @returns {string}
+   *   The list click origin.
+   */
+  getListClickOrigin() {
+    const { controllerListClickOrigin } = this.layerAttributes;
+    const listContentLayer = this.getListContentLayer();
+    return listContentLayer.getAttribute(
+      controllerListClickOrigin,
+    );
+  },
+
+  /**
+   * Associates the click origin parameter. 
+   * @param {string|null} origin
+   *   The portion of this application that originated the click.
+   */
+  setListClickOrigin(origin) {
+    const { controllerListClickOrigin } = this.layerAttributes;
+    const listContentLayer = this.getListContentLayer();
+
+    // Remove the attribute if null was passed as the argument.
+    if (origin === null) {
+      listContentLayer.removeAttribute(controllerListClickOrigin);  
+      return;
+    }
+
+    // Set the attribute
+    listContentLayer.setAttribute(
+      controllerListClickOrigin,
+      origin
+    )
   },
 
   /**
