@@ -77,7 +77,7 @@
     --#{$prefix}font-family--monospace: 'Courier New', monospace;
 
     // Text.
-    --#{$prefix}text--line-height: to-rem(26px);
+    --#{$prefix}text--line-height: #{to-rem(26px)};
   
     // Colors.
   
