@@ -20,6 +20,7 @@
     display: flex;
     flex-direction: var(--#{$prefix}controller--flex-direction);
     font-size: var(--#{$prefix}controller--font-size);
+    line-height: var(--#{$prefix}text--line-height);
     max-width: var(--#{$prefix}controller--max-width);
     min-width: var(--#{$prefix}controller--min-width);
     padding: var(--#{$prefix}controller--padding);
@@ -317,14 +318,6 @@
           align-items: var(--#{$prefix}filters-element--filter-item--activation--align-items);
           font-weight: var(--#{$prefix}filters-element--filter-item--activation--font-weight);
           justify-content: var(--#{$prefix}filters-element--filter-item--activation--justify-content);
-
-          &::before {
-            content: '';
-            display: inline-block;
-            height: var(--#{$prefix}filters-element--filter-item--activation--before--height);
-            margin: var(--#{$prefix}filters-element--filter-item--activation--before--margin);
-            width: var(--#{$prefix}filters-element--filter-item--activation--before--width);
-          }
 
           &[data-vd-visible='false'] {
             opacity: var(--#{$prefix}list-element--list-item--activation--disabled--opacity);

@@ -44,8 +44,8 @@
     }
 
     // Filters item activation.
-    &.filters-item__activation::before {
-      background-color: rgba(var(--#{$prefix}color--object-type), 1);
+    &.filters-item__activation > .icon-square {
+      color: rgba(var(--#{$prefix}color--object-type), 1);
     }
 
     @each $type, $color in $object-type-colors {

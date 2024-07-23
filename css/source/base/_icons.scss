@@ -4,8 +4,14 @@
     font-size: var(--#{$prefix}icon--font-size);
   }
 
+  // Prepares an icon layer to be displayed within content.
+  .icon-within-content {
+    line-height: 1.5;
+  }
+
   .icon-square {
     font-size: var(--#{$prefix}icon--font-size--x-small);
+    line-height: var(--#{$prefix}text--line-height);
   }
 
   .icon-selected-true,
